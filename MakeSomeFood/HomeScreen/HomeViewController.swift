@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-class JokeViewController: UIViewController {
+class HomeViewController: UIViewController {
 
     // MARK: - Private properties
 
@@ -38,7 +38,15 @@ class JokeViewController: UIViewController {
     }
 
     private func loadJoke() {
-
+        let ns = NetworkService()
+        ns.fetchRandomRecipies(quantity: 10) { result in
+            switch result {
+            case .success(let success):
+                print(success)
+            case .failure(let failure):
+                print(failure)
+            }
+        }
     }
 }
 

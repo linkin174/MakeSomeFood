@@ -1,0 +1,11 @@
+//
+//  Secrets.xcconfig
+//  MakeSomeFood
+//
+//  Created by Aleksandr Kretov on 14.02.2023.
+//
+
+// Configuration settings file format documentation can be found at:
+// https://help.apple.com/xcode/#/dev745c5c974
+
+API_KEY = d2a082f92b6c42f5aaa510f0926e3bd5
