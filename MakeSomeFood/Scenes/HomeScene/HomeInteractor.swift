@@ -25,7 +25,6 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
     // MARK: - Public properties
 
     var presenter: HomePresentationLogic?
-    var worker: HomeWorker?
 
     // MARK: - Public properties
 

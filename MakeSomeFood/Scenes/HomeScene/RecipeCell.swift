@@ -19,6 +19,14 @@ final class RecipeCell: UICollectionViewCell {
 
     static let reuseID = "recipeCell"
 
+    // MARK: - Private properties
+    private var imageURL: URL? {
+        didSet {
+            imageView.image = UIImage(named: "placeholder")
+            loadImage()
+        }
+    }
+
     // MARK: - Views
 
     private let indicatorView: UIActivityIndicatorView = {
@@ -34,7 +42,6 @@ final class RecipeCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
-        imageView.image = UIImage(named: "placeholder")
         return imageView
     }()
 
@@ -59,11 +66,7 @@ final class RecipeCell: UICollectionViewCell {
         return view
     }()
 
-    // MARK: - Initializers
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-    }
+    // MARK: - Overrides
 
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -71,26 +74,35 @@ final class RecipeCell: UICollectionViewCell {
         setupUI()
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
     // MARK: - Public methods
 
     func setup(with viewModel: RecipeCellViewModelRepresentable) {
-        #warning("resolve optionals")
         dishNameLabel.text = viewModel.dishName
-        Task {
-            let data = try? await URLSession.shared.data(for: URLRequest(url: URL(string: viewModel.imageURL)!))
-            let image = UIImage(data: data!.0)!
-            DispatchQueue.main.async {
-                self.imageView.image = image
-                self.indicatorView.stopAnimating()
+        guard let url = URL(string: viewModel.imageURL) else { return }
+        imageURL = url
+    }
+
+
+    // MARK: - Private methods
+
+    private func loadImage() {
+        if let cachedImage = ImageCache[imageURL?.lastPathComponent ?? ""] {
+            imageView.image = cachedImage
+        } else {
+            guard let url = imageURL else { return }
+            DispatchQueue.global().async { [unowned self] in
+                guard let data = try? Data(contentsOf: url) else { return }
+                guard let image = UIImage(data: data) else { return }
+                DispatchQueue.main.async { [unowned self] in
+                    if url == self.imageURL {
+                        imageView.image = image
+                        ImageCache[url.lastPathComponent] = image
+                        indicatorView.stopAnimating()
+                    }
+                }
             }
         }
     }
-
-    // MARK: - Private methods
 
     private func setupUI() {
         contentView.layer.cornerRadius = 8
@@ -101,7 +113,6 @@ final class RecipeCell: UICollectionViewCell {
     }
 
     private func setupConstraints() {
-        // Setup 1st layer
         contentView.addSubview(imageView)
         imageView.addSubview(labelView)
         imageView.addSubview(indicatorView)
@@ -111,21 +122,14 @@ final class RecipeCell: UICollectionViewCell {
             make.edges.equalToSuperview()
         }
 
-        // Setup second layer
-
-
         labelView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(dishNameLabel.snp.height).offset(16)
         }
 
         indicatorView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-
-        // Setup third layer
-
 
         dishNameLabel.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(8)

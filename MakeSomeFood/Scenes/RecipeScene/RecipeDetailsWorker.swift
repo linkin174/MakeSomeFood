@@ -1,5 +1,5 @@
 //
-//  HomeWorker.swift
+//  RecipeDetailsWorker.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -12,7 +12,7 @@
 
 import UIKit
 
-class HomeWorker {
+class RecipeDetailsWorker {
     func doSomeWork() {
         
     }

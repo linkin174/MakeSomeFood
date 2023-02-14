@@ -18,6 +18,8 @@ protocol HomePresentationLogic {
 }
 
 class HomePresenter: HomePresentationLogic {
+
+    // MARK: - Public properties
     
     weak var viewController: HomeDisplayLogic?
 
@@ -25,9 +27,13 @@ class HomePresenter: HomePresentationLogic {
 
     private let networkService: NetworkService
 
+    // MARK: - Initializers
+
     init(networkService: NetworkService) {
         self.networkService = networkService
     }
+
+    // MARK: Presenting Logic
 
     func presentRandomRecipies(response: Home.LoadRandomRecipies.Response) {
         let recipies = response.recipeRespone.hits.map { $0.recipe }
@@ -40,6 +46,8 @@ class HomePresenter: HomePresentationLogic {
     }
 
     func presentError(response: Home.HandleError.Response) {
-
+        let errorMessage = response.error.localizedDescription
+        let viewModel = Home.HandleError.ViewModel(errorMessage: errorMessage)
+        viewController?.displayError(viewModel: viewModel)
     }
 }

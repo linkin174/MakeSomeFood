@@ -15,6 +15,7 @@ import SnapKit
 
 protocol HomeDisplayLogic: AnyObject {
     func displayRandomRecipies(viewModel: Home.LoadRandomRecipies.ViewModel)
+    func displayError(viewModel: Home.HandleError.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic {
@@ -32,11 +33,9 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Views
 
-    private lazy var collectionView: UICollectionView = {
-        
+    lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.collectionView?.showsVerticalScrollIndicator = false
         layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
         layout.minimumInteritemSpacing = 8
         layout.minimumLineSpacing = 8
@@ -44,10 +43,11 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         layout.itemSize = CGSize(width: itemSide, height: itemSide)
 
         let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.register(RecipeCell.self, forCellWithReuseIdentifier: RecipeCell.reuseID)
-        collectionView.backgroundColor = .white
         return collectionView
     }()
 
@@ -97,7 +97,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.backgroundColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
-        navigationController?.navigationBar.prefersLargeTitles = true
         navigationController?.navigationBar.compactAppearance = appearence
         navigationController?.navigationBar.scrollEdgeAppearance = appearence
         navigationController?.navigationBar.standardAppearance = appearence
@@ -108,16 +107,26 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         tabBarController?.tabBar.tintColor = .white.withAlphaComponent(0.8)
     }
     
-    // MARK: - display view model from HomePresenter
+    // MARK: - Display Logic
 
     func displayRandomRecipies(viewModel: Home.LoadRandomRecipies.ViewModel) {
         DispatchQueue.main.async {
             self.viewModel = viewModel
         }
     }
+
+    func displayError(viewModel: Home.HandleError.ViewModel) {
+        showAlert(title: "Something went wrong", message: viewModel.errorMessage)
+    }
 }
 
+// MARK: - Extensions
+
 extension HomeViewController: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        router?.routeToRecipeDetails()
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
 }
 
 extension HomeViewController: UICollectionViewDataSource {

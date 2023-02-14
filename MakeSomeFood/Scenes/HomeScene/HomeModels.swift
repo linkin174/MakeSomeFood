@@ -30,6 +30,10 @@ enum Home {
         struct Response {
             let error: Error
         }
+
+        struct ViewModel {
+            let errorMessage: String
+        }
     }
 }
 

@@ -1,5 +1,5 @@
 //
-//  HomeRouter.swift
+//  RecipeDetailsRouter.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -12,17 +12,17 @@
 
 import UIKit
 
-@objc protocol HomeRoutingLogic {
+@objc protocol RecipeDetailsRoutingLogic {
     //func routeToSomewhere(segue: UIStoryboardSegue?)
 }
 
-protocol HomeDataPassing {
-    var dataStore: HomeDataStore? { get }
+protocol RecipeDetailsDataPassing {
+    var dataStore: RecipeDetailsDataStore? { get }
 }
 
-class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
-    weak var viewController: HomeViewController?
-    var dataStore: HomeDataStore?
+class RecipeDetailsRouter: NSObject, RecipeDetailsRoutingLogic, RecipeDetailsDataPassing {
+    weak var viewController: RecipeDetailsViewController?
+    var dataStore: RecipeDetailsDataStore?
 
 // MARK: Routing (navigating to other screens)
 
@@ -42,13 +42,13 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
 
 // MARK: Navigation to other screen
 
-//func navigateToSomewhere(source: HomeViewController, destination: SomewhereViewController) {
+//func navigateToSomewhere(source: RecipeDetailsViewController, destination: SomewhereViewController) {
 //    source.show(destination, sender: nil)
 //}
 
 // MARK: Passing data to other screen
 
-//    func passDataToSomewhere(source: HomeDataStore, destination: inout SomewhereDataStore) {
+//    func passDataToSomewhere(source: RecipeDetailsDataStore, destination: inout SomewhereDataStore) {
 //        destination.name = source.name
 //    }
 }
