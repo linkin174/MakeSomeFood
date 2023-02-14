@@ -4,42 +4,139 @@
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
 //
-
 import Foundation
+
+// MARK: - RecipeResponse
+struct RecipeResponse: Codable {
+    let from: Int?
+    let to: Int?
+    let count: Int?
+//    let links: Links?
+    let hits: [Hit]
+}
+
+// MARK: - Hit
+struct Hit: Codable {
+    let recipe: Recipe
+//    let links: Links?
+}
+
+// MARK: - Links
+struct Links: Codable {
+    let linksSelf: Next?
+    let next: Next?
+}
+
+// MARK: - Next
+struct Next: Codable {
+    let href: String?
+    let title: String?
+}
 
 // MARK: - Recipe
 struct Recipe: Codable {
-    let vegetarian: Bool
-    let vegan: Bool
-    let glutenFree: Bool
-    let dairyFree: Bool
-    let veryHealthy: Bool
-//    let cheap: Bool
-//    let veryPopular: Bool
-//    let sustainable: Bool
-//    let lowFodmap: Bool
-//    let weightWatcherSmartPoints: Int
-//    let gaps: String
-//    let preparationMinutes: Int
-//    let cookingMinutes: Int
-//    let aggregateLikes: Int
-//    let healthScore: Int
-//    let creditsText: String
-//    let license: String
-//    let sourceName: String
-//    let pricePerServing: Double
-//    let excludedIngridients: [Ingredient]
-//    let id: Int
-//    let title: String
-//    let readyInMinutes: Int
-//    let servings: Int
-//    let sourceUrl: String
-//    let image: String
-//    let imageType: String
-//    let summary: String
-//    let cuisines: [String]
-//    let dishTypes: [String]
-//    let diets: [String]
-//    let occasions: [String]
-//    let instructions: String
+    let uri: String?
+    let label: String
+    let image: String
+//    let images: Images?
+    let source: String?
+    let url: String?
+    let shareAs: String?
+    let yield: Int?
+    let dietLabels: [String]?
+    let healthLabels: [String]?
+    let cautions: [String]?
+    let ingredientLines: [String]?
+    let ingredients: [Ingredient]?
+    let calories: Double?
+    let totalWeight: Double?
+    let totalTime: Int?
+    let cuisineType: [String]?
+    let dishType: [String]?
+    let totalNutrients: TotalNutrients?
+    let totalDaily: TotalNutrients?
+    let glycemicIndex: Int?
+    let digest: [Digest]?
+    let mealType: [String]?
+}
+
+struct TotalNutrients: Codable {
+    let enercKcal: Nutrient?
+    let fat: Nutrient?
+    let fasat: Nutrient?
+    let fatrn: Nutrient?
+    let fams: Nutrient?
+    let fapu: Nutrient?
+    let chocdf: Nutrient?
+    let chocdfNet: Nutrient?
+    let fibtg: Nutrient?
+    let sugar: Nutrient?
+    let sugarAdded: Nutrient?
+    let procnt: Nutrient?
+    let chole: Nutrient?
+    let na: Nutrient?
+    let ca: Nutrient?
+    let mg: Nutrient?
+    let k: Nutrient?
+    let fe: Nutrient?
+    let zn: Nutrient?
+    let p: Nutrient?
+    let vitaRae: Nutrient?
+    let vitc: Nutrient?
+    let thia: Nutrient?
+    let ribf: Nutrient?
+    let nia: Nutrient?
+    let vitb6A: Nutrient?
+    let foldfe: Nutrient?
+    let folfd: Nutrient?
+    let folac: Nutrient?
+    let vitb12: Nutrient?
+    let vitd: Nutrient?
+    let tocpha: Nutrient?
+    let vitk1: Nutrient?
+    let sugarAlcohol: Nutrient?
+    let water: Nutrient?
+}
+
+struct Nutrient: Codable {
+    let label: String?
+    let quantity: Double?
+    let unit: String?
+}
+
+// MARK: - Digest
+struct Digest: Codable {
+    let label: String?
+    let tag: String?
+    let schemaOrgTag: String?
+    let total: Double?
+    let hasRdi: Bool?
+    let daily: Double?
+    let unit: String?
+}
+
+// MARK: - Images
+struct Images: Codable {
+    let thumbnail: ImageSize?
+    let small: ImageSize?
+    let regular: ImageSize?
+    let large: ImageSize?
+}
+
+// MARK: - Large
+struct ImageSize: Codable {
+    let url: String?
+    let width: Int?
+    let height: Int?
+}
+
+// MARK: - Ingredient
+struct Ingredient: Codable {
+    let text: String?
+    let quantity: Double?
+    let measure: String?
+    let food: String?
+    let weight: Double?
+    let foodId: String?
+    let image: String?
 }
