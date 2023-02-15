@@ -31,7 +31,27 @@
 		70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */; };
 		70216EB3299BCF21008FB54D /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB2299BCF21008FB54D /* ImageCache.swift */; };
 		70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */; };
+		70216EB8299D0FA5008FB54D /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB7299D0FA5008FB54D /* SearchViewController.swift */; };
+		70216EBA299D105F008FB54D /* UIView + Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB9299D105F008FB54D /* UIView + Preview.swift */; };
+		70216EBD299D1394008FB54D /* DropDown.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70216EBC299D1394008FB54D /* DropDown.xcframework */; };
+		70216EBE299D1394008FB54D /* DropDown.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 70216EBC299D1394008FB54D /* DropDown.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC0299D185B008FB54D /* UILabel Static Factory.swift */; };
+		70216EC3299D1C74008FB54D /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC2299D1C74008FB54D /* StorageService.swift */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		70216EBF299D1394008FB54D /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				70216EBE299D1394008FB54D /* DropDown.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		70216E4D299B59B0008FB54D /* MakeSomeFood.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MakeSomeFood.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -59,6 +79,11 @@
 		70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailsInteractor.swift; sourceTree = "<group>"; };
 		70216EB2299BCF21008FB54D /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIVIew + ShowAlert.swift"; sourceTree = "<group>"; };
+		70216EB7299D0FA5008FB54D /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		70216EB9299D105F008FB54D /* UIView + Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Preview.swift"; sourceTree = "<group>"; };
+		70216EBC299D1394008FB54D /* DropDown.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = DropDown.xcframework; path = Carthage/Build/DropDown.xcframework; sourceTree = "<group>"; };
+		70216EC0299D185B008FB54D /* UILabel Static Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel Static Factory.swift"; sourceTree = "<group>"; };
+		70216EC2299D1C74008FB54D /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -68,6 +93,7 @@
 			files = (
 				70216E69299B5C9C008FB54D /* Alamofire in Frameworks */,
 				70216E6C299B5CAB008FB54D /* SnapKit in Frameworks */,
+				70216EBD299D1394008FB54D /* DropDown.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +106,7 @@
 				70216E6E299B5DE6008FB54D /* Config.xcconfig */,
 				70216E4F299B59B0008FB54D /* MakeSomeFood */,
 				70216E4E299B59B0008FB54D /* Products */,
+				70216EBB299D1393008FB54D /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -129,6 +156,7 @@
 				70216E71299B5FBC008FB54D /* API.swift */,
 				70216E73299B60C6008FB54D /* NetworkService.swift */,
 				70216EB2299BCF21008FB54D /* ImageCache.swift */,
+				70216EC2299D1C74008FB54D /* StorageService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -147,6 +175,7 @@
 			children = (
 				70216E99299BC224008FB54D /* RecipeScene */,
 				70216E98299BC21C008FB54D /* HomeScene */,
+				70216EB7299D0FA5008FB54D /* SearchViewController.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -181,8 +210,18 @@
 			isa = PBXGroup;
 			children = (
 				70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */,
+				70216EB9299D105F008FB54D /* UIView + Preview.swift */,
+				70216EC0299D185B008FB54D /* UILabel Static Factory.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		70216EBB299D1393008FB54D /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				70216EBC299D1394008FB54D /* DropDown.xcframework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -195,6 +234,7 @@
 				70216E49299B59B0008FB54D /* Sources */,
 				70216E4A299B59B0008FB54D /* Frameworks */,
 				70216E4B299B59B0008FB54D /* Resources */,
+				70216EBF299D1394008FB54D /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -271,13 +311,17 @@
 				70216E92299B9757008FB54D /* HomeInteractor.swift in Sources */,
 				70216E72299B5FBC008FB54D /* API.swift in Sources */,
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
+				70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */,
 				70216E77299B6150008FB54D /* Recipe.swift in Sources */,
 				70216E90299B9757008FB54D /* HomeModels.swift in Sources */,
 				70216EB3299BCF21008FB54D /* ImageCache.swift in Sources */,
 				70216E91299B9757008FB54D /* HomeViewController.swift in Sources */,
+				70216EC3299D1C74008FB54D /* StorageService.swift in Sources */,
 				70216EAC299BC26C008FB54D /* RecipeDetailsPresenter.swift in Sources */,
 				70216EAF299BC26C008FB54D /* RecipeDetailsModels.swift in Sources */,
 				70216EAD299BC26C008FB54D /* RecipeDetailsWorker.swift in Sources */,
+				70216EBA299D105F008FB54D /* UIView + Preview.swift in Sources */,
+				70216EB8299D0FA5008FB54D /* SearchViewController.swift in Sources */,
 				70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */,
 				70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */,
 				70216E8F299B9757008FB54D /* HomeRouter.swift in Sources */,

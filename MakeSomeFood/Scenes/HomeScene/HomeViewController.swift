@@ -100,6 +100,16 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         navigationController?.navigationBar.compactAppearance = appearence
         navigationController?.navigationBar.scrollEdgeAppearance = appearence
         navigationController?.navigationBar.standardAppearance = appearence
+//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(showFilters))
+//        tabBarController?.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(showFilters))]
+        let searchButton =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(showFilters))
+        searchButton.tintColor = .white
+        navigationItem.rightBarButtonItem = searchButton
+    }
+
+    @objc private func showFilters() {
+        #warning("Inject dependency somethere else")
+        present(SearchViewController(storageService: StorageService()), animated: true)
     }
 
     private func setupTabBar() {
