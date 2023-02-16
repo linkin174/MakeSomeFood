@@ -43,7 +43,7 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
     // MARK: Interaction Logic
 
     func viewDidLoad() {
-        networkService.fetchRandomRecipies { [unowned self] result in
+        networkService.fetchRecipies { [unowned self] result in
             switch result {
             case .success(let success):
                 self.recipieResponse = success

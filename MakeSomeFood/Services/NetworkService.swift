@@ -9,14 +9,22 @@ import Foundation
 import Alamofire
 
 final class NetworkService {
+
+    // MARK: - Private properties
+
+    private let storageService: StorageService
+
+    // MARK: - Initializers
+
+    init(storageService: StorageService) {
+        self.storageService = storageService
+    }
+
     // MARK: - Public methods
 
-    func fetchRandomRecipies(completion: @escaping (Result<RecipeResponse, AFError>) -> Void) {
+    func fetchRecipies(completion: @escaping (Result<RecipeResponse, AFError>) -> Void) {
         guard let url = createURL(method: API.getRandomRecipies) else { return }
-        var parameters = makeParameters()
-        parameters["random"] = "true"
-        parameters["type"] = "any"
-        parameters["imageSize"] = "REGULAR"
+        let parameters = makeParameters()
 
         AF.request(url, parameters: parameters)
             .validate()
@@ -42,6 +50,27 @@ final class NetworkService {
         }
         parameters["app_id"] = appId
         parameters["app_key"] = key
+        parameters["type"] = "any"
+        parameters["imageSize"] = "REGULAR"
+
+        if let filters = storageService.loadFilters() {
+            #warning("optimize later")
+            if let diet = filters.dietType {
+                parameters["diet"] = diet.lowercased()
+            }
+            if let cuisine = filters.cuisineType, cuisine != "Any" {
+                parameters["cuisineType"] = cuisine
+            }
+
+            if let meal = filters.mealType {
+                parameters["mealType"] = meal
+            }
+
+            if let dish = filters.dishType {
+                parameters["dishType"] = dish
+            }
+            parameters["random"] = String(describing: filters.random)
+        }
         return parameters
     }
 

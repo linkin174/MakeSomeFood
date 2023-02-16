@@ -41,7 +41,7 @@ final class RecipeCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 8
+        imageView.layer.cornerRadius = 16
         return imageView
     }()
 
@@ -105,7 +105,7 @@ final class RecipeCell: UICollectionViewCell {
     }
 
     private func setupUI() {
-        contentView.layer.cornerRadius = 8
+        contentView.layer.cornerRadius = 16
         contentView.layer.shadowColor = UIColor.black.cgColor
         contentView.layer.shadowRadius = 5
         contentView.layer.shadowOffset = CGSize(width: 2, height: 2)

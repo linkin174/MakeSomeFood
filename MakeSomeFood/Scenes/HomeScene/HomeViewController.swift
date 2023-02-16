@@ -33,6 +33,8 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Views
 
+    private let topMaskView = TopMaskView(color: .mainAccentColor, cornerRadius: 16)
+
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -67,7 +69,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     private func setup() {
         let viewController = self
-        let networkService = NetworkService()
+        let networkService = NetworkService(storageService: StorageService())
         let interactor = HomeInteractor(networkService: networkService)
         let presenter = HomePresenter(networkService: networkService)
         let router = HomeRouter()
@@ -84,6 +86,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.addSubview(collectionView)
+        setupConstraints()
         setupNavigationBar()
         setupTabBar()
         interactor?.viewDidLoad()
@@ -96,12 +99,11 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         let appearence = UINavigationBarAppearance()
         appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
-        appearence.backgroundColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
+        appearence.backgroundColor = .mainAccentColor
+        appearence.shadowColor = nil
         navigationController?.navigationBar.compactAppearance = appearence
         navigationController?.navigationBar.scrollEdgeAppearance = appearence
         navigationController?.navigationBar.standardAppearance = appearence
-//        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(showFilters))
-//        tabBarController?.navigationItem.rightBarButtonItems = [UIBarButtonItem(image: UIImage(systemName: "line.3.horizontal"), style: .plain, target: self, action: #selector(showFilters))]
         let searchButton =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(showFilters))
         searchButton.tintColor = .white
         navigationItem.rightBarButtonItem = searchButton
@@ -109,12 +111,24 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     @objc private func showFilters() {
         #warning("Inject dependency somethere else")
-        present(SearchViewController(storageService: StorageService()), animated: true)
+        let destination = FiltersViewController(storageService: StorageService())
+        destination.presentationController?.delegate = self
+        present(destination, animated: true)
     }
 
     private func setupTabBar() {
-        tabBarController?.tabBar.barTintColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
+        tabBarController?.tabBar.barTintColor = .mainAccentColor
         tabBarController?.tabBar.tintColor = .white.withAlphaComponent(0.8)
+    }
+
+    private func setupConstraints() {
+        view.addSubview(topMaskView)
+        topMaskView.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.height.equalTo(16)
+            make.top.equalToSuperview().offset(statusBarHeight)
+        }
     }
     
     // MARK: - Display Logic
@@ -150,5 +164,15 @@ extension HomeViewController: UICollectionViewDataSource {
         let cellVM = viewModel.cells[indexPath.item]
         cell.setup(with: cellVM)
         return cell
+    }
+}
+
+extension HomeViewController: UIAdaptivePresentationControllerDelegate {
+    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
+        print("Sheet dismissed")
+    }
+
+    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
+        print("will dismiss")
     }
 }

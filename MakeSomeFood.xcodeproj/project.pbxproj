@@ -31,12 +31,18 @@
 		70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */; };
 		70216EB3299BCF21008FB54D /* ImageCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB2299BCF21008FB54D /* ImageCache.swift */; };
 		70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */; };
-		70216EB8299D0FA5008FB54D /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB7299D0FA5008FB54D /* SearchViewController.swift */; };
+		70216EB8299D0FA5008FB54D /* FiltersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB7299D0FA5008FB54D /* FiltersViewController.swift */; };
 		70216EBA299D105F008FB54D /* UIView + Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EB9299D105F008FB54D /* UIView + Preview.swift */; };
 		70216EBD299D1394008FB54D /* DropDown.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 70216EBC299D1394008FB54D /* DropDown.xcframework */; };
 		70216EBE299D1394008FB54D /* DropDown.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 70216EBC299D1394008FB54D /* DropDown.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC0299D185B008FB54D /* UILabel Static Factory.swift */; };
 		70216EC3299D1C74008FB54D /* StorageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC2299D1C74008FB54D /* StorageService.swift */; };
+		70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC4299D5D28008FB54D /* UIView + onTapGesture.swift */; };
+		70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC6299E45A9008FB54D /* DropDown static factory.swift */; };
+		70216EC9299E5298008FB54D /* UIView + DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC8299E5298008FB54D /* UIView + DropShadow.swift */; };
+		70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECB299E9054008FB54D /* TopMaskView.swift */; };
+		70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */; };
+		70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -79,11 +85,17 @@
 		70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailsInteractor.swift; sourceTree = "<group>"; };
 		70216EB2299BCF21008FB54D /* ImageCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCache.swift; sourceTree = "<group>"; };
 		70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIVIew + ShowAlert.swift"; sourceTree = "<group>"; };
-		70216EB7299D0FA5008FB54D /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		70216EB7299D0FA5008FB54D /* FiltersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiltersViewController.swift; sourceTree = "<group>"; };
 		70216EB9299D105F008FB54D /* UIView + Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + Preview.swift"; sourceTree = "<group>"; };
 		70216EBC299D1394008FB54D /* DropDown.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = DropDown.xcframework; path = Carthage/Build/DropDown.xcframework; sourceTree = "<group>"; };
 		70216EC0299D185B008FB54D /* UILabel Static Factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel Static Factory.swift"; sourceTree = "<group>"; };
 		70216EC2299D1C74008FB54D /* StorageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageService.swift; sourceTree = "<group>"; };
+		70216EC4299D5D28008FB54D /* UIView + onTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + onTapGesture.swift"; sourceTree = "<group>"; };
+		70216EC6299E45A9008FB54D /* DropDown static factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropDown static factory.swift"; sourceTree = "<group>"; };
+		70216EC8299E5298008FB54D /* UIView + DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + DropShadow.swift"; sourceTree = "<group>"; };
+		70216ECB299E9054008FB54D /* TopMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMaskView.swift; sourceTree = "<group>"; };
+		70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + TopBarHeight.swift"; sourceTree = "<group>"; };
+		70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + colorScheme.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -175,7 +187,7 @@
 			children = (
 				70216E99299BC224008FB54D /* RecipeScene */,
 				70216E98299BC21C008FB54D /* HomeScene */,
-				70216EB7299D0FA5008FB54D /* SearchViewController.swift */,
+				70216EB7299D0FA5008FB54D /* FiltersViewController.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -183,6 +195,7 @@
 		70216E98299BC21C008FB54D /* HomeScene */ = {
 			isa = PBXGroup;
 			children = (
+				70216ECA299E9046008FB54D /* Subviews */,
 				70216E8B299B9757008FB54D /* HomeViewController.swift */,
 				70216E8C299B9757008FB54D /* HomeInteractor.swift */,
 				70216E87299B9757008FB54D /* HomePresenter.swift */,
@@ -211,7 +224,12 @@
 			children = (
 				70216EB5299BDC7E008FB54D /* UIVIew + ShowAlert.swift */,
 				70216EB9299D105F008FB54D /* UIView + Preview.swift */,
+				70216EC4299D5D28008FB54D /* UIView + onTapGesture.swift */,
 				70216EC0299D185B008FB54D /* UILabel Static Factory.swift */,
+				70216EC6299E45A9008FB54D /* DropDown static factory.swift */,
+				70216EC8299E5298008FB54D /* UIView + DropShadow.swift */,
+				70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */,
+				70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -222,6 +240,14 @@
 				70216EBC299D1394008FB54D /* DropDown.xcframework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		70216ECA299E9046008FB54D /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				70216ECB299E9054008FB54D /* TopMaskView.swift */,
+			);
+			path = Subviews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -303,12 +329,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				70216EC9299E5298008FB54D /* UIView + DropShadow.swift in Sources */,
 				70216E8D299B9757008FB54D /* HomePresenter.swift in Sources */,
 				70216EB0299BC26C008FB54D /* RecipeDetailsViewController.swift in Sources */,
 				70216E74299B60C6008FB54D /* NetworkService.swift in Sources */,
 				70216E51299B59B0008FB54D /* AppDelegate.swift in Sources */,
 				70216EAE299BC26C008FB54D /* RecipeDetailsRouter.swift in Sources */,
+				70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */,
+				70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */,
+				70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */,
 				70216E92299B9757008FB54D /* HomeInteractor.swift in Sources */,
+				70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */,
 				70216E72299B5FBC008FB54D /* API.swift in Sources */,
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
 				70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */,
@@ -321,9 +352,10 @@
 				70216EAF299BC26C008FB54D /* RecipeDetailsModels.swift in Sources */,
 				70216EAD299BC26C008FB54D /* RecipeDetailsWorker.swift in Sources */,
 				70216EBA299D105F008FB54D /* UIView + Preview.swift in Sources */,
-				70216EB8299D0FA5008FB54D /* SearchViewController.swift in Sources */,
+				70216EB8299D0FA5008FB54D /* FiltersViewController.swift in Sources */,
 				70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */,
 				70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */,
+				70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */,
 				70216E8F299B9757008FB54D /* HomeRouter.swift in Sources */,
 				70216E94299B9A66008FB54D /* RecipeCell.swift in Sources */,
 				70216E79299B64A5008FB54D /* Ingridient.swift in Sources */,
