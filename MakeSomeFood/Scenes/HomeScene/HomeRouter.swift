@@ -14,6 +14,7 @@ import UIKit
 
 @objc protocol HomeRoutingLogic {
     func routeToRecipeDetails()
+    func presentFilters()
 }
 
 protocol HomeDataPassing {
@@ -37,6 +38,12 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
         }
         passDataToRecipeDetails(source: dataStore, destination: &destinationDS)
         navigateToRecipeDetails(source: source, destination: destination)
+    }
+
+    func presentFilters() {
+        let vcToPresent = FiltersViewController(storageService: StorageService())
+        vcToPresent.delegate = viewController
+        viewController?.present(vcToPresent, animated: true)
     }
 
 

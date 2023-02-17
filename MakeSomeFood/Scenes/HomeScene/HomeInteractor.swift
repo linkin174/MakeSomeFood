@@ -32,18 +32,18 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
 
     // MARK: - Private properties
 
-    private let networkService: NetworkService
+    private let fetcherService: FetcherService
 
     // MARK: - Initializers
 
-    init(networkService: NetworkService) {
-        self.networkService = networkService
+    init(fetcherService: FetcherService) {
+        self.fetcherService = fetcherService
     }
 
     // MARK: Interaction Logic
 
     func viewDidLoad() {
-        networkService.fetchRecipies { [unowned self] result in
+        fetcherService.fetchRecipies { [unowned self] result in
             switch result {
             case .success(let success):
                 self.recipieResponse = success

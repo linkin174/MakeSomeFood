@@ -43,6 +43,7 @@
 		70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECB299E9054008FB54D /* TopMaskView.swift */; };
 		70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */; };
 		70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */; };
+		70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED1299F9FC7008FB54D /* FetcherService.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -96,6 +97,7 @@
 		70216ECB299E9054008FB54D /* TopMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMaskView.swift; sourceTree = "<group>"; };
 		70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + TopBarHeight.swift"; sourceTree = "<group>"; };
 		70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + colorScheme.swift"; sourceTree = "<group>"; };
+		70216ED1299F9FC7008FB54D /* FetcherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherService.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -167,6 +169,7 @@
 			children = (
 				70216E71299B5FBC008FB54D /* API.swift */,
 				70216E73299B60C6008FB54D /* NetworkService.swift */,
+				70216ED1299F9FC7008FB54D /* FetcherService.swift */,
 				70216EB2299BCF21008FB54D /* ImageCache.swift */,
 				70216EC2299D1C74008FB54D /* StorageService.swift */,
 			);
@@ -355,6 +358,7 @@
 				70216EB8299D0FA5008FB54D /* FiltersViewController.swift in Sources */,
 				70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */,
 				70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */,
+				70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */,
 				70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */,
 				70216E8F299B9757008FB54D /* HomeRouter.swift in Sources */,
 				70216E94299B9A66008FB54D /* RecipeCell.swift in Sources */,

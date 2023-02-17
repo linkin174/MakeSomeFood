@@ -9,26 +9,38 @@ import DropDown
 import SnapKit
 import SwiftUI
 
+protocol FiltersViewControllerDelegate {
+    func reloadRecipies()
+}
+
 final class FiltersViewController: UIViewController {
+
+    // MARK: - Public properties
+
+    var delegate: FiltersViewControllerDelegate!
 
     // MARK: - Private Properties
 
-    private let storageService: StorageService
+    private var storageService: StorageService
 
-    private var filters: Filters? {
+    private var filtersHasChanges = false
+
+
+    private var filters: Filters! {
         didSet {
             #warning("move to methods")
             // Set the selected labels according to filters stored
-            selectedDietLabel.text = filters?.dietType ?? "Any"
-            selectedCuisineLabel.text = filters?.cuisineType ?? "Any"
-            selectedMealLabel.text = filters?.mealType ?? "Any"
-            selectedDishLabel.text = filters?.dishType ?? "Any"
-            randomSwitch.isOn = filters?.random ?? false
+            queryTextField.text = filters.searchQuery
+            selectedDietLabel.text = filters.dietType
+            selectedCuisineLabel.text = filters.cuisineType
+            selectedMealLabel.text = filters.mealType
+            selectedDishLabel.text = filters.dishType
+            randomSwitch.isOn = filters.random
             // Select row of menus
-            dietMenu.selectRow(at: storageService.dietList.firstIndex(of: filters?.dietType ?? ""))
-            cuisineMenu.selectRow(at: storageService.cuisineTypes.firstIndex(of: filters?.cuisineType ?? ""))
-            mealMenu.selectRow(at: storageService.mealTypes.firstIndex(of: filters?.mealType ?? ""))
-            dishMenu.selectRow(at: storageService.dishTypes.firstIndex(of: filters?.dishType ?? ""))
+            dietMenu.selectRow(at: storageService.dietList.firstIndex(of: filters.dietType))
+            cuisineMenu.selectRow(at: storageService.cuisineTypes.firstIndex(of: filters.cuisineType))
+            mealMenu.selectRow(at: storageService.mealTypes.firstIndex(of: filters.mealType))
+            dishMenu.selectRow(at: storageService.dishTypes.firstIndex(of: filters.dishType))
         }
     }
 
@@ -41,6 +53,7 @@ final class FiltersViewController: UIViewController {
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.dropShadow(offset: CGSize(width: 0, height: 5), opacity: 0.25)
+        textField.delegate = self
         return textField
     }()
 
@@ -92,20 +105,24 @@ final class FiltersViewController: UIViewController {
 
     private lazy var dietMenu = DropDown.createMenu(dataSource: storageService.dietList,
                                                     anchorView: selectedDietLabel) { [unowned self] _, label in
-        self.selectedDietLabel.text = label
+        selectedDietLabel.text = label
+        filtersHasChanges = true
     }
 
     private lazy var cuisineMenu = DropDown.createMenu(dataSource: storageService.cuisineTypes,
                                                        anchorView: selectedCuisineLabel) { [unowned self] _, label in
         selectedCuisineLabel.text = label
+        filtersHasChanges = true
     }
 
     private lazy var mealMenu = DropDown.createMenu(dataSource: storageService.mealTypes, anchorView: selectedMealLabel) { [unowned self] _, label in
         selectedMealLabel.text = label
+        filtersHasChanges = true
     }
 
     private lazy var dishMenu = DropDown.createMenu(dataSource: storageService.dishTypes, anchorView: selectedDishLabel) { [unowned self] _, label in
         selectedDishLabel.text = label
+        filtersHasChanges = true
     }
 
     // MARK: - Initializers
@@ -222,6 +239,7 @@ final class FiltersViewController: UIViewController {
         selectedCuisineLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 2)
         selectedMealLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 3)
         selectedDishLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 4)
+        view.onTapGesture(target: self, action: #selector(didTapView))
     }
 
     @objc private func showMenus(sender: UITapGestureRecognizer) {
@@ -238,19 +256,36 @@ final class FiltersViewController: UIViewController {
     }
 
     @objc private func saveButtonTapped() {
-
-        #warning("do we need a button?")
-        let filters = Filters(dietType: dietMenu.selectedItem,
-                              cuisineType: cuisineMenu.selectedItem,
-                              mealType: mealMenu.selectedItem,
-                              dishType: dishMenu.selectedItem,
-                              random: randomSwitch.isOn)
-        storageService.save(filters: filters)
-        if let presentationController {
-
-            presentationController.delegate?.presentationControllerDidDismiss?(presentationController)
-            dismiss(animated: true)
+        queryTextField.endEditing(true)
+        if filtersHasChanges {
+            let filters = Filters(searchQuery: queryTextField.text,
+                                  dietType: dietMenu.selectedItem ?? storageService.dietList[0],
+                                  cuisineType: cuisineMenu.selectedItem ?? storageService.cuisineTypes[0],
+                                  mealType: mealMenu.selectedItem ?? storageService.mealTypes[0],
+                                  dishType: dishMenu.selectedItem ?? storageService.dishTypes[0],
+                                  random: randomSwitch.isOn)
+            storageService.save(filters: filters)
+            delegate.reloadRecipies()
         }
+        dismiss(animated: true)
+    }
+
+    @objc private func didTapView() {
+        queryTextField.endEditing(true)
+    }
+}
+
+extension FiltersViewController: UITextFieldDelegate {
+
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField.text != filters.searchQuery {
+            filtersHasChanges = true
+        }
+    }
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.endEditing(true)
+        return true
     }
 }
 

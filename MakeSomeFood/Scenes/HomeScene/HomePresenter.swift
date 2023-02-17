@@ -22,17 +22,7 @@ class HomePresenter: HomePresentationLogic {
     // MARK: - Public properties
     
     weak var viewController: HomeDisplayLogic?
-
-    // MARK: Private properties
-
-    private let networkService: NetworkService
-
-    // MARK: - Initializers
-
-    init(networkService: NetworkService) {
-        self.networkService = networkService
-    }
-
+    
     // MARK: Presenting Logic
 
     func presentRandomRecipies(response: Home.LoadRandomRecipies.Response) {

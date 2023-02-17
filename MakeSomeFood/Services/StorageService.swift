@@ -8,13 +8,13 @@
 import Foundation
 
 struct Filters: Codable {
-    let dietType: String?
-    let cuisineType: String?
-    let mealType: String?
-    let dishType: String?
+    let searchQuery: String?
+    let dietType: String
+    let cuisineType: String
+    let mealType: String
+    let dishType: String
     let random: Bool
 }
-
 
 final class StorageService {
 
@@ -35,7 +35,7 @@ final class StorageService {
         "British",
         "Caribbean",
         "Central Europe",
-        "Chinise",
+        "Chinese",
         "Eastern Europe",
         "French",
         "Indian",
@@ -81,16 +81,23 @@ final class StorageService {
 
     private let userDefaults = UserDefaults.standard
 
-    func loadFilters() -> Filters? {
-        guard let data = userDefaults.data(forKey: "filters") else { return nil }
-        guard let filters = try? JSONDecoder().decode(Filters.self, from: data) else { return nil }
-        print("loaded filters: \(filters)")
+    func loadFilters() -> Filters {
+        guard
+            let data = userDefaults.data(forKey: "filters"),
+            let filters = try? JSONDecoder().decode(Filters.self, from: data)
+        else {
+            return Filters(searchQuery: nil,
+                           dietType: dietList[0],
+                           cuisineType: cuisineTypes[0],
+                           mealType: mealTypes[0],
+                           dishType: dishTypes[0],
+                           random: false)
+        }
         return filters
     }
 
     func save(filters: Filters) {
         guard let data = try? JSONEncoder().encode(filters) else { return }
         userDefaults.set(data, forKey: "filters")
-        print("saved successfully")
     }
 }

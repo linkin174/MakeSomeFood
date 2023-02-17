@@ -25,7 +25,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Private properties
 
-    private var viewModel = Home.LoadRandomRecipies.ViewModel(cells: []) {
+    private var viewModel: Home.LoadRandomRecipies.ViewModel? {
         didSet {
             collectionView.reloadData()
         }
@@ -33,7 +33,14 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Views
 
-    private let topMaskView = TopMaskView(color: .mainAccentColor, cornerRadius: 16)
+    private let topMaskView = TopMaskView(fillColor: .mainAccentColor)
+
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.color = .mainAccentColor
+        indicator.hidesWhenStopped = true
+        return indicator
+    }()
 
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
@@ -69,9 +76,9 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     private func setup() {
         let viewController = self
-        let networkService = NetworkService(storageService: StorageService())
-        let interactor = HomeInteractor(networkService: networkService)
-        let presenter = HomePresenter(networkService: networkService)
+        #warning("think about DI, side configurator?")
+        let interactor = HomeInteractor(fetcherService: FetcherService(networkService: NetworkService(), storageService: StorageService()))
+        let presenter = HomePresenter()
         let router = HomeRouter()
         viewController.interactor = interactor
         viewController.router = router
@@ -89,7 +96,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         setupConstraints()
         setupNavigationBar()
         setupTabBar()
-        interactor?.viewDidLoad()
+        start()
     }
 
     // MARK: - Private methods
@@ -109,13 +116,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         navigationItem.rightBarButtonItem = searchButton
     }
 
-    @objc private func showFilters() {
-        #warning("Inject dependency somethere else")
-        let destination = FiltersViewController(storageService: StorageService())
-        destination.presentationController?.delegate = self
-        present(destination, animated: true)
-    }
-
     private func setupTabBar() {
         tabBarController?.tabBar.barTintColor = .mainAccentColor
         tabBarController?.tabBar.tintColor = .white.withAlphaComponent(0.8)
@@ -123,19 +123,36 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     private func setupConstraints() {
         view.addSubview(topMaskView)
+        view.addSubview(loadingIndicator)
+
         topMaskView.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.centerX.equalToSuperview()
             make.height.equalTo(16)
             make.top.equalToSuperview().offset(statusBarHeight)
         }
+
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
     }
+
+    private func start() {
+        loadingIndicator.startAnimating()
+        interactor?.viewDidLoad()
+    }
+
+    @objc private func showFilters() {
+        router?.presentFilters()
+    }
+
     
     // MARK: - Display Logic
 
     func displayRandomRecipies(viewModel: Home.LoadRandomRecipies.ViewModel) {
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [unowned self] in
             self.viewModel = viewModel
+            loadingIndicator.stopAnimating()
         }
     }
 
@@ -156,23 +173,22 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        viewModel.cells.count
+        viewModel?.cells.count ?? 0
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCell else { return UICollectionViewCell() }
-        let cellVM = viewModel.cells[indexPath.item]
-        cell.setup(with: cellVM)
+        if let cellVM = viewModel?.cells[indexPath.item] {
+            cell.setup(with: cellVM)
+        }
         return cell
     }
 }
 
-extension HomeViewController: UIAdaptivePresentationControllerDelegate {
-    func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        print("Sheet dismissed")
-    }
 
-    func presentationControllerWillDismiss(_ presentationController: UIPresentationController) {
-        print("will dismiss")
+extension HomeViewController: FiltersViewControllerDelegate {
+    func reloadRecipies() {
+        viewModel = nil
+        start()
     }
 }
