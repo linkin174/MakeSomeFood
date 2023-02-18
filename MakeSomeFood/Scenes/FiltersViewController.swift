@@ -14,7 +14,6 @@ protocol FiltersViewControllerDelegate {
 }
 
 final class FiltersViewController: UIViewController {
-
     // MARK: - Public properties
 
     var delegate: FiltersViewControllerDelegate!
@@ -25,22 +24,9 @@ final class FiltersViewController: UIViewController {
 
     private var filtersHasChanges = false
 
-
     private var filters: Filters! {
         didSet {
-            #warning("move to methods")
-            // Set the selected labels according to filters stored
-            queryTextField.text = filters.searchQuery
-            selectedDietLabel.text = filters.dietType
-            selectedCuisineLabel.text = filters.cuisineType
-            selectedMealLabel.text = filters.mealType
-            selectedDishLabel.text = filters.dishType
-            randomSwitch.isOn = filters.random
-            // Select row of menus
-            dietMenu.selectRow(at: storageService.dietList.firstIndex(of: filters.dietType))
-            cuisineMenu.selectRow(at: storageService.cuisineTypes.firstIndex(of: filters.cuisineType))
-            mealMenu.selectRow(at: storageService.mealTypes.firstIndex(of: filters.mealType))
-            dishMenu.selectRow(at: storageService.dishTypes.firstIndex(of: filters.dishType))
+            setupSelections()
         }
     }
 
@@ -53,6 +39,7 @@ final class FiltersViewController: UIViewController {
         textField.backgroundColor = .white
         textField.borderStyle = .roundedRect
         textField.dropShadow(offset: CGSize(width: 0, height: 5), opacity: 0.25)
+        textField.clearButtonMode = .always
         textField.delegate = self
         return textField
     }()
@@ -88,6 +75,7 @@ final class FiltersViewController: UIViewController {
     private lazy var randomSwitch: UISwitch = {
         let randomSwitch = UISwitch()
         randomSwitch.onTintColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
+        randomSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         return randomSwitch
     }()
 
@@ -150,7 +138,6 @@ final class FiltersViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupConstraints() {
-        #warning("make separated methods")
 
         view.addSubview(headerLabel)
         view.addSubview(queryTextField)
@@ -234,21 +221,35 @@ final class FiltersViewController: UIViewController {
         }
     }
 
+    private func setupSelections() {
+        queryTextField.text = filters.searchQuery
+        selectedDietLabel.text = filters.dietType
+        selectedCuisineLabel.text = filters.cuisineType
+        selectedMealLabel.text = filters.mealType
+        selectedDishLabel.text = filters.dishType
+        randomSwitch.isOn = filters.random
+        // Select row of menus
+        dietMenu.selectRow(at: storageService.dietList.firstIndex(of: filters.dietType))
+        cuisineMenu.selectRow(at: storageService.cuisineTypes.firstIndex(of: filters.cuisineType))
+        mealMenu.selectRow(at: storageService.mealTypes.firstIndex(of: filters.mealType))
+        dishMenu.selectRow(at: storageService.dishTypes.firstIndex(of: filters.dishType))
+    }
+
     private func setupTapGestures() {
-        selectedDietLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 1)
-        selectedCuisineLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 2)
-        selectedMealLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 3)
-        selectedDishLabel.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: 4)
+        let viewsWithTapGesures = [selectedDietLabel, selectedCuisineLabel, selectedMealLabel, selectedDishLabel]
+        for (index, view) in viewsWithTapGesures.enumerated() {
+            view.onTapGesture(target: self, action: #selector(showMenus(sender:)), tag: index)
+        }
         view.onTapGesture(target: self, action: #selector(didTapView))
     }
 
     @objc private func showMenus(sender: UITapGestureRecognizer) {
         switch sender.view?.tag {
-        case 1:
+        case 0:
             dietMenu.show()
-        case 2:
+        case 1:
             cuisineMenu.show()
-        case 3:
+        case 2:
             mealMenu.show()
         default:
             dishMenu.show()
@@ -273,10 +274,13 @@ final class FiltersViewController: UIViewController {
     @objc private func didTapView() {
         queryTextField.endEditing(true)
     }
+
+    @objc private func switchValueChanged() {
+        filtersHasChanges = true
+    }
 }
 
 extension FiltersViewController: UITextFieldDelegate {
-
     func textFieldDidEndEditing(_ textField: UITextField) {
         if textField.text != filters.searchQuery {
             filtersHasChanges = true

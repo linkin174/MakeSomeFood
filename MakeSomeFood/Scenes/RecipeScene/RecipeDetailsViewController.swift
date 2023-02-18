@@ -10,16 +10,95 @@
 //  see http://clean-swift.com
 //
 
+import SafariServices
+import SnapKit
 import UIKit
 
 protocol RecipeDetailsDisplayLogic: AnyObject {
-    func displaySomething(viewModel: RecipeDetails.Something.ViewModel)
-//    func displaySomethingElse(viewModel: RecipeDetails.SomethingElse.ViewModel)
+    func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel)
 }
 
-class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
+final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
+    // MARK: - Public Properties
+
     var interactor: RecipeDetailsBusinessLogic?
     var router: (NSObjectProtocol & RecipeDetailsRoutingLogic & RecipeDetailsDataPassing)?
+
+    // MARK: - Private propertis
+
+    private var viewModel: RecipeDetails.ShowRecipeDetails.ViewModel?
+    private let labelEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+
+    // MARK: - Views
+
+    private let scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.bounces = true
+        scrollView.isUserInteractionEnabled = true
+        return scrollView
+    }()
+
+    private let containerView = UIView()
+
+    private let recipeImageView: CachedUIImageView = {
+        let imageView = CachedUIImageView()
+        imageView.image = UIImage(named: "placeholder")
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 16
+        imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+
+    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .semibold), textColor: .black)
+
+    private let ingiridientsLabel = UILabel.makeUILabel(text: "List of ingridients:", font: .systemFont(ofSize: 18, weight: .semibold))
+
+    private lazy var caloriesLabel: PaddingLabel = {
+        let label = PaddingLabel(withEdgeInsets: labelEdgeInsets)
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 15
+        label.clipsToBounds = true
+        return label
+    }()
+
+    private lazy var totalWeightLabel: PaddingLabel = {
+        let label = PaddingLabel(withEdgeInsets: labelEdgeInsets)
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 15
+        label.clipsToBounds = true
+        return label
+    }()
+
+    private lazy var totalTimeLabel: PaddingLabel = {
+        let label = PaddingLabel(withEdgeInsets: labelEdgeInsets)
+        label.backgroundColor = .white
+        label.layer.cornerRadius = 15
+        label.clipsToBounds = true
+        return label
+    }()
+
+
+    private let ingridientsStack: UIStackView = {
+        let stack = UIStackView()
+        stack.alignment = .leading
+        stack.axis = .vertical
+        stack.distribution = .fill
+        stack.spacing = 4
+        return stack
+    }()
+
+    private lazy var showSafariViewButton: UIButton = {
+        let button = UIButton(type: .custom)
+        button.setTitleColor(.white, for: .normal)
+        button.setTitle("Cooking Details", for: .normal)
+        button.layer.cornerRadius = 20
+        button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
+        button.backgroundColor = .mainAccentColor
+        button.addTarget(self, action: #selector(showSafariView), for: .touchUpInside)
+        button.dropShadow()
+        return button
+    }()
 
     // MARK: Object lifecycle
 
@@ -33,7 +112,16 @@ class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
         setup()
     }
 
-    // MARK: - Setup Clean Code Design Pattern 
+    // MARK: - View lifecycle
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        setupConstraints()
+        start()
+    }
+
+    // MARK: - Setup Clean Code Design Pattern
 
     private func setup() {
         let viewController = self
@@ -48,56 +136,154 @@ class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
         router.dataStore = interactor
     }
 
-    // MARK: - Routing
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let scene = segue.identifier {
-            let selector = NSSelectorFromString("routeTo\(scene)WithSegue:")
-            if let router = router, router.responds(to: selector) {
-                router.perform(selector, with: segue)
-            }
+    private func setupConstraints() {
+        // ScrollView Setup
+        containerView.backgroundColor = #colorLiteral(red: 0.4093237323, green: 0.7990826964, blue: 0, alpha: 0.195099915)
+        view.addSubview(scrollView)
+        scrollView.snp.makeConstraints { make in
+            #warning("wrong scrollview calc")
+            make.edges.equalToSuperview()
         }
+
+        // Container view setup
+        scrollView.addSubview(containerView)
+
+        containerView.snp.makeConstraints { make in
+            make.width.height.equalToSuperview()
+            make.edges.equalToSuperview()
+        }
+
+        // ImageView Setup
+        containerView.addSubview(recipeImageView)
+
+        recipeImageView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.width.equalToSuperview()
+            make.height.equalTo(containerView.snp.width)
+        }
+
+        // SafariButton Setup
+
+        containerView.addSubview(showSafariViewButton)
+
+        showSafariViewButton.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().inset(16)
+            make.height.equalTo(40)
+            make.bottom.equalTo(recipeImageView.snp.bottom).inset(16)
+        }
+
+        // Setup TitleLabel
+
+        containerView.addSubview(recipeTitleLabel)
+
+        recipeTitleLabel.snp.makeConstraints { make in
+            make.top.equalTo(recipeImageView.snp.bottom).offset(8)
+            make.width.equalToSuperview().inset(8)
+            make.centerX.equalToSuperview()
+        }
+
+        // Insert separator
+        let separator = makeSeparator()
+        containerView.addSubview(separator)
+        separator.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.top.equalTo(recipeTitleLabel.snp.bottom).offset(8)
+        }
+
+        // Ingridients label setup
+
+        containerView.addSubview(ingiridientsLabel)
+        ingiridientsLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(8)
+            make.top.equalTo(separator.snp.bottom).offset(8)
+        }
+
+        // Setup ingridients stack
+        containerView.addSubview(ingridientsStack)
+        ingridientsStack.snp.makeConstraints { make in
+            make.top.equalTo(ingiridientsLabel.snp.bottom).offset(8)
+            make.width.equalToSuperview().inset(8)
+            make.centerX.equalToSuperview()
+        }
+
+        let separatorTwo = makeSeparator()
+        containerView.addSubview(separatorTwo)
+        separatorTwo.snp.makeConstraints { make in
+            make.top.equalTo(ingridientsStack.snp.bottom).offset(18)
+            make.width.equalToSuperview()
+        }
+
+        containerView.addSubview(caloriesLabel)
+        caloriesLabel.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(8)
+            make.top.equalTo(separatorTwo.snp.bottom).offset(18)
+        }
+
+        containerView.addSubview(totalWeightLabel)
+        totalWeightLabel.snp.makeConstraints { make in
+            make.leading.equalTo(caloriesLabel.snp.trailing).offset(8)
+            make.top.equalTo(separatorTwo.snp.bottom).offset(18)
+        }
+
+        containerView.addSubview(totalTimeLabel)
+        totalTimeLabel.snp.makeConstraints { make in
+            make.leading.equalTo(totalWeightLabel.snp.trailing).offset(8)
+            make.top.equalTo(separatorTwo.snp.bottom).offset(18)
+        }
+
     }
 
-    // MARK: - View lifecycle
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        doSomething()
-//        doSomethingElse()
+    @objc private func showSafariView(_ sender: UIButton) {
+        guard
+            let viewModel,
+            let url = URL(string: viewModel.recipeURL)
+        else { return }
+        let config = SFSafariViewController.Configuration()
+        config.entersReaderIfAvailable = true
+        let safariVC = SFSafariViewController(url: url, configuration: config)
+        present(safariVC, animated: true)
     }
-    
-    //MARK: - receive events from UI
-    
-    //@IBOutlet weak var nameTextField: UITextField!
-//
-//    @IBAction func someButtonTapped(_ sender: Any) {
-//
-//    }
-//
-//    @IBAction func otherButtonTapped(_ sender: Any) {
-//
-//    }
-    
+
+    private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
+        let view = UIView()
+        view.backgroundColor = color
+        view.snp.makeConstraints { make in
+            make.height.equalTo(thickness)
+        }
+        return view
+    }
+
     // MARK: - request data from RecipeDetailsInteractor
 
-    func doSomething() {
-        let request = RecipeDetails.Something.Request()
-        interactor?.doSomething(request: request)
+    func start() {
+        interactor?.start()
     }
-//
-//    func doSomethingElse() {
-//        let request = RecipeDetails.SomethingElse.Request()
-//        interactor?.doSomethingElse(request: request)
-//    }
 
     // MARK: - display view model from RecipeDetailsPresenter
 
-    func displaySomething(viewModel: RecipeDetails.Something.ViewModel) {
-        //nameTextField.text = viewModel.name
+    func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel) {
+        self.viewModel = viewModel
+
+        guard let url = URL(string: viewModel.imageURL) else { return }
+        recipeImageView.setImageFrom(url: url)
+
+        recipeTitleLabel.text = viewModel.title
+
+        viewModel.ingridientLines.forEach { ingridientLine in
+            let labelEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
+            let label = PaddingLabel(withEdgeInsets: labelEdgeInsets, text: ingridientLine)
+            label.backgroundColor = .white
+            label.layer.cornerRadius = 15
+            label.clipsToBounds = true
+            ingridientsStack.addArrangedSubview(label)
+        }
+
+        caloriesLabel.text = "Calories: \(viewModel.calories) kcal"
+        totalWeightLabel.text = "Weight: \(viewModel.totalWeight) g"
+        if viewModel.coockingTime == "" {
+            totalTimeLabel.isHidden = true
+        } else {
+            totalTimeLabel.text = viewModel.coockingTime
+        }
     }
-//
-//    func displaySomethingElse(viewModel: RecipeDetails.SomethingElse.ViewModel) {
-//        // do sometingElse with viewModel
-//    }
 }

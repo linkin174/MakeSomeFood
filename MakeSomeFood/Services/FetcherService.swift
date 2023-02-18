@@ -48,7 +48,7 @@ final class FetcherService {
         }
         parameters["app_id"] = appId
         parameters["app_key"] = key
-        parameters["type"] = "any"
+        parameters["type"] = "public"
         parameters["imageSize"] = "REGULAR"
 
         let filters = storageService.loadFilters()
@@ -57,15 +57,15 @@ final class FetcherService {
             parameters["diet"] = filters.dietType.lowercased()
         }
         if filters.cuisineType != "Any" {
-            parameters["cuisineType"] = filters.cuisineType.lowercased()
+            parameters["cuisineType"] = filters.cuisineType
         }
 
         if filters.mealType != "Any" {
-            parameters["mealType"] = filters.mealType.lowercased()
+            parameters["mealType"] = filters.mealType
         }
 
         if filters.dishType != "Any" {
-            parameters["dishType"] = filters.dishType.lowercased()
+            parameters["dishType"] = filters.dishType
         }
         if filters.searchQuery != nil, filters.searchQuery != "" {
             parameters["q"] = filters.searchQuery

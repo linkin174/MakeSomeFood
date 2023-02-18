@@ -13,7 +13,7 @@
 import UIKit
 
 protocol RecipeDetailsPresentationLogic {
-    func presentSomething(response: RecipeDetails.Something.Response)
+    func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response)
 }
 
 class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
@@ -21,13 +21,30 @@ class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
 
     // MARK: Parse and calc respnse from RecipeDetailsInteractor and send simple view model to RecipeDetailsViewController to be displayed
 
-    func presentSomething(response: RecipeDetails.Something.Response) {
-        let viewModel = RecipeDetails.Something.ViewModel()
-        viewController?.displaySomething(viewModel: viewModel)
+    func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response) {
+        let recipe = response.recipe
+        var totalTime: String {
+            if let time = recipe.totalTime, time != 0 {
+                let formattedTime = String(format: "%.f", time)
+                return "Time: \(formattedTime) min"
+            } else {
+                return ""
+            }
+        }
+        let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: recipe.image ,
+                                                                  recipeURL: recipe.url ?? "",
+                                                                  source: recipe.source ?? "",
+                                                                  title: recipe.label,
+                                                                  dietLabels: recipe.dietLabels ?? [],
+                                                                  healthLabels: recipe.healthLabels ?? [],
+                                                                  cautions: recipe.cautions ?? [],
+                                                                  ingridientLines: recipe.ingredientLines ?? [],
+                                                                  calories: String(format: "%.f", recipe.calories ?? 0),
+                                                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
+                                                                  coockingTime: totalTime,
+                                                                  cuisineTypes: recipe.cuisineType ?? [],
+                                                                  dishTypes: recipe.dishType ?? [],
+                                                                  mealTypes: recipe.mealType ?? [])
+        viewController?.displayRecipeDetails(viewModel: viewModel)
     }
-//
-//    func presentSomethingElse(response: RecipeDetails.SomethingElse.Response) {
-//        let viewModel = RecipeDetails.SomethingElse.ViewModel()
-//        viewController?.displaySomethingElse(viewModel: viewModel)
-//    }
 }

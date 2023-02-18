@@ -13,6 +13,7 @@ extension UILabel {
         label.text = text
         label.font = font
         label.textColor = textColor
+        label.numberOfLines = 0
         return label
     }
 }

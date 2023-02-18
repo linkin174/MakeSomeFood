@@ -45,7 +45,7 @@ final class StorageService {
         "Mediterranian",
         "Mexican",
         "Middle Eastern",
-        "Nordin",
+        "Nordic",
         "South American",
         "South East Asian"
     ]
@@ -61,19 +61,19 @@ final class StorageService {
 
     var dishTypes = [
         "Any",
-        "Biscuits and Cookies",
+        "Biscuits and cookies",
         "Bread",
         "Cereals",
-        "Condiments and Sauces",
+        "Condiments and sauces",
         "Desserts",
         "Drinks",
-        "Main Course",
+        "Main course",
         "Pancake",
         "Preps",
         "Preserve",
         "Salad",
         "Sandwiches",
-        "Side Dish",
+        "Side dish",
         "Soup",
         "Starter",
         "Sweets"

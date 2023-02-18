@@ -12,43 +12,30 @@
 
 import UIKit
 
-enum RecipeDetails
-{
+enum RecipeDetails {
     // MARK: Use cases
 
-    enum Something
-    {
-        struct Request
-        {
+    enum ShowRecipeDetails {
 
+        struct Response {
+            let recipe: Recipe
         }
 
-        struct Response
-        {
-
-        }
-
-        struct ViewModel
-        {
-
+        struct ViewModel {
+            let imageURL: String
+            let recipeURL: String
+            let source: String
+            let title: String
+            let dietLabels: [String]
+            let healthLabels: [String]
+            let cautions: [String]
+            let ingridientLines: [String]
+            let calories: String
+            let totalWeight: String
+            let coockingTime: String
+            let cuisineTypes: [String]
+            let dishTypes: [String]
+            let mealTypes: [String]
         }
     }
-    
-//    enum SomethingElse
-//    {
-//        struct Request
-//        {
-//
-//        }
-//
-//        struct Response
-//        {
-//
-//        }
-//
-//        struct ViewModel
-//        {
-//
-//        }
-//    }
 }

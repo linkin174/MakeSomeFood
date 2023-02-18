@@ -13,8 +13,7 @@
 import UIKit
 
 protocol RecipeDetailsBusinessLogic {
-    func doSomething(request: RecipeDetails.Something.Request)
-//    func doSomethingElse(request: RecipeDetails.SomethingElse.Request)
+    func start()
 }
 
 protocol RecipeDetailsDataStore {
@@ -27,15 +26,12 @@ class RecipeDetailsInteractor: RecipeDetailsBusinessLogic, RecipeDetailsDataStor
 
     var presenter: RecipeDetailsPresentationLogic?
     var worker: RecipeDetailsWorker?
-    //var name: String = ""
 
     // MARK: Do something (and send response to RecipeDetailsPresenter)
 
-    func doSomething(request: RecipeDetails.Something.Request) {
-        worker = RecipeDetailsWorker()
-        worker?.doSomeWork()
-
-        let response = RecipeDetails.Something.Response()
-        presenter?.presentSomething(response: response)
+    func start() {
+        guard let recipe else { return }
+        let response = RecipeDetails.ShowRecipeDetails.Response(recipe: recipe)
+        presenter?.presentRecipeDetails(response: response)
     }
 }

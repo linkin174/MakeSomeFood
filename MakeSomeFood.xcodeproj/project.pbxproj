@@ -16,7 +16,6 @@
 		70216E72299B5FBC008FB54D /* API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E71299B5FBC008FB54D /* API.swift */; };
 		70216E74299B60C6008FB54D /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E73299B60C6008FB54D /* NetworkService.swift */; };
 		70216E77299B6150008FB54D /* Recipe.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E76299B6150008FB54D /* Recipe.swift */; };
-		70216E79299B64A5008FB54D /* Ingridient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E78299B64A5008FB54D /* Ingridient.swift */; };
 		70216E8D299B9757008FB54D /* HomePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E87299B9757008FB54D /* HomePresenter.swift */; };
 		70216E8F299B9757008FB54D /* HomeRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E89299B9757008FB54D /* HomeRouter.swift */; };
 		70216E90299B9757008FB54D /* HomeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216E8A299B9757008FB54D /* HomeModels.swift */; };
@@ -41,9 +40,10 @@
 		70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC6299E45A9008FB54D /* DropDown static factory.swift */; };
 		70216EC9299E5298008FB54D /* UIView + DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC8299E5298008FB54D /* UIView + DropShadow.swift */; };
 		70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECB299E9054008FB54D /* TopMaskView.swift */; };
-		70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */; };
 		70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */; };
 		70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED1299F9FC7008FB54D /* FetcherService.swift */; };
+		70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED729A0CA42008FB54D /* CachedUIImage.swift */; };
+		70216EDC29A118B1008FB54D /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EDB29A118B1008FB54D /* PaddingLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -71,7 +71,6 @@
 		70216E71299B5FBC008FB54D /* API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = API.swift; sourceTree = "<group>"; };
 		70216E73299B60C6008FB54D /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
 		70216E76299B6150008FB54D /* Recipe.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recipe.swift; sourceTree = "<group>"; };
-		70216E78299B64A5008FB54D /* Ingridient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ingridient.swift; sourceTree = "<group>"; };
 		70216E87299B9757008FB54D /* HomePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomePresenter.swift; sourceTree = "<group>"; };
 		70216E89299B9757008FB54D /* HomeRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeRouter.swift; sourceTree = "<group>"; };
 		70216E8A299B9757008FB54D /* HomeModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeModels.swift; sourceTree = "<group>"; };
@@ -95,9 +94,10 @@
 		70216EC6299E45A9008FB54D /* DropDown static factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropDown static factory.swift"; sourceTree = "<group>"; };
 		70216EC8299E5298008FB54D /* UIView + DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + DropShadow.swift"; sourceTree = "<group>"; };
 		70216ECB299E9054008FB54D /* TopMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMaskView.swift; sourceTree = "<group>"; };
-		70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController + TopBarHeight.swift"; sourceTree = "<group>"; };
 		70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + colorScheme.swift"; sourceTree = "<group>"; };
 		70216ED1299F9FC7008FB54D /* FetcherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherService.swift; sourceTree = "<group>"; };
+		70216ED729A0CA42008FB54D /* CachedUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedUIImage.swift; sourceTree = "<group>"; };
+		70216EDB29A118B1008FB54D /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -135,6 +135,7 @@
 		70216E4F299B59B0008FB54D /* MakeSomeFood */ = {
 			isa = PBXGroup;
 			children = (
+				70216ED629A0CA35008FB54D /* Helpers */,
 				70216EB4299BDC72008FB54D /* Extensions */,
 				70216E86299B974D008FB54D /* Scenes */,
 				70216E75299B614B008FB54D /* Models */,
@@ -170,7 +171,6 @@
 				70216E71299B5FBC008FB54D /* API.swift */,
 				70216E73299B60C6008FB54D /* NetworkService.swift */,
 				70216ED1299F9FC7008FB54D /* FetcherService.swift */,
-				70216EB2299BCF21008FB54D /* ImageCache.swift */,
 				70216EC2299D1C74008FB54D /* StorageService.swift */,
 			);
 			path = Services;
@@ -180,7 +180,6 @@
 			isa = PBXGroup;
 			children = (
 				70216E76299B6150008FB54D /* Recipe.swift */,
-				70216E78299B64A5008FB54D /* Ingridient.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -231,7 +230,6 @@
 				70216EC0299D185B008FB54D /* UILabel Static Factory.swift */,
 				70216EC6299E45A9008FB54D /* DropDown static factory.swift */,
 				70216EC8299E5298008FB54D /* UIView + DropShadow.swift */,
-				70216ECD299E95F8008FB54D /* UIViewController + TopBarHeight.swift */,
 				70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */,
 			);
 			path = Extensions;
@@ -251,6 +249,16 @@
 				70216ECB299E9054008FB54D /* TopMaskView.swift */,
 			);
 			path = Subviews;
+			sourceTree = "<group>";
+		};
+		70216ED629A0CA35008FB54D /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				70216ED729A0CA42008FB54D /* CachedUIImage.swift */,
+				70216EB2299BCF21008FB54D /* ImageCache.swift */,
+				70216EDB29A118B1008FB54D /* PaddingLabel.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -345,8 +353,10 @@
 				70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */,
 				70216E72299B5FBC008FB54D /* API.swift in Sources */,
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
+				70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */,
 				70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */,
 				70216E77299B6150008FB54D /* Recipe.swift in Sources */,
+				70216EDC29A118B1008FB54D /* PaddingLabel.swift in Sources */,
 				70216E90299B9757008FB54D /* HomeModels.swift in Sources */,
 				70216EB3299BCF21008FB54D /* ImageCache.swift in Sources */,
 				70216E91299B9757008FB54D /* HomeViewController.swift in Sources */,
@@ -359,10 +369,8 @@
 				70216EB1299BC26C008FB54D /* RecipeDetailsInteractor.swift in Sources */,
 				70216EB6299BDC7E008FB54D /* UIVIew + ShowAlert.swift in Sources */,
 				70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */,
-				70216ECE299E95F8008FB54D /* UIViewController + TopBarHeight.swift in Sources */,
 				70216E8F299B9757008FB54D /* HomeRouter.swift in Sources */,
 				70216E94299B9A66008FB54D /* RecipeCell.swift in Sources */,
-				70216E79299B64A5008FB54D /* Ingridient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

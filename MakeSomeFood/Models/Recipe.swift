@@ -38,11 +38,11 @@ struct Recipe: Codable {
     let uri: String?
     let label: String
     let image: String
-//    let images: Images?
+    let images: Images?
     let source: String?
     let url: String?
     let shareAs: String?
-    let yield: Int?
+    let yield: Double?
     let dietLabels: [String]?
     let healthLabels: [String]?
     let cautions: [String]?
@@ -50,7 +50,7 @@ struct Recipe: Codable {
     let ingredients: [Ingredient]?
     let calories: Double?
     let totalWeight: Double?
-    let totalTime: Int?
+    let totalTime: Double?
     let cuisineType: [String]?
     let dishType: [String]?
     let totalNutrients: TotalNutrients?
@@ -137,6 +137,7 @@ struct Ingredient: Codable {
     let measure: String?
     let food: String?
     let weight: Double?
+    let foodCategory: String?
     let foodId: String?
     let image: String?
 }

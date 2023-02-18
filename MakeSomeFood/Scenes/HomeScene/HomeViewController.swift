@@ -129,7 +129,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
             make.width.equalToSuperview()
             make.centerX.equalToSuperview()
             make.height.equalTo(16)
-            make.top.equalToSuperview().offset(statusBarHeight)
+            make.top.equalTo(view.snp.topMargin)
         }
 
         loadingIndicator.snp.makeConstraints { make in
