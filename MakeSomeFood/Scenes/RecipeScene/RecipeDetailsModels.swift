@@ -36,6 +36,21 @@ enum RecipeDetails {
             let cuisineTypes: [String]
             let dishTypes: [String]
             let mealTypes: [String]
+            let nutritionFactsViewModel: NutritionFactsViewRepresentable
         }
     }
+}
+
+struct NutritionFactsViewModel: NutritionFactsViewRepresentable {
+    var servings: String
+    var caloriesPerServing: String
+    var nutrients: [NutrientRowViewRepresentable]
+    var vitamins: [NutrientRowViewRepresentable]
+}
+
+struct NutrientRowViewModel: NutrientRowViewRepresentable {
+    var name: String
+    var value: String
+    var unit: String
+    var dailyPercentage: String
 }

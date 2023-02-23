@@ -15,8 +15,18 @@ import UIKit
 enum Home {
     // MARK: Use cases
 
-    enum LoadRandomRecipies {
+    enum LoadRecipes {
 
+        struct Response {
+            let recipes: [Recipe]
+        }
+
+        struct ViewModel {
+            let cells: [RecipeCellViewModelRepresentable]
+        }
+    }
+
+    enum LoadNextRecipes {
         struct Response {
             let recipeRespone: RecipeResponse
         }

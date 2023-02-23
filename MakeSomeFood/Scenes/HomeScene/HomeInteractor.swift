@@ -14,10 +14,12 @@ import UIKit
 
 protocol HomeBusinessLogic {
     func viewDidLoad()
+    func loadNextRecipes()
 }
 
 protocol HomeDataStore {
-    var recipieResponse: RecipeResponse? { get set }
+//    var recipieResponse: RecipeResponse? { get set }
+    var recipes: [Recipe] { get }
 }
 
 class HomeInteractor: HomeBusinessLogic, HomeDataStore {
@@ -29,6 +31,7 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
     // MARK: - Public properties
 
     var recipieResponse: RecipeResponse?
+    var recipes: [Recipe] = []
 
     // MARK: - Private properties
 
@@ -45,12 +48,33 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
     func viewDidLoad() {
         fetcherService.fetchRecipies { [unowned self] result in
             switch result {
-            case .success(let success):
-                self.recipieResponse = success
-                let response = Home.LoadRandomRecipies.Response(recipeRespone: success)
-                presenter?.presentRandomRecipies(response: response)
+            case .success(let recipeResponse):
+                self.recipieResponse = recipeResponse
+                recipes = recipeResponse.hits.map { $0.recipe }
+                let response = Home.LoadRecipes.Response(recipes: recipes)
+                presenter?.presentRecipes(response: response)
             case .failure(let failure):
                 let response = Home.HandleError.Response(error: failure)
+                presenter?.presentError(response: response)
+            }
+        }
+    }
+
+    func loadNextRecipes() {
+        print(#function)
+        guard let endPoint = recipieResponse?.links?.next?.href else { return }
+        fetcherService.fetchNextRecipes(from: endPoint) { [unowned self] result in
+            switch result {
+            case .success(let recipeResponse):
+                DispatchQueue.main.async {
+                    let newRecipes = recipeResponse.hits.map { $0.recipe }
+                    self.recipes.append(contentsOf: newRecipes)
+                    self.recipieResponse = recipeResponse
+                    let response = Home.LoadRecipes.Response(recipes: self.recipes)
+                    self.presenter?.presentRecipes(response: response)
+                }
+            case .failure(let error):
+                let response = Home.HandleError.Response(error: error)
                 presenter?.presentError(response: response)
             }
         }

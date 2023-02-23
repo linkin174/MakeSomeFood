@@ -90,14 +90,14 @@ final class RecipeCell: UICollectionViewCell {
             imageView.image = cachedImage
         } else {
             guard let url = imageURL else { return }
-            DispatchQueue.global().async { [unowned self] in
+            DispatchQueue.global().async { [weak self] in
                 guard let data = try? Data(contentsOf: url) else { return }
                 guard let image = UIImage(data: data) else { return }
-                DispatchQueue.main.async { [unowned self] in
-                    if url == self.imageURL {
-                        imageView.image = image
+                DispatchQueue.main.async { [weak self] in
+                    if url == self?.imageURL {
+                        self?.imageView.image = image
                         ImageCache[url.lastPathComponent] = image
-                        indicatorView.stopAnimating()
+                        self?.indicatorView.stopAnimating()
                     }
                 }
             }

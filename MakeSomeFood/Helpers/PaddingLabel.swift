@@ -22,6 +22,7 @@ final class PaddingLabel: UILabel {
     convenience init(withEdgeInsets: UIEdgeInsets, text: String?) {
         self.init(withEdgeInsets: withEdgeInsets)
         self.text = text
+        self.textColor = .black
     }
 
     required init?(coder: NSCoder) {

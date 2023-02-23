@@ -13,7 +13,7 @@
 import UIKit
 
 protocol HomePresentationLogic {
-    func presentRandomRecipies(response: Home.LoadRandomRecipies.Response)
+    func presentRecipes(response: Home.LoadRecipes.Response)
     func presentError(response: Home.HandleError.Response)
 }
 
@@ -25,14 +25,13 @@ class HomePresenter: HomePresentationLogic {
     
     // MARK: Presenting Logic
 
-    func presentRandomRecipies(response: Home.LoadRandomRecipies.Response) {
-        let recipies = response.recipeRespone.hits.map { $0.recipe }
-        let cells = recipies.map { recipe in
+    func presentRecipes(response: Home.LoadRecipes.Response) {
+        let cells = response.recipes.map { recipe in
             RecipeCellViewModel(dishName: recipe.label, imageURL: recipe.image)
         }
 
-        let viewModel = Home.LoadRandomRecipies.ViewModel(cells: cells)
-        viewController?.displayRandomRecipies(viewModel: viewModel)
+        let viewModel = Home.LoadRecipes.ViewModel(cells: cells)
+        viewController?.displayRecipes(viewModel: viewModel)
     }
 
     func presentError(response: Home.HandleError.Response) {

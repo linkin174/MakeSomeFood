@@ -36,6 +36,19 @@ final class FetcherService {
         }
     }
 
+    func fetchNextRecipes(from urlString: String, completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
+        guard let url = URL(string: urlString) else { return }
+        networkService.makeRequest(from: url) { result in
+            switch result {
+            case .success(let data):
+                guard let recipeResponse = try? JSONDecoder().decode(RecipeResponse.self, from: data) else { return }
+                completion(.success(recipeResponse))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
     // MARK: - Private methods
 
     private func makeParameters() -> [String: String] {

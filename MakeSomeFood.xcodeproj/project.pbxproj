@@ -44,6 +44,7 @@
 		70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED1299F9FC7008FB54D /* FetcherService.swift */; };
 		70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED729A0CA42008FB54D /* CachedUIImage.swift */; };
 		70216EDC29A118B1008FB54D /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EDB29A118B1008FB54D /* PaddingLabel.swift */; };
+		7092310C29A391A000B2B685 /* NutritionFactsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7092310B29A391A000B2B685 /* NutritionFactsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -98,6 +99,7 @@
 		70216ED1299F9FC7008FB54D /* FetcherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherService.swift; sourceTree = "<group>"; };
 		70216ED729A0CA42008FB54D /* CachedUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedUIImage.swift; sourceTree = "<group>"; };
 		70216EDB29A118B1008FB54D /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		7092310B29A391A000B2B685 /* NutritionFactsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionFactsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -211,6 +213,7 @@
 		70216E99299BC224008FB54D /* RecipeScene */ = {
 			isa = PBXGroup;
 			children = (
+				7092310629A370A400B2B685 /* Subviews */,
 				70216EA6299BC26C008FB54D /* RecipeDetailsPresenter.swift */,
 				70216EA7299BC26C008FB54D /* RecipeDetailsWorker.swift */,
 				70216EA8299BC26C008FB54D /* RecipeDetailsRouter.swift */,
@@ -259,6 +262,14 @@
 				70216EDB29A118B1008FB54D /* PaddingLabel.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		7092310629A370A400B2B685 /* Subviews */ = {
+			isa = PBXGroup;
+			children = (
+				7092310B29A391A000B2B685 /* NutritionFactsView.swift */,
+			);
+			path = Subviews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -351,6 +362,7 @@
 				70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */,
 				70216E92299B9757008FB54D /* HomeInteractor.swift in Sources */,
 				70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */,
+				7092310C29A391A000B2B685 /* NutritionFactsView.swift in Sources */,
 				70216E72299B5FBC008FB54D /* API.swift in Sources */,
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
 				70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */,

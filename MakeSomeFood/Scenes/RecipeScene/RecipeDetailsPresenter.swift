@@ -31,6 +31,47 @@ class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
                 return ""
             }
         }
+
+        #warning("remove force unwrapping")
+
+        guard let totalNutrients = recipe.totalNutrients?.allProperties()
+            .map({ $0.value as! Nutrient })
+            .filter({ $0.quantity != 0 })
+            .filter({$0.unit == "g"})
+        else { return }
+
+        guard let dailyValues = recipe.totalDaily?.allProperties()
+            .map({ $0.value as! Nutrient })
+            .filter( { $0.quantity != 0 })
+        else { return }
+
+        guard let vitamins = recipe.totalNutrients?.allProperties()
+            .map({$0.value as! Nutrient})
+            .filter({$0.unit != "g" })
+            .filter({ $0.quantity != 0 })
+        else { return }
+
+        let nutrientViewModels = totalNutrients.map { nutrient in
+            let dailyPercentage = (dailyValues.first(where: { $0.label == nutrient.label })?.quantity ?? 0) / (recipe.yield ?? 1)
+            return NutrientRowViewModel(name: nutrient.label ?? "",
+                                        value: String(format: "%.f", (nutrient.quantity ?? 0) / (recipe.yield ?? 1)),
+                                        unit: nutrient.unit ?? "g",
+                                        dailyPercentage: String(format: "%.f", dailyPercentage))
+        }
+
+        let vitaminViewModels = vitamins.map { vitamin in
+            let dailyPercentage = (dailyValues.first(where: { $0.label == vitamin.label })?.quantity ?? 0) / (recipe.yield ?? 1)
+            return NutrientRowViewModel(name: vitamin.label ?? "",
+                                        value: String(format: "%.f", vitamin.quantity ?? 0),
+                                 unit: vitamin.unit ?? "mg",
+                                 dailyPercentage: String(format: "%.f", dailyPercentage))
+        }
+
+        let nutritionFactsViewModel = NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield ?? 1),
+                                                              caloriesPerServing: String(format: "%.f", (recipe.calories ?? 0) / (recipe.yield ?? 1)),
+                                                              nutrients: nutrientViewModels,
+                                                              vitamins: vitaminViewModels)
+
         let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: recipe.image ,
                                                                   recipeURL: recipe.url ?? "",
                                                                   source: recipe.source ?? "",
@@ -44,7 +85,8 @@ class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
                                                                   coockingTime: totalTime,
                                                                   cuisineTypes: recipe.cuisineType ?? [],
                                                                   dishTypes: recipe.dishType ?? [],
-                                                                  mealTypes: recipe.mealType ?? [])
+                                                                  mealTypes: recipe.mealType ?? [],
+                                                                  nutritionFactsViewModel: nutritionFactsViewModel)
         viewController?.displayRecipeDetails(viewModel: viewModel)
     }
 }

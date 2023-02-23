@@ -12,7 +12,7 @@ final class NetworkService {
 
     // MARK: - Public methods
 
-    func makeRequest(parameters: [String: String], completion: @escaping (Result<Data, AFError>) -> Void) {
+    func makeRequest(parameters: [String: String]?, completion: @escaping (Result<Data, AFError>) -> Void) {
         guard let url = createURL(method: API.getRandomRecipies) else { return }
         AF.request(url, parameters: parameters)
             .validate()
@@ -20,6 +20,19 @@ final class NetworkService {
                 switch response.result {
                 case .success(let recipies):
                     completion(.success(recipies))
+                case .failure(let error):
+                    completion(.failure(error))
+                }
+            }
+    }
+
+    func makeRequest(from url: URL, completion: @escaping (Result<Data, AFError>) -> Void) {
+        AF.request(url)
+            .validate()
+            .responseData { response in
+                switch response.result {
+                case .success(let data):
+                    completion(.success(data))
                 case .failure(let error):
                     completion(.failure(error))
                 }

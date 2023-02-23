@@ -52,8 +52,7 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
     func passDataToRecipeDetails(source: HomeDataStore, destination: inout RecipeDetailsDataStore) {
         guard let viewController else { return }
         guard let indexPath = viewController.collectionView.indexPathsForSelectedItems?.first else { return }
-        let recipies = source.recipieResponse?.hits.compactMap { $0.recipe }
-        guard let recipe = recipies?[indexPath.item] else { return }
+        let recipe = source.recipes[indexPath.item]
         destination.recipe = recipe
     }
 

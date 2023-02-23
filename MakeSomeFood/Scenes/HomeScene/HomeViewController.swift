@@ -10,22 +10,23 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
 import SnapKit
+import UIKit
 
 protocol HomeDisplayLogic: AnyObject {
-    func displayRandomRecipies(viewModel: Home.LoadRandomRecipies.ViewModel)
+    func displayRecipes(viewModel: Home.LoadRecipes.ViewModel)
     func displayError(viewModel: Home.HandleError.ViewModel)
 }
 
 class HomeViewController: UIViewController, HomeDisplayLogic {
-
     var interactor: HomeBusinessLogic?
     var router: (NSObjectProtocol & HomeRoutingLogic & HomeDataPassing)?
 
     // MARK: - Private properties
 
-    private var viewModel: Home.LoadRandomRecipies.ViewModel? {
+    private var isLoadingNext = false
+
+    private var viewModel: Home.LoadRecipes.ViewModel? {
         didSet {
             collectionView.reloadData()
         }
@@ -72,7 +73,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         setup()
     }
 
-    // MARK: - Setup Clean Code Design Pattern 
+    // MARK: - Setup Clean Code Design Pattern
 
     private func setup() {
         let viewController = self
@@ -102,7 +103,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
     // MARK: - Private methods
 
     private func setupNavigationBar() {
-        title = "Home"
+        title = "Recipes"
         let appearence = UINavigationBarAppearance()
         appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
@@ -111,7 +112,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         navigationController?.navigationBar.compactAppearance = appearence
         navigationController?.navigationBar.scrollEdgeAppearance = appearence
         navigationController?.navigationBar.standardAppearance = appearence
-        let searchButton =  UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(showFilters))
+        let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(showFilters))
         searchButton.tintColor = .white
         navigationItem.rightBarButtonItem = searchButton
     }
@@ -119,6 +120,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
     private func setupTabBar() {
         tabBarController?.tabBar.barTintColor = .mainAccentColor
         tabBarController?.tabBar.tintColor = .white.withAlphaComponent(0.8)
+        tabBarController?.tabBar.backgroundColor = .mainAccentColor
     }
 
     private func setupConstraints() {
@@ -142,17 +144,24 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         interactor?.viewDidLoad()
     }
 
+    private func loadNextRecipes() {
+        if !isLoadingNext {
+            interactor?.loadNextRecipes()
+        }
+        isLoadingNext = true
+    }
+
     @objc private func showFilters() {
         router?.presentFilters()
     }
 
-    
     // MARK: - Display Logic
 
-    func displayRandomRecipies(viewModel: Home.LoadRandomRecipies.ViewModel) {
+    func displayRecipes(viewModel: Home.LoadRecipes.ViewModel) {
         DispatchQueue.main.async { [unowned self] in
             self.viewModel = viewModel
             loadingIndicator.stopAnimating()
+            isLoadingNext = false
         }
     }
 
@@ -163,10 +172,17 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
 // MARK: - Extensions
 
-extension HomeViewController: UICollectionViewDelegate {
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         router?.routeToRecipeDetails()
         collectionView.deselectItem(at: indexPath, animated: true)
+    }
+
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.contentSize.height - scrollView.frame.height - 300 <= scrollView.contentOffset.y {
+            loadNextRecipes()
+        }
     }
 }
 
@@ -184,7 +200,6 @@ extension HomeViewController: UICollectionViewDataSource {
         return cell
     }
 }
-
 
 extension HomeViewController: FiltersViewControllerDelegate {
     func reloadRecipies() {
