@@ -128,7 +128,7 @@ final class NutritionFactsView: UIView {
         servingsLabel.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
-            make.top.equalTo(separator1.snp.bottom).offset(8)
+            make.top.equalTo(separator1.snp.bottom).offset(4)
         }
 
         addSubview(separator2)
@@ -137,7 +137,7 @@ final class NutritionFactsView: UIView {
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
             make.height.equalTo(10)
-            make.top.equalTo(servingsLabel.snp.bottom).offset(8)
+            make.top.equalTo(servingsLabel.snp.bottom).offset(4)
         }
 
         addSubview(ammountPerServingsLabel)
@@ -151,7 +151,7 @@ final class NutritionFactsView: UIView {
         caloriesTextLabel.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
-            make.top.equalTo(ammountPerServingsLabel.snp.bottom).offset(4)
+            make.top.equalTo(ammountPerServingsLabel.snp.bottom)
         }
 
         addSubview(caloriesValueLabel)
@@ -165,7 +165,7 @@ final class NutritionFactsView: UIView {
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
             make.height.equalTo(6)
-            make.top.equalTo(caloriesTextLabel.snp.bottom).offset(8)
+            make.top.equalTo(caloriesTextLabel.snp.bottom).offset(4)
         }
 
         addSubview(dailyValueText)
