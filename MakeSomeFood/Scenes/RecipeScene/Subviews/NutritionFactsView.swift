@@ -180,5 +180,9 @@ final class NutritionFactsView: UIView {
             make.top.equalTo(dailyValueText.snp.bottom).offset(4)
             make.leading.trailing.equalToSuperview().inset(8)
         }
+
+        snp.makeConstraints { make in
+            make.bottom.equalTo(nutrientsStackView.snp.bottom).offset(8)
+        }
     }
 }
