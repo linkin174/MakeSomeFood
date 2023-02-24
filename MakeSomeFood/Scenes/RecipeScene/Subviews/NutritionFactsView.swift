@@ -39,19 +39,8 @@ final class NutritionFactsView: UIView {
     private let separator1 = makeSeparator()
     private let separator2 = makeSeparator()
     private let separator3 = makeSeparator()
-    private let separator4 = makeSeparator()
 
     private let nutrientsStackView: UIStackView = {
-        let stack = UIStackView()
-        stack.axis = .vertical
-        stack.alignment = .center
-        stack.distribution = .fill
-        stack.spacing = 0
-        stack.backgroundColor = .white
-        return stack
-    }()
-
-    private let vitaminsStackView: UIStackView = {
         let stack = UIStackView()
         stack.axis = .vertical
         stack.alignment = .center
@@ -93,10 +82,18 @@ final class NutritionFactsView: UIView {
                 make.height.equalTo(30)
             }
         }
+
+        let separator = UIView.makeSeparator()
+        nutrientsStackView.addArrangedSubview(separator)
+        separator.snp.makeConstraints { make in
+            make.width.equalToSuperview()
+            make.height.equalTo(10)
+        }
+
         viewModel.vitamins.forEach { vitamin in
             let view = NutrientRowView()
             view.setup(with: vitamin)
-            vitaminsStackView.addArrangedSubview(view)
+            nutrientsStackView.addArrangedSubview(view)
             view.snp.makeConstraints { make in
                 make.width.equalToSuperview()
                 make.height.equalTo(30)
@@ -178,20 +175,6 @@ final class NutritionFactsView: UIView {
         nutrientsStackView.snp.makeConstraints { make in
             make.top.equalTo(dailyValueText.snp.bottom).offset(4)
             make.leading.trailing.equalToSuperview().inset(8)
-        }
-
-        addSubview(separator4)
-        separator4.snp.makeConstraints { make in
-            make.height.equalTo(10)
-            make.width.equalToSuperview().inset(8)
-            make.centerX.equalToSuperview()
-            make.top.equalTo(nutrientsStackView.snp.bottom)
-        }
-
-        addSubview(vitaminsStackView)
-        vitaminsStackView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(8)
-            make.top.equalTo(separator4.snp.bottom)
         }
     }
 }
