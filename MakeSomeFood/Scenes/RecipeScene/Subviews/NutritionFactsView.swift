@@ -20,18 +20,22 @@ final class NutritionFactsView: UIView {
     // MARK: - Views
     private let headerLabel = UILabel.makeUILabel(text: "Nutrition Facts",
                                                   font: .systemFont(ofSize: 34, weight: .black))
+
     private let servingsLabel = UILabel.makeUILabel(text: "Servings",
                                                     font: .systemFont(ofSize: 18),
                                                     alignment: .left)
+
     private let ammountPerServingsLabel = UILabel.makeUILabel(text: "Ammount per serving",
                                                               font: .systemFont(ofSize: 14, weight: .black),
                                                               alignment: .left)
+
     private let caloriesTextLabel = UILabel.makeUILabel(text: "Calories",
                                                         font: .systemFont(ofSize: 32, weight: .black),
                                                         alignment: .left)
-    private let caloriesValueLabel = UILabel.makeUILabel(text: "230",
-                                                         font: .systemFont(ofSize: 32, weight: .black),
+
+    private let caloriesValueLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 32, weight: .black),
                                                          alignment: .right)
+
     private let dailyValueText = UILabel.makeUILabel(text: "% Daily value*",
                                                      font: .systemFont(ofSize: 16, weight: .bold),
                                                      alignment: .right)
