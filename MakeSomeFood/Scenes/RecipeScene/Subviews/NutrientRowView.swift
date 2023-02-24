@@ -16,9 +16,9 @@ protocol NutrientRowViewRepresentable {
 final class NutrientRowView: UIView {
     // MARK: - Views
 
-    private let nutrientNameLabel = UILabel.makeUILabel(text: "Fat", font: .systemFont(ofSize: 20, weight: .black))
-    private let nutrientValueLabel = UILabel.makeUILabel(text: "8g", font: .systemFont(ofSize: 20))
-    private let nutrientPercentageLabel = UILabel.makeUILabel(text: "10%", font: .systemFont(ofSize: 20, weight: .black))
+    private let nutrientNameLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black))
+    private let nutrientValueLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20))
+    private let nutrientPercentageLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black))
     private let separator = makeSeparator()
 
     // MARK: - Overrides
