@@ -20,11 +20,11 @@ final class RecipeCell: UICollectionViewCell {
     static let reuseID = "recipeCell"
 
     // MARK: - Private properties
+
     private var imageURL: URL? {
         didSet {
-            guard let imageURL else { return }
-            imageView.setImageFrom(url: imageURL)
-            indicatorView.stopAnimating()
+            imageView.image = UIImage(named: "placeholder")
+            cacheAndRender()
         }
     }
 
@@ -34,13 +34,12 @@ final class RecipeCell: UICollectionViewCell {
         let indicator = UIActivityIndicatorView()
         indicator.startAnimating()
         indicator.hidesWhenStopped = true
-        indicator.transform = CGAffineTransform(scaleX: 1.5, y: 1.5)
+        indicator.color = .black.withAlphaComponent(0.6)
         return indicator
     }()
 
-    private let imageView: CachedUIImageView = {
-        let imageView = CachedUIImageView()
-        imageView.image = UIImage(named: "placeholder")
+    private let imageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 16
@@ -68,24 +67,50 @@ final class RecipeCell: UICollectionViewCell {
         return view
     }()
 
-    // MARK: - Overrides
-
-    override func layoutSubviews() {
-        super.layoutSubviews()
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setupConstraints()
         setupUI()
     }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+   // MARK: - Overrides
+    override func prepareForReuse() {
+        indicatorView.startAnimating()
+    }
+
 
     // MARK: - Public methods
 
     func setup(with viewModel: RecipeCellViewModelRepresentable) {
         dishNameLabel.text = viewModel.dishName
-        guard let url = URL(string: viewModel.imageURL) else { return }
-        imageURL = url
+        imageURL = URL(string: viewModel.imageURL)
     }
 
-
     // MARK: - Private methods
+
+    private func cacheAndRender() {
+        guard let url = imageURL else { return }
+        if let cachedImage = ImageCache[url.lastPathComponent] {
+            imageView.image = cachedImage
+            indicatorView.stopAnimating()
+        } else {
+            DispatchQueue.global().async { [weak self] in
+                guard let data = try? Data(contentsOf: url) else { return }
+                guard let image = UIImage(data: data) else { return }
+                DispatchQueue.main.async { [weak self] in
+                    if url == self?.imageURL {
+                        self?.indicatorView.stopAnimating()
+                        self?.imageView.image = image
+                        ImageCache[url.lastPathComponent] = image
+                    }
+                }
+            }
+        }
+    }
 
     private func setupUI() {
         contentView.layer.cornerRadius = 16
