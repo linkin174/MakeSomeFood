@@ -34,9 +34,11 @@ final class FiltersViewController: UIViewController {
 
     private lazy var queryTextField: UITextField = {
         let textField = UITextField()
-        textField.placeholder = "Ingridient or meal... Not Required"
+        textField.placeholder = "Ingridient or meal... Optional"
+        textField.tintColor = .gray
         textField.font = .systemFont(ofSize: 18)
         textField.backgroundColor = .white
+        textField.textColor = .black
         textField.borderStyle = .roundedRect
         textField.dropShadow(offset: CGSize(width: 0, height: 5), opacity: 0.25)
         textField.clearButtonMode = .always
@@ -44,7 +46,8 @@ final class FiltersViewController: UIViewController {
         return textField
     }()
 
-    private let headerLabel = UILabel.makeUILabel(text: "Setup Filters", font: .systemFont(ofSize: 24, weight: .semibold))
+    private let headerLabel = UILabel.makeUILabel(text: "Setup Filters",
+                                                  font: .systemFont(ofSize: 24, weight: .semibold))
 
     private let dietLabel = UILabel.makeUILabel(text: "Diet:",
                                                 font: .systemFont(ofSize: 20, weight: .semibold))
@@ -70,19 +73,21 @@ final class FiltersViewController: UIViewController {
     private let selectedDishLabel = UILabel.makeUILabel(text: "Any",
                                                         font: .systemFont(ofSize: 18, weight: .semibold))
 
-    private let randomLabel = UILabel.makeUILabel(text: "Randomize results", font: .systemFont(ofSize: 20, weight: .semibold))
+    private let randomLabel = UILabel.makeUILabel(text: "Randomize results",
+                                                  font: .systemFont(ofSize: 20, weight: .semibold))
 
     private lazy var randomSwitch: UISwitch = {
         let randomSwitch = UISwitch()
-        randomSwitch.onTintColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
+        randomSwitch.onTintColor = .mainAccentColor
         randomSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         return randomSwitch
     }()
 
     private lazy var saveButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
-        button.setTitle("Save filters", for: .normal)
+        button.backgroundColor = .mainAccentColor
+        button.setTitle("Save", for: .normal)
+        button.tintColor = .white
         button.titleLabel?.font = .systemFont(ofSize: 20, weight: .semibold)
         button.contentEdgeInsets = UIEdgeInsets(top: 10, left: 20, bottom: 10, right: 20)
         button.layer.cornerRadius = 12
@@ -133,6 +138,10 @@ final class FiltersViewController: UIViewController {
         setupConstraints()
         setupTapGestures()
         filters = storageService.loadFilters()
+        dietMenu.textFont = .systemFont(ofSize: 18)
+        cuisineMenu.textFont = .systemFont(ofSize: 18)
+        mealMenu.textFont = .systemFont(ofSize: 18)
+        dishMenu.textFont = .systemFont(ofSize: 18)
     }
 
     // MARK: - Private Methods
