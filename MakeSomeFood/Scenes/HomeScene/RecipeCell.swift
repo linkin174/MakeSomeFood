@@ -22,8 +22,9 @@ final class RecipeCell: UICollectionViewCell {
     // MARK: - Private properties
     private var imageURL: URL? {
         didSet {
-            imageView.image = UIImage(named: "placeholder")
-            loadImage()
+            guard let imageURL else { return }
+            imageView.setImageFrom(url: imageURL)
+            indicatorView.stopAnimating()
         }
     }
 
@@ -37,8 +38,9 @@ final class RecipeCell: UICollectionViewCell {
         return indicator
     }()
 
-    private let imageView: UIImageView = {
-        let imageView = UIImageView()
+    private let imageView: CachedUIImageView = {
+        let imageView = CachedUIImageView()
+        imageView.image = UIImage(named: "placeholder")
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 16
@@ -84,25 +86,6 @@ final class RecipeCell: UICollectionViewCell {
 
 
     // MARK: - Private methods
-
-    private func loadImage() {
-        if let cachedImage = ImageCache[imageURL?.lastPathComponent ?? ""] {
-            imageView.image = cachedImage
-        } else {
-            guard let url = imageURL else { return }
-            DispatchQueue.global().async { [weak self] in
-                guard let data = try? Data(contentsOf: url) else { return }
-                guard let image = UIImage(data: data) else { return }
-                DispatchQueue.main.async { [weak self] in
-                    if url == self?.imageURL {
-                        self?.imageView.image = image
-                        ImageCache[url.lastPathComponent] = image
-                        self?.indicatorView.stopAnimating()
-                    }
-                }
-            }
-        }
-    }
 
     private func setupUI() {
         contentView.layer.cornerRadius = 16
