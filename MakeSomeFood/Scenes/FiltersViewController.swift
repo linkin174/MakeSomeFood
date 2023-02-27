@@ -24,11 +24,7 @@ final class FiltersViewController: UIViewController {
 
     private var filtersHasChanges = false
 
-    private var filters: Filters! {
-        didSet {
-            setupSelections()
-        }
-    }
+    private var filters: Filters!
 
     // MARK: - Views
 
@@ -98,24 +94,20 @@ final class FiltersViewController: UIViewController {
 
     private lazy var dietMenu = DropDown.createMenu(dataSource: storageService.dietList,
                                                     anchorView: selectedDietLabel) { [unowned self] _, label in
-        selectedDietLabel.text = label
-        filtersHasChanges = true
+        validate(label: selectedDietLabel, with: label)
     }
 
     private lazy var cuisineMenu = DropDown.createMenu(dataSource: storageService.cuisineTypes,
                                                        anchorView: selectedCuisineLabel) { [unowned self] _, label in
-        selectedCuisineLabel.text = label
-        filtersHasChanges = true
+        validate(label: selectedCuisineLabel, with: label)
     }
 
     private lazy var mealMenu = DropDown.createMenu(dataSource: storageService.mealTypes, anchorView: selectedMealLabel) { [unowned self] _, label in
-        selectedMealLabel.text = label
-        filtersHasChanges = true
+        validate(label: selectedMealLabel, with: label)
     }
 
     private lazy var dishMenu = DropDown.createMenu(dataSource: storageService.dishTypes, anchorView: selectedDishLabel) { [unowned self] _, label in
-        selectedDishLabel.text = label
-        filtersHasChanges = true
+        validate(label: selectedDishLabel, with: label)
     }
 
     // MARK: - Initializers
@@ -123,6 +115,7 @@ final class FiltersViewController: UIViewController {
     init(storageService: StorageService) {
         self.storageService = storageService
         super.init(nibName: nil, bundle: nil)
+        filters = storageService.loadFilters()
     }
 
     @available(*, unavailable)
@@ -137,7 +130,7 @@ final class FiltersViewController: UIViewController {
         view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
         setupConstraints()
         setupTapGestures()
-        filters = storageService.loadFilters()
+        setupSelections()
         dietMenu.textFont = .systemFont(ofSize: 18)
         cuisineMenu.textFont = .systemFont(ofSize: 18)
         mealMenu.textFont = .systemFont(ofSize: 18)
@@ -147,7 +140,6 @@ final class FiltersViewController: UIViewController {
     // MARK: - Private Methods
 
     private func setupConstraints() {
-
         view.addSubview(headerLabel)
         view.addSubview(queryTextField)
         view.addSubview(dishMenu)
@@ -230,6 +222,13 @@ final class FiltersViewController: UIViewController {
         }
     }
 
+    private func validate(label: UILabel, with selection: String) {
+        if label.text != selection {
+            filtersHasChanges = true
+            label.text = selection
+        }
+    }
+
     private func setupSelections() {
         queryTextField.text = filters.searchQuery
         selectedDietLabel.text = filters.dietType
@@ -269,10 +268,10 @@ final class FiltersViewController: UIViewController {
         queryTextField.endEditing(true)
         if filtersHasChanges {
             let filters = Filters(searchQuery: queryTextField.text,
-                                  dietType: dietMenu.selectedItem ?? storageService.dietList[0],
-                                  cuisineType: cuisineMenu.selectedItem ?? storageService.cuisineTypes[0],
-                                  mealType: mealMenu.selectedItem ?? storageService.mealTypes[0],
-                                  dishType: dishMenu.selectedItem ?? storageService.dishTypes[0],
+                                  dietType: selectedDietLabel.text ?? storageService.dietList[0],
+                                  cuisineType: selectedCuisineLabel.text ?? storageService.cuisineTypes[0],
+                                  mealType: selectedMealLabel.text ?? storageService.mealTypes[0],
+                                  dishType: selectedDishLabel.text ?? storageService.dishTypes[0],
                                   random: randomSwitch.isOn)
             storageService.save(filters: filters)
             delegate.reloadRecipies()
