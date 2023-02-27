@@ -11,4 +11,8 @@ extension UIColor {
     class var mainAccentColor: UIColor {
         UIColor(named: "mainAccentColor") ?? .white
     }
+
+    class var selectedMenuItemColor: UIColor {
+        UIColor(named: "selectedMenuItem") ?? .white
+    }
 }
