@@ -8,23 +8,20 @@
 import UIKit
 
 final class CachedUIImageView: UIImageView {
-
-    private var imageURL: URL?
-
-    func setImageFrom(url: URL) {
-        imageURL = url
+    
+    func setImageFrom(url: URL?) {
+        guard let url else { return }
         if let cachedImage = ImageCache[url.lastPathComponent] {
-            print("LOADED FROM CACHE")
             image = cachedImage
         } else {
-            DispatchQueue.global().async { [unowned self] in
+            image = UIImage(named: "placeholder")
+            DispatchQueue.global().async { [weak self] in
                 guard let data = try? Data(contentsOf: url) else { return }
                 guard let image = UIImage(data: data) else { return }
-                DispatchQueue.main.async { [unowned self] in
-                    if url == self.imageURL {
-                        self.image = image
+                DispatchQueue.main.async { [weak self] in
+                        self?.image = image
                         ImageCache[url.lastPathComponent] = image
-                    }
+
                 }
             }
         }
