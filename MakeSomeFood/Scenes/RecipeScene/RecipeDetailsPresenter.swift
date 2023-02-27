@@ -17,76 +17,120 @@ protocol RecipeDetailsPresentationLogic {
 }
 
 class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
+    // MARK: - Public properties
+
     weak var viewController: RecipeDetailsDisplayLogic?
 
-    // MARK: Parse and calc respnse from RecipeDetailsInteractor and send simple view model to RecipeDetailsViewController to be displayed
+    // MARK: - Presentation Logic
 
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response) {
+
+        typealias ViewModel = RecipeDetails.ShowRecipeDetails.ViewModel
+
         let recipe = response.recipe
-        var totalTime: String {
-            if let time = recipe.totalTime, time != 0 {
-                let formattedTime = String(format: "%.f", time)
-                return "Time: \(formattedTime) min"
+
+        var cookingTime: String? {
+            if recipe.totalTime != 0 {
+                let formatString = NSLocalizedString("TIME_LOCALIZATION", comment: "time")
+                let localized = String.localizedStringWithFormat(formatString, recipe.totalTime)
+                return localized
             } else {
-                return ""
+                return nil
             }
         }
 
-        #warning("remove force unwrapping")
+        let nutritionFactsViewModel = makeNutritionFactsViewModel(from: recipe)
 
-        guard let totalNutrients = recipe.totalNutrients?.allProperties()
-            .map({ $0.value as! Nutrient })
-            .filter({ $0.quantity != 0 })
-            .filter({$0.unit == "g"})
-        else { return }
+        let ingedientViewModels = makeIngredientsViewModels(from: recipe,
+                                                            existingIngredients: response.existingIngredients)
 
-        guard let dailyValues = recipe.totalDaily?.allProperties()
-            .map({ $0.value as! Nutrient })
-            .filter( { $0.quantity != 0 })
-        else { return }
+        let viewModel = ViewModel(imageURL: recipe.image,
+                                  recipeURL: recipe.url,
+                                  title: recipe.label,
+                                  totalWeight: String(format: "%.f", recipe.totalWeight),
+                                  coockingTime: cookingTime,
+                                  nutritionFactsViewModel: nutritionFactsViewModel,
+                                  ingredientCellViewModels: ingedientViewModels)
 
-        guard let vitamins = recipe.totalNutrients?.allProperties()
-            .map({$0.value as! Nutrient})
-            .filter({$0.unit != "g" })
-            .filter({ $0.quantity != 0 })
-        else { return }
-
-        let nutrientViewModels = totalNutrients.map { nutrient in
-            let dailyPercentage = (dailyValues.first(where: { $0.label == nutrient.label })?.quantity ?? 0) / (recipe.yield ?? 1)
-            return NutrientRowViewModel(name: nutrient.label ?? "",
-                                        value: String(format: "%.f", (nutrient.quantity ?? 0) / (recipe.yield ?? 1)),
-                                        unit: nutrient.unit ?? "g",
-                                        dailyPercentage: String(format: "%.f", dailyPercentage))
-        }
-
-        let vitaminViewModels = vitamins.map { vitamin in
-            let dailyPercentage = (dailyValues.first(where: { $0.label == vitamin.label })?.quantity ?? 0) / (recipe.yield ?? 1)
-            return NutrientRowViewModel(name: vitamin.label ?? "",
-                                        value: String(format: "%.f", vitamin.quantity ?? 0),
-                                 unit: vitamin.unit ?? "mg",
-                                 dailyPercentage: String(format: "%.f", dailyPercentage))
-        }
-
-        let nutritionFactsViewModel = NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield ?? 1),
-                                                              caloriesPerServing: String(format: "%.f", (recipe.calories ?? 0) / (recipe.yield ?? 1)),
-                                                              nutrients: nutrientViewModels,
-                                                              vitamins: vitaminViewModels)
-
-        let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: recipe.image ,
-                                                                  recipeURL: recipe.url ?? "",
-                                                                  source: recipe.source ?? "",
-                                                                  title: recipe.label,
-                                                                  dietLabels: recipe.dietLabels ?? [],
-                                                                  healthLabels: recipe.healthLabels ?? [],
-                                                                  cautions: recipe.cautions ?? [],
-                                                                  ingridientLines: recipe.ingredientLines ?? [],
-                                                                  calories: String(format: "%.f", recipe.calories ?? 0),
-                                                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
-                                                                  coockingTime: totalTime,
-                                                                  cuisineTypes: recipe.cuisineType ?? [],
-                                                                  dishTypes: recipe.dishType ?? [],
-                                                                  mealTypes: recipe.mealType ?? [],
-                                                                  nutritionFactsViewModel: nutritionFactsViewModel)
         viewController?.displayRecipeDetails(viewModel: viewModel)
+    }
+}
+
+// MARK: - Extensions
+
+extension RecipeDetailsPresenter {
+
+    private func makeIngredientsViewModels(from recipe: Recipe,
+                                           existingIngredients: [Ingredient]) -> [IngredientViewModelProtocol] {
+
+        recipe.ingredients.map { ingredient in
+            IngredientCellViewModel(imageURL: ingredient.image ?? "",
+                                    name: ingredient.text,
+                                    weight: String(format: "%.f", ingredient.weight),
+                                    isExisting: existingIngredients.contains(where: { $0.foodId == ingredient.foodId }))
+        }
+    }
+
+    private func makeNutritionFactsViewModel(from recipe: Recipe) -> NutritionFactsViewRepresentable {
+        var caloriesPerServing: String {
+            let calories = recipe.calories / recipe.yield
+            return String(format: "%.f", calories) + " kCal"
+        }
+
+        return NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield),
+                                       caloriesPerServing: caloriesPerServing,
+                                       nutrients: makeNutrientsViewModels(from: recipe),
+                                       vitamins: makeVitaminsViewModels(from: recipe))
+    }
+
+    private func makeNutrientsViewModels(from recipe: Recipe) -> [NutrientRowViewRepresentable] {
+        var viewModels = recipe.digest
+            .filter { $0.total > 0 && $0.unit == "g" && $0.label != "Water" }
+            .map { digest in
+                let valuePerServing = digest.total / recipe.yield
+                let dailyPercentage = digest.daily / recipe.yield
+
+                return NutrientRowViewModel(name: digest.label,
+                                            value: String(format: "%.f", valuePerServing),
+                                            unit: digest.unit,
+                                            dailyPercentage: String(format: "%.f", dailyPercentage))
+            }
+
+        // DIGEST not including fibers and cholesterol so lets add them
+
+        if let fiber = recipe.totalNutrients.fibtg {
+            let fiberRow = NutrientRowViewModel(name: fiber.label,
+                                                value: String(format: "%.f", fiber.quantity / recipe.yield),
+                                                unit: fiber.unit,
+                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily.fibtg?.quantity ?? 0) / recipe.yield))
+            viewModels.append(fiberRow)
+        }
+
+        if let cholesterol = recipe.totalNutrients.chole {
+            let fiberRow = NutrientRowViewModel(name: cholesterol.label,
+                                                value: String(format: "%.f", cholesterol.quantity / recipe.yield),
+                                                unit: cholesterol.unit,
+                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily.chole?.quantity ?? 0) / recipe.yield))
+            viewModels.append(fiberRow)
+        }
+
+        return viewModels.sorted(by: { $0.dailyPercentage > $1.dailyPercentage })
+    }
+
+    private func makeVitaminsViewModels(from recipe: Recipe) -> [NutrientRowViewRepresentable] {
+        let viewModels = recipe.digest
+            .filter { $0.unit != "g" && $0.total > 0 }
+            .sorted(by: { $0.daily > $1.daily })
+            .prefix(10)
+            .map { digest in
+                let valuePerServing = digest.total / recipe.yield
+                let dailyPercentage = digest.daily / recipe.yield
+
+                return NutrientRowViewModel(name: digest.label,
+                                            value: String(format: "%.f", valuePerServing),
+                                            unit: digest.unit,
+                                            dailyPercentage: String(format: "%.f", dailyPercentage))
+            }
+        return viewModels
     }
 }
