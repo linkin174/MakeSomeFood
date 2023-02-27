@@ -14,10 +14,10 @@ extension DropDown {
         menu.selectionAction = selectionAction
         menu.anchorView = anchorView
         menu.cornerRadius = 12
-        menu.textColor = .black
-        menu.selectedTextColor = .black
-        menu.backgroundColor = #colorLiteral(red: 0.4139624238, green: 0.7990826964, blue: 0.003590217093, alpha: 1)
-        menu.selectionBackgroundColor = #colorLiteral(red: 0.3732654589, green: 0.7286896552, blue: 0, alpha: 1)
+        menu.textColor = .white
+        menu.selectedTextColor = .white
+        menu.backgroundColor = .mainAccentColor
+        menu.selectionBackgroundColor = .selectedMenuItemColor
         return menu
     }
 }
