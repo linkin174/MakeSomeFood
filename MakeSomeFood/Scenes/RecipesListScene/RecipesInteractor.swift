@@ -1,5 +1,5 @@
 //
-//  HomeInteractor.swift
+//  RecipesInteractor.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -10,23 +10,22 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import Foundation
 
-protocol HomeBusinessLogic {
+protocol RecipesBuisnessLogic {
     func viewDidLoad()
     func loadNextRecipes()
 }
 
-protocol HomeDataStore {
-//    var recipieResponse: RecipeResponse? { get set }
+protocol RecipesDataStore {
     var recipes: [Recipe] { get }
 }
 
-class HomeInteractor: HomeBusinessLogic, HomeDataStore {
+class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
 
     // MARK: - Public properties
 
-    var presenter: HomePresentationLogic?
+    var presenter: RecipesPresentationLogic?
 
     // MARK: - Public properties
 
@@ -35,46 +34,45 @@ class HomeInteractor: HomeBusinessLogic, HomeDataStore {
 
     // MARK: - Private properties
 
-    private let fetcherService: FetcherService
+    private var fetcherService: FetcherService?
 
     // MARK: - Initializers
 
-    init(fetcherService: FetcherService) {
+    init(fetcherService: FetcherService?) {
         self.fetcherService = fetcherService
     }
 
     // MARK: Interaction Logic
 
     func viewDidLoad() {
-        fetcherService.fetchRecipies { [unowned self] result in
+        fetcherService?.fetchRecipies { [unowned self] result in
             switch result {
             case .success(let recipeResponse):
                 self.recipieResponse = recipeResponse
                 recipes = recipeResponse.hits.map { $0.recipe }
-                let response = Home.LoadRecipes.Response(recipes: recipes)
+                let response = Recipes.LoadRecipes.Response(recipes: recipes)
                 presenter?.presentRecipes(response: response)
             case .failure(let failure):
-                let response = Home.HandleError.Response(error: failure)
+                let response = Recipes.HandleError.Response(error: failure)
                 presenter?.presentError(response: response)
             }
         }
     }
 
     func loadNextRecipes() {
-        print(#function)
-        guard let endPoint = recipieResponse?.links?.next?.href else { return }
-        fetcherService.fetchNextRecipes(from: endPoint) { [unowned self] result in
+        guard let endPoint = recipieResponse?.links.next?.href else { return }
+        fetcherService?.fetchNextRecipes(from: endPoint) { [unowned self] result in
             switch result {
             case .success(let recipeResponse):
                 DispatchQueue.main.async {
                     let newRecipes = recipeResponse.hits.map { $0.recipe }
                     self.recipes.append(contentsOf: newRecipes)
                     self.recipieResponse = recipeResponse
-                    let response = Home.LoadRecipes.Response(recipes: self.recipes)
+                    let response = Recipes.LoadRecipes.Response(recipes: self.recipes)
                     self.presenter?.presentRecipes(response: response)
                 }
             case .failure(let error):
-                let response = Home.HandleError.Response(error: error)
+                let response = Recipes.HandleError.Response(error: error)
                 presenter?.presentError(response: response)
             }
         }

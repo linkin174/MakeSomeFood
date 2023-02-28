@@ -8,6 +8,7 @@
 import UIKit
 
 extension UIColor {
+
     class var mainAccentColor: UIColor {
         UIColor(named: "mainAccentColor") ?? .white
     }

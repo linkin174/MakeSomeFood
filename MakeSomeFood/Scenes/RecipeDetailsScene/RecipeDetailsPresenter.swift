@@ -16,7 +16,8 @@ protocol RecipeDetailsPresentationLogic {
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response)
 }
 
-class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
+final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
+    
     // MARK: - Public properties
 
     weak var viewController: RecipeDetailsDisplayLogic?
@@ -50,7 +51,7 @@ class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
                                   totalWeight: String(format: "%.f", recipe.totalWeight),
                                   coockingTime: cookingTime,
                                   nutritionFactsViewModel: nutritionFactsViewModel,
-                                  ingredientCellViewModels: ingedientViewModels)
+                                  ingredientRowiewModels: ingedientViewModels)
 
         viewController?.displayRecipeDetails(viewModel: viewModel)
     }
@@ -64,7 +65,7 @@ extension RecipeDetailsPresenter {
                                            existingIngredients: [Ingredient]) -> [IngredientViewModelProtocol] {
 
         recipe.ingredients.map { ingredient in
-            IngredientCellViewModel(imageURL: ingredient.image ?? "",
+            IngredientRowViewModel(imageURL: ingredient.image ?? "",
                                     name: ingredient.text,
                                     weight: String(format: "%.f", ingredient.weight),
                                     isExisting: existingIngredients.contains(where: { $0.foodId == ingredient.foodId }))
@@ -114,7 +115,7 @@ extension RecipeDetailsPresenter {
             viewModels.append(fiberRow)
         }
 
-        return viewModels.sorted(by: { $0.dailyPercentage > $1.dailyPercentage })
+        return viewModels
     }
 
     private func makeVitaminsViewModels(from recipe: Recipe) -> [NutrientRowViewRepresentable] {

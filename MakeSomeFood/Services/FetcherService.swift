@@ -11,12 +11,12 @@ final class FetcherService {
 
     // MARK: - Private properties
 
-    private let networkService: NetworkService
-    private let storageService: StorageService
+    private let networkService: NetworkService?
+    private let storageService: StorageService?
 
     // MARK: - Initializers
 
-    init(networkService: NetworkService, storageService: StorageService) {
+    init(networkService: NetworkService?, storageService: StorageService?) {
         self.networkService = networkService
         self.storageService = storageService
     }
@@ -25,7 +25,7 @@ final class FetcherService {
 
     func fetchRecipies(completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         let parameters = makeParameters()
-        networkService.makeRequest(parameters: parameters) { result in
+        networkService?.makeRequest(parameters: parameters) { result in
             switch result {
             case .success(let success):
                 guard let recipieResponse = try? JSONDecoder().decode(RecipeResponse.self, from: success) else { return }
@@ -38,10 +38,11 @@ final class FetcherService {
 
     func fetchNextRecipes(from urlString: String, completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         guard let url = URL(string: urlString) else { return }
-        networkService.makeRequest(from: url) { result in
+        networkService?.makeRequest(from: url) { result in
             switch result {
             case .success(let data):
-                guard let recipeResponse = try? JSONDecoder().decode(RecipeResponse.self, from: data) else { return }
+                guard let recipeResponse = try? JSONDecoder().decode(RecipeResponse.self, from: data) else { print("CANT DECODE")
+                                                                                                                   return }
                 completion(.success(recipeResponse))
             case .failure(let error):
                 completion(.failure(error))
@@ -64,7 +65,7 @@ final class FetcherService {
         parameters["type"] = "public"
         parameters["imageSize"] = "REGULAR"
 
-        let filters = storageService.loadFilters()
+        guard let filters = storageService?.loadFilters() else { return parameters }
 
         if filters.dietType != "Any" {
             parameters["diet"] = filters.dietType.lowercased()

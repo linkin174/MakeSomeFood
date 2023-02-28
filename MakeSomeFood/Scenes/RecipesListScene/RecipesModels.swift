@@ -1,5 +1,5 @@
 //
-//  HomeModels.swift
+//  RecipesModels.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -12,10 +12,9 @@
 
 import UIKit
 
-enum Home {
-    // MARK: Use cases
+struct Recipes {
 
-    enum LoadRecipes {
+    struct LoadRecipes {
 
         struct Response {
             let recipes: [Recipe]
@@ -26,7 +25,7 @@ enum Home {
         }
     }
 
-    enum LoadNextRecipes {
+    struct LoadNextRecipes {
         struct Response {
             let recipeRespone: RecipeResponse
         }
@@ -36,7 +35,7 @@ enum Home {
         }
     }
 
-    enum HandleError {
+    struct HandleError {
         struct Response {
             let error: Error
         }

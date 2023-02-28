@@ -1,5 +1,5 @@
 //
-//  HomeViewController.swift
+//  RecipesViewController.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -14,19 +14,19 @@ import SnapKit
 import UIKit
 
 protocol HomeDisplayLogic: AnyObject {
-    func displayRecipes(viewModel: Home.LoadRecipes.ViewModel)
-    func displayError(viewModel: Home.HandleError.ViewModel)
+    func displayRecipes(viewModel: Recipes.LoadRecipes.ViewModel)
+    func displayError(viewModel: Recipes.HandleError.ViewModel)
 }
 
-class HomeViewController: UIViewController, HomeDisplayLogic {
-    var interactor: HomeBusinessLogic?
-    var router: (NSObjectProtocol & HomeRoutingLogic & HomeDataPassing)?
+class RecipesViewController: UIViewController, HomeDisplayLogic {
+    var interactor: RecipesBuisnessLogic?
+    var router: (NSObjectProtocol & RecipesRoutingLogic & RecipesDataPassing)?
 
     // MARK: - Private properties
 
     private var isLoadingNext = false
 
-    private var viewModel: Home.LoadRecipes.ViewModel? {
+    private var viewModel: Recipes.LoadRecipes.ViewModel? {
         didSet {
             collectionView.reloadData()
         }
@@ -65,28 +65,12 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setup()
+        RecipesConfigurator.shared.configure(with: self)
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        setup()
-    }
-
-    // MARK: - Setup Clean Code Design Pattern
-
-    private func setup() {
-        let viewController = self
-        #warning("think about DI, side configurator?")
-        let interactor = HomeInteractor(fetcherService: FetcherService(networkService: NetworkService(), storageService: StorageService()))
-        let presenter = HomePresenter()
-        let router = HomeRouter()
-        viewController.interactor = interactor
-        viewController.router = router
-        interactor.presenter = presenter
-        presenter.viewController = viewController
-        router.viewController = viewController
-        router.dataStore = interactor
+        RecipesConfigurator.shared.configure(with: self)
     }
 
     // MARK: - View lifecycle
@@ -96,7 +80,6 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         view.addSubview(collectionView)
         setupConstraints()
         setupNavigationBar()
-        setupTabBar()
         start()
     }
 
@@ -112,15 +95,12 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         navigationController?.navigationBar.compactAppearance = appearence
         navigationController?.navigationBar.scrollEdgeAppearance = appearence
         navigationController?.navigationBar.standardAppearance = appearence
-        let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"), style: .plain, target: self, action: #selector(showFilters))
+        let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"),
+                                           style: .plain,
+                                           target: self,
+                                           action: #selector(showFilters))
         searchButton.tintColor = .white
         navigationItem.rightBarButtonItem = searchButton
-    }
-
-    private func setupTabBar() {
-        tabBarController?.tabBar.barTintColor = .mainAccentColor
-        tabBarController?.tabBar.tintColor = .white.withAlphaComponent(0.8)
-        tabBarController?.tabBar.backgroundColor = .mainAccentColor
     }
 
     private func setupConstraints() {
@@ -157,7 +137,7 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Display Logic
 
-    func displayRecipes(viewModel: Home.LoadRecipes.ViewModel) {
+    func displayRecipes(viewModel: Recipes.LoadRecipes.ViewModel) {
         DispatchQueue.main.async { [unowned self] in
             self.viewModel = viewModel
             loadingIndicator.stopAnimating()
@@ -165,14 +145,14 @@ class HomeViewController: UIViewController, HomeDisplayLogic {
         }
     }
 
-    func displayError(viewModel: Home.HandleError.ViewModel) {
+    func displayError(viewModel: Recipes.HandleError.ViewModel) {
         showAlert(title: "Something went wrong", message: viewModel.errorMessage)
     }
 }
 
 // MARK: - Extensions
 
-extension HomeViewController: UICollectionViewDelegateFlowLayout {
+extension RecipesViewController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         router?.routeToRecipeDetails()
@@ -180,13 +160,15 @@ extension HomeViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        #warning("think about this check due to next link in interactor is nil so it may not be needed")
+        guard !(viewModel?.cells.isEmpty ?? false) else { return }
         if scrollView.contentSize.height - scrollView.frame.height - 300 <= scrollView.contentOffset.y {
             loadNextRecipes()
         }
     }
 }
 
-extension HomeViewController: UICollectionViewDataSource {
+extension RecipesViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel?.cells.count ?? 0
@@ -201,7 +183,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
 }
 
-extension HomeViewController: FiltersViewControllerDelegate {
+extension RecipesViewController: FiltersViewControllerDelegate {
     func reloadRecipies() {
         viewModel = nil
         start()

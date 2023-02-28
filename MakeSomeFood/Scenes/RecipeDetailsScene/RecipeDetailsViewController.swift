@@ -27,7 +27,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     // MARK: - Private propertis
 
     private var viewModel: RecipeDetails.ShowRecipeDetails.ViewModel?
-    private let labelEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
 
     // MARK: - Views
 
@@ -38,8 +37,9 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         return view
     }()
 
-    private let scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+        scrollView.backgroundColor = .mainAccentColor.withAlphaComponent(0.4)
         scrollView.bounces = true
         scrollView.isUserInteractionEnabled = true
         return scrollView
@@ -53,8 +53,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         return view
     }()
 
-    private let containerView = UIView()
-
     private let recipeImageView: CachedUIImageView = {
         let imageView = CachedUIImageView()
         imageView.image = UIImage(named: "placeholder")
@@ -62,11 +60,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         imageView.layer.cornerRadius = 16
         imageView.layer.maskedCorners = [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
         imageView.clipsToBounds = true
+        imageView.isUserInteractionEnabled = true
         return imageView
     }()
 
-    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .semibold))
-
+    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .bold), alignment: .left)
     private let ingiridientsLabel = UILabel.makeUILabel(text: "List of ingridients:", font: .systemFont(ofSize: 18, weight: .semibold))
     private let totalNutrientsLabel = UILabel.makeUILabel(text: "Total Nutrients:", font: .systemFont(ofSize: 18, weight: .semibold))
 
@@ -80,8 +78,9 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     }()
 
     private lazy var showSafariViewButton: UIButton = {
-        let button = UIButton(type: .custom)
+        let button = UIButton()
         button.setTitleColor(.white, for: .normal)
+        button.setTitleColor(.white.withAlphaComponent(0.5), for: .highlighted)
         button.setTitle("Cooking Details", for: .normal)
         button.layer.cornerRadius = 20
         button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
@@ -98,6 +97,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         button.backgroundColor = .mainAccentColor
         button.addTarget(self, action: #selector(showNutritionFacts), for: .touchUpInside)
         button.imageView?.tintColor = .white
+        button.dropShadow()
         return button
     }()
 
@@ -105,12 +105,12 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
-        setup()
+        RecipesDetailsConfigurator.shared.configure(with: self)
     }
-
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setup()
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        RecipesDetailsConfigurator.shared.configure(with: self)
     }
 
     // MARK: - View lifecycle
@@ -119,135 +119,74 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         super.viewDidLoad()
         view.backgroundColor = .white
         setupConstraints()
-        setupNavigationBar()
+        setupUI()
         start()
     }
 
-    // MARK: - Setup Clean Code Design Pattern
+    // MARK: - Private methods
 
-    private func setup() {
-        let viewController = self
-        let interactor = RecipeDetailsInteractor()
-        let presenter = RecipeDetailsPresenter()
-        let router = RecipeDetailsRouter()
-        viewController.interactor = interactor
-        viewController.router = router
-        interactor.presenter = presenter
-        presenter.viewController = viewController
-        router.viewController = viewController
-        router.dataStore = interactor
-    }
-
-    private func setupNavigationBar() {
+    private func setupUI() {
         navigationController?.navigationBar.tintColor = .white
     }
 
     private func setupConstraints() {
-
-
-        // ScrollView Setup
-        containerView.backgroundColor = #colorLiteral(red: 0.4093237323, green: 0.7990826964, blue: 0, alpha: 0.195099915)
         view.addSubview(scrollView)
         scrollView.snp.makeConstraints { make in
-            #warning("wrong scrollview calc")
             make.edges.equalToSuperview()
         }
 
-
-        // Container view setup
-        scrollView.addSubview(containerView)
-
-        containerView.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.top.equalTo(view.snp.topMargin)
-            make.bottom.equalTo(view.snp.bottomMargin)
-//            make.edges.equalToSuperview()
-        }
-
-        // ImageView Setup
-        containerView.addSubview(recipeImageView)
-
+        scrollView.addSubview(recipeImageView)
         recipeImageView.snp.makeConstraints { make in
-            make.top.equalToSuperview()
             make.width.equalToSuperview()
-            make.height.equalTo(containerView.snp.width)
+            make.height.equalTo(scrollView.snp.width)
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview()
         }
 
-        // SafariButton Setup
-
-        containerView.addSubview(showSafariViewButton)
-
+        recipeImageView.addSubview(showSafariViewButton)
         showSafariViewButton.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(16)
+            make.trailing.bottom.equalToSuperview().inset(16)
             make.height.equalTo(40)
-            make.bottom.equalTo(recipeImageView.snp.bottom).inset(16)
         }
 
-        containerView.addSubview(showNutritionFactsButton)
+        recipeImageView.addSubview(showNutritionFactsButton)
         showNutritionFactsButton.snp.makeConstraints { make in
-            make.width.height.equalTo(40)
-            make.bottom.equalTo(recipeImageView.snp.bottom).inset(16)
             make.leading.equalToSuperview().offset(16)
+            make.bottom.equalToSuperview().inset(16)
+            make.width.height.equalTo(40)
         }
 
-        // Setup TitleLabel
-
-        containerView.addSubview(recipeTitleLabel)
-
+        scrollView.addSubview(recipeTitleLabel)
         recipeTitleLabel.snp.makeConstraints { make in
             make.top.equalTo(recipeImageView.snp.bottom).offset(8)
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
         }
 
-        // Insert separator
-        let separator = makeSeparator()
-        containerView.addSubview(separator)
-        separator.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.top.equalTo(recipeTitleLabel.snp.bottom).offset(8)
-        }
-
-        // Ingridients label setup
-
-        containerView.addSubview(ingiridientsLabel)
+        scrollView.addSubview(ingiridientsLabel)
         ingiridientsLabel.snp.makeConstraints { make in
+            make.top.equalTo(recipeTitleLabel.snp.bottom).offset(8)
             make.leading.equalToSuperview().offset(8)
-            make.top.equalTo(separator.snp.bottom).offset(8)
         }
 
-        // Setup ingridients stack
-        containerView.addSubview(ingridientsStack)
+        scrollView.addSubview(ingridientsStack)
         ingridientsStack.snp.makeConstraints { make in
             make.top.equalTo(ingiridientsLabel.snp.bottom).offset(8)
+            make.bottom.equalToSuperview().inset(16)
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
         }
 
-        let separatorTwo = makeSeparator()
-        containerView.addSubview(separatorTwo)
-        separatorTwo.snp.makeConstraints { make in
-            make.top.equalTo(ingridientsStack.snp.bottom).offset(18)
-            make.width.equalToSuperview()
-        }
-
-        containerView.addSubview(totalNutrientsLabel)
-        totalNutrientsLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(8)
-            make.top.equalTo(separatorTwo.snp.bottom).offset(8)
-        }
-
-        containerView.addSubview(blurView)
+        view.addSubview(blurView)
         blurView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
-        containerView.addSubview(nutritionFactsView)
+        view.addSubview(nutritionFactsView)
         nutritionFactsView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview().inset(32)
-            make.height.equalToSuperview().inset(32)
-            make.bottom.equalTo(containerView.snp.top)
+            make.width.equalToSuperview().inset(32)
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(-view.frame.height)
         }
     }
 
@@ -265,45 +204,40 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     @objc private func showNutritionFacts() {
         UIView.animate(withDuration: 0.5, delay: 0) {
             self.blurView.alpha = 1
-            self.nutritionFactsView.snp.remakeConstraints { make in
-                make.width.height.equalToSuperview().inset(32)
-                make.centerX.centerY.equalToSuperview()
+            self.nutritionFactsView.snp.updateConstraints { make in
+                make.centerY.equalToSuperview()
             }
             self.view.layoutIfNeeded()
         }
     }
 
     @objc private func hideNutritionFacts(_ sender: UIPanGestureRecognizer) {
-        #warning("track states of gesture")
-
         let translation = sender.translation(in: view)
-        #warning("continue swipe gesture")
-        guard translation.y < 0 else { return }
-        UIView.animate(withDuration: 0.5) {
-            if translation.y < -50 {
-                sender.view?.snp.remakeConstraints({ make in
-                    make.width.height.equalToSuperview().inset(32)
-                    make.bottom.equalTo(self.containerView.snp.top)
-                })
-            } else {
-                sender.view?.snp.updateConstraints({ make in
-                    make.centerY.equalToSuperview()
-                })
+        switch sender.state {
+        case .changed:
+            if translation.y < 0 {
+                nutritionFactsView.snp.updateConstraints { make in
+                    make.centerY.equalToSuperview().offset(translation.y)
+                }
+                let alphaStep = 1 / view.frame.height
+                blurView.alpha = 1 - alphaStep * abs(translation.y)
             }
-            sender.view?.snp.updateConstraints { make in
-                make.centerY.equalToSuperview().offset(translation.y)
+        case .ended:
+            UIView.animate(withDuration: 0.5) {
+                if translation.y > -100 {
+                    self.nutritionFactsView.snp.updateConstraints { make in
+                        make.centerY.equalToSuperview()
+                    }
+                } else {
+                    self.nutritionFactsView.snp.updateConstraints { make in
+                        make.centerY.equalToSuperview().offset(-self.view.frame.height)
+                        self.blurView.alpha = 0
+                    }
+                }
+                self.view.layoutIfNeeded()
             }
+        default: break
         }
-        self.view.layoutIfNeeded()
-//        UIView.animate(withDuration: 0.5, delay: 0) {
-//            self.blurView.alpha = 0
-//            self.nutritionFactsView.snp.remakeConstraints { make in
-//                make.leading.trailing.equalToSuperview().inset(32)
-//                make.height.equalToSuperview().inset(32)
-//                make.bottom.equalTo(self.view.snp.top)
-//            }
-//            self.view.layoutIfNeeded()
-//        }
     }
 
     private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
@@ -331,14 +265,28 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
         recipeTitleLabel.text = viewModel.title
 
-        viewModel.ingridientLines.forEach { ingridientLine in
-            let labelEdgeInsets = UIEdgeInsets(top: 5, left: 10, bottom: 5, right: 10)
-            let label = PaddingLabel(withEdgeInsets: labelEdgeInsets, text: ingridientLine)
-            label.backgroundColor = .white
-            label.layer.cornerRadius = 15
-            label.clipsToBounds = true
-            ingridientsStack.addArrangedSubview(label)
+        viewModel.ingredientRowiewModels.forEach { ingredient in
+            let ingredientView = IngredientRowView(viewModel: ingredient)
+            ingredientView.delegate = self
+            ingridientsStack.addArrangedSubview(ingredientView)
+            ingredientView.snp.makeConstraints { make in
+                make.width.equalToSuperview()
+                make.height.equalTo(60)
+                make.centerX.equalToSuperview()
+            }
         }
         nutritionFactsView.setup(with: viewModel.nutritionFactsViewModel)
+    }
+}
+
+extension RecipeDetailsViewController: IngredientRowDelegate {
+    func saveIngredient(name: String) {
+        let request = RecipeDetails.SaveIngredient.Request(name: name)
+        interactor?.saveIngredient(request: request)
+    }
+
+    func removeIngredient(name: String) {
+        let request = RecipeDetails.RemoveIngredient.Request(name: name)
+        interactor?.removeIngredient(request: request)
     }
 }

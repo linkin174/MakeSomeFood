@@ -1,5 +1,5 @@
 //
-//  HomeRouter.swift
+//  RecipesRouter.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -12,21 +12,22 @@
 
 import UIKit
 
-@objc protocol HomeRoutingLogic {
+@objc protocol RecipesRoutingLogic {
     func routeToRecipeDetails()
     func presentFilters()
 }
 
-protocol HomeDataPassing {
-    var dataStore: HomeDataStore? { get }
+protocol RecipesDataPassing {
+    var dataStore: RecipesDataStore? { get }
 }
 
-class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
+final class RecipesRouter: NSObject, RecipesRoutingLogic, RecipesDataPassing {
 
-    weak var viewController: HomeViewController?
-    var dataStore: HomeDataStore?
+    weak var viewController: RecipesViewController?
+    var dataStore: RecipesDataStore?
 
     func routeToRecipeDetails() {
+
         let destination = RecipeDetailsViewController()
 
         guard
@@ -49,7 +50,7 @@ class HomeRouter: NSObject, HomeRoutingLogic, HomeDataPassing {
 
 // MARK: Passing data to other screen
 
-    func passDataToRecipeDetails(source: HomeDataStore, destination: inout RecipeDetailsDataStore) {
+    func passDataToRecipeDetails(source: RecipesDataStore, destination: inout RecipeDetailsDataStore) {
         guard let viewController else { return }
         guard let indexPath = viewController.collectionView.indexPathsForSelectedItems?.first else { return }
         let recipe = source.recipes[indexPath.item]

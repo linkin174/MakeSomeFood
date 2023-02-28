@@ -6,25 +6,6 @@
 //
 import Foundation
 
-protocol PropertyLoopable {
-    func allProperties() -> [String: Any]
-}
-
-extension PropertyLoopable {
-    func allProperties() -> [String: Any] {
-        var result: [String: Any] = [:]
-        let mirror = Mirror(reflecting: self)
-        guard let style = mirror.displayStyle, style == .struct || style == .class else { return result }
-        for (property, value) in mirror.children {
-            guard let property else {
-                continue
-            }
-            result[property] = value
-        }
-        return result
-    }
-}
-
 // MARK: - RecipeResponse
 
 struct RecipeResponse: Codable {
@@ -88,7 +69,7 @@ struct Recipe: Codable {
     let mealType: [String]
 }
 
-struct TotalNutrients: Codable, PropertyLoopable {
+struct TotalNutrients: Codable {
 
     let fibtg: Nutrient?
     let chole: Nutrient?

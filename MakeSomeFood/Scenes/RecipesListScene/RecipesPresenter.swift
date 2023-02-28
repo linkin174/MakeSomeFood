@@ -1,5 +1,5 @@
 //
-//  HomePresenter.swift
+//  RecipesPresenter.swift
 //  MakeSomeFood
 //
 //  Created by Aleksandr Kretov on 14.02.2023.
@@ -12,12 +12,12 @@
 
 import UIKit
 
-protocol HomePresentationLogic {
-    func presentRecipes(response: Home.LoadRecipes.Response)
-    func presentError(response: Home.HandleError.Response)
+protocol RecipesPresentationLogic {
+    func presentRecipes(response: Recipes.LoadRecipes.Response)
+    func presentError(response: Recipes.HandleError.Response)
 }
 
-class HomePresenter: HomePresentationLogic {
+class RecipesPresenter: RecipesPresentationLogic {
 
     // MARK: - Public properties
     
@@ -25,18 +25,18 @@ class HomePresenter: HomePresentationLogic {
     
     // MARK: Presenting Logic
 
-    func presentRecipes(response: Home.LoadRecipes.Response) {
+    func presentRecipes(response: Recipes.LoadRecipes.Response) {
         let cells = response.recipes.map { recipe in
             RecipeCellViewModel(dishName: recipe.label, imageURL: recipe.image)
         }
 
-        let viewModel = Home.LoadRecipes.ViewModel(cells: cells)
+        let viewModel = Recipes.LoadRecipes.ViewModel(cells: cells)
         viewController?.displayRecipes(viewModel: viewModel)
     }
 
-    func presentError(response: Home.HandleError.Response) {
+    func presentError(response: Recipes.HandleError.Response) {
         let errorMessage = response.error.localizedDescription
-        let viewModel = Home.HandleError.ViewModel(errorMessage: errorMessage)
+        let viewModel = Recipes.HandleError.ViewModel(errorMessage: errorMessage)
         viewController?.displayError(viewModel: viewModel)
     }
 }

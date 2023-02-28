@@ -12,31 +12,35 @@
 
 import UIKit
 
-enum RecipeDetails {
-    // MARK: Use cases
+struct RecipeDetails {
 
-    enum ShowRecipeDetails {
+    struct ShowRecipeDetails {
 
         struct Response {
             let recipe: Recipe
+            let existingIngredients: [Ingredient]
         }
 
         struct ViewModel {
             let imageURL: String
             let recipeURL: String
-            let source: String
             let title: String
-            let dietLabels: [String]
-            let healthLabels: [String]
-            let cautions: [String]
-            let ingridientLines: [String]
-            let calories: String
             let totalWeight: String
-            let coockingTime: String
-            let cuisineTypes: [String]
-            let dishTypes: [String]
-            let mealTypes: [String]
+            let coockingTime: String?
             let nutritionFactsViewModel: NutritionFactsViewRepresentable
+            let ingredientRowiewModels: [IngredientViewModelProtocol]
+        }
+    }
+
+    struct SaveIngredient {
+        struct Request {
+            let name: String
+        }
+    }
+
+    struct RemoveIngredient {
+        struct Request {
+            let name: String
         }
     }
 }
@@ -53,4 +57,11 @@ struct NutrientRowViewModel: NutrientRowViewRepresentable {
     var value: String
     var unit: String
     var dailyPercentage: String
+}
+
+struct IngredientRowViewModel: IngredientViewModelProtocol {
+    var imageURL: String
+    var name: String
+    var weight: String
+    var isExisting: Bool
 }
