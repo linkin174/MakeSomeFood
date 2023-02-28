@@ -50,7 +50,11 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .red
-        doSomething()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        onLoad()
     }
 
     // MARK: - Private Methods
@@ -59,9 +63,8 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
         view.addSubview(tableView)
     }
 
-    func doSomething() {
-        let request = Favorites.Something.Request()
-        interactor?.doSomething(request: request)
+    func onLoad() {
+        interactor?.start()
     }
 
     func displaySomething(viewModel: Favorites.Something.ViewModel) {

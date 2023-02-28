@@ -13,14 +13,11 @@
 import UIKit
 
 struct RecipeDetails {
-
     struct ShowRecipeDetails {
-
         struct Response {
             let recipe: Recipe
             let existingIngredients: [Ingredient]
         }
-
         struct ViewModel {
             let imageURL: String
             let recipeURL: String
@@ -29,18 +26,23 @@ struct RecipeDetails {
             let coockingTime: String?
             let nutritionFactsViewModel: NutritionFactsViewRepresentable
             let ingredientRowiewModels: [IngredientViewModelProtocol]
+            var isFavorite: Bool
         }
     }
 
-    struct SaveIngredient {
+    struct HandleIngredient {
         struct Request {
             let name: String
+            let state: Bool
         }
     }
 
-    struct RemoveIngredient {
-        struct Request {
-            let name: String
+    struct HandleFavorites {
+        struct Response {
+            let state: Bool
+        }
+        struct ViewModel {
+            let state: Bool
         }
     }
 }

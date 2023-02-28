@@ -16,6 +16,7 @@ import UIKit
 
 protocol RecipeDetailsDisplayLogic: AnyObject {
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel)
+    func displayFavoriteState(viewModel: RecipeDetails.HandleFavorites.ViewModel)
 }
 
 final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
@@ -101,6 +102,16 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         return button
     }()
 
+    private lazy var favoriteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
+        button.layer.cornerRadius = 20
+        button.backgroundColor = .mainAccentColor
+        button.dropShadow()
+        button.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
+        return button
+    }()
+
     // MARK: Object lifecycle
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -127,6 +138,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     private func setupUI() {
         navigationController?.navigationBar.tintColor = .white
+        favoriteButton.imageView?.tintColor = viewModel?.isFavorite ?? false ? .red : .white
     }
 
     private func setupConstraints() {
@@ -153,6 +165,13 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         showNutritionFactsButton.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().inset(16)
+            make.width.height.equalTo(40)
+        }
+
+        recipeImageView.addSubview(favoriteButton)
+        favoriteButton.snp.makeConstraints { make in
+            make.leading.equalTo(showNutritionFactsButton.snp.trailing).offset(8)
+            make.bottom.equalTo(showNutritionFactsButton.snp.bottom)
             make.width.height.equalTo(40)
         }
 
@@ -240,6 +259,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         }
     }
 
+    @objc private func favoriteButtonTapped() {
+        guard let viewModel else { return }
+        interactor?.handleFavorite(state: !viewModel.isFavorite)
+    }
+
     private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
         let view = UIView()
         view.backgroundColor = color
@@ -276,17 +300,20 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             }
         }
         nutritionFactsView.setup(with: viewModel.nutritionFactsViewModel)
+
+        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
+    }
+
+    func displayFavoriteState(viewModel: RecipeDetails.HandleFavorites.ViewModel) {
+        self.viewModel?.isFavorite = viewModel.state
+        #warning("make animations")
+        favoriteButton.imageView?.tintColor = viewModel.state ? .red : .white
     }
 }
 
 extension RecipeDetailsViewController: IngredientRowDelegate {
-    func saveIngredient(name: String) {
-        let request = RecipeDetails.SaveIngredient.Request(name: name)
-        interactor?.saveIngredient(request: request)
-    }
-
-    func removeIngredient(name: String) {
-        let request = RecipeDetails.RemoveIngredient.Request(name: name)
-        interactor?.removeIngredient(request: request)
+    func handleIngredientExistance(name: String, state: Bool) {
+        let request = RecipeDetails.HandleIngredient.Request(name: name, state: state)
+        interactor?.handleIngredient(request: request)
     }
 }

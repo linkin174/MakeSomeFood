@@ -47,12 +47,13 @@ struct Next: Codable {
 
 // MARK: - Recipe
 
-struct Recipe: Codable {
+struct Recipe: Codable, Equatable {
     let label: String
     let image: String
     let images: Images
     let source: String
     let url: String
+    let shareAs: String
     let yield: Double
     let dietLabels: [String]
     let healthLabels: [String]
@@ -67,6 +68,11 @@ struct Recipe: Codable {
     let totalDaily: TotalNutrients
     let digest: [Digest]
     let mealType: [String]
+    var isFavorite: Bool?
+    
+    static func == (lhs: Recipe, rhs: Recipe) -> Bool {
+        lhs.shareAs == rhs.shareAs
+    }
 }
 
 struct TotalNutrients: Codable {

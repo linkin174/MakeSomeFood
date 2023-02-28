@@ -14,6 +14,7 @@ import UIKit
 
 protocol RecipeDetailsPresentationLogic {
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response)
+    func presentFavoriteState(response: RecipeDetails.HandleFavorites.Response)
 }
 
 final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
@@ -30,6 +31,7 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
 
         let recipe = response.recipe
 
+        #warning("not used")
         var cookingTime: String? {
             if recipe.totalTime != 0 {
                 let formatString = NSLocalizedString("TIME_LOCALIZATION", comment: "time")
@@ -51,9 +53,15 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
                                   totalWeight: String(format: "%.f", recipe.totalWeight),
                                   coockingTime: cookingTime,
                                   nutritionFactsViewModel: nutritionFactsViewModel,
-                                  ingredientRowiewModels: ingedientViewModels)
+                                  ingredientRowiewModels: ingedientViewModels,
+                                  isFavorite: recipe.isFavorite ?? false)
 
         viewController?.displayRecipeDetails(viewModel: viewModel)
+    }
+
+    func presentFavoriteState(response: RecipeDetails.HandleFavorites.Response) {
+        let viewModel = RecipeDetails.HandleFavorites.ViewModel(state: response.state)
+        viewController?.displayFavoriteState(viewModel: viewModel)
     }
 }
 

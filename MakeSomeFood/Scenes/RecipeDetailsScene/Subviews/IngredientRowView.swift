@@ -16,8 +16,7 @@ protocol IngredientViewModelProtocol {
 }
 
 protocol IngredientRowDelegate {
-    func saveIngredient(name: String)
-    func removeIngredient(name: String)
+    func handleIngredientExistance(name: String, state: Bool)
 }
 
 final class IngredientRowView: UIView {
@@ -91,14 +90,8 @@ final class IngredientRowView: UIView {
                 self?.checkImageView.tintColor = .gray
             }
         }
-
         viewModel.isExisting.toggle()
-
-        if viewModel.isExisting {
-            delegate.saveIngredient(name: viewModel.name)
-        } else {
-            delegate.removeIngredient(name: viewModel.name)
-        }
+        delegate.handleIngredientExistance(name: viewModel.name, state: viewModel.isExisting)
     }
 
     private func setup() {

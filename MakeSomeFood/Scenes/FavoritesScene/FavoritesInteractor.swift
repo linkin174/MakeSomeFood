@@ -13,7 +13,7 @@
 import UIKit
 
 protocol FavoritesBusinessLogic {
-    func doSomething(request: Favorites.Something.Request)
+    func start()
 //    func doSomethingElse(request: Favorites.SomethingElse.Request)
 }
 
@@ -21,23 +21,28 @@ protocol FavoritesDataStore {
     //var name: String { get set }
 }
 
-class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
+final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
+
+    // MARK: - Public properties
+
     var presenter: FavoritesPresentationLogic?
-    //var name: String = ""
 
-    // MARK: Do something (and send response to FavoritesPresenter)
+    // MARK: - Private Properties
 
-    func doSomething(request: Favorites.Something.Request) {
+    private let storageService: StorageService
 
+    // MARK: - Initializers
+
+    init(storageService: StorageService) {
+        self.storageService = storageService
+    }
+
+    // MARK: - Interaction Logic
+    
+    func start() {
+        let favorites = storageService.loadFavorites()
+        print(favorites.map { $0.label })
         let response = Favorites.Something.Response()
         presenter?.presentSomething(response: response)
     }
-//
-//    func doSomethingElse(request: Favorites.SomethingElse.Request) {
-//        worker = FavoritesWorker()
-//        worker?.doSomeOtherWork()
-//
-//        let response = Favorites.SomethingElse.Response()
-//        presenter?.presentSomethingElse(response: response)
-//    }
 }

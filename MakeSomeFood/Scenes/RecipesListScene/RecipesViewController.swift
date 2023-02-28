@@ -43,6 +43,8 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         return indicator
     }()
 
+    #warning("extract collectionview")
+
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical

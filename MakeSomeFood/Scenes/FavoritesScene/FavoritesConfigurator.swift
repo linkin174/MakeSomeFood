@@ -32,7 +32,8 @@ final class FavoritesConfigurator {
     // MARK: - Public methods
 
     func configure(with viewController: FavoritesViewController) {
-        let interactor = FavoritesInteractor()
+        guard let storageService = containter.resolve(StorageService.self) else { return }
+        let interactor = FavoritesInteractor(storageService: storageService)
         let presenter = FavoritesPresenter()
         let router = FavoritesRouter()
         viewController.interactor = interactor

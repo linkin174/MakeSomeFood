@@ -18,68 +18,25 @@ struct Filters: Codable {
 
 final class StorageService {
 
-    var dietList = [
-        "Any",
-        "Balanced",
-        "High-Fiber",
-        "High-Protein",
-        "Low-Carb",
-        "Low-Fat",
-        "Low-Sodium"
-    ]
+    // MARK: - Public Properties
 
-    var cuisineTypes = [
-        "Any",
-        "American",
-        "Asian",
-        "British",
-        "Caribbean",
-        "Central Europe",
-        "Chinese",
-        "Eastern Europe",
-        "French",
-        "Indian",
-        "Italian",
-        "Japanese",
-        "Kosher",
-        "Mediterranian",
-        "Mexican",
-        "Middle Eastern",
-        "Nordic",
-        "South American",
-        "South East Asian"
-    ]
+    var dietList = ["Any", "Balanced", "High-Fiber", "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium"]
 
-    var mealTypes = [
-        "Any",
-        "Breakfast",
-        "Dinner",
-        "Lunch",
-        "Snack",
-        "Teatime"
-    ]
+    var cuisineTypes = ["Any" ,"American", "Asian", "British", "Caribbean", "Central Europe", "Chinese",
+                        "Eastern Europe", "French", "Indian", "Italian", "Japanese", "Kosher", "Mediterranian",
+                        "Mexican", "Middle Eastern", "Nordic", "South American", "South East Asian"]
 
-    var dishTypes = [
-        "Any",
-        "Biscuits and cookies",
-        "Bread",
-        "Cereals",
-        "Condiments and sauces",
-        "Desserts",
-        "Drinks",
-        "Main course",
-        "Pancake",
-        "Preps",
-        "Preserve",
-        "Salad",
-        "Sandwiches",
-        "Side dish",
-        "Soup",
-        "Starter",
-        "Sweets"
-    ]
+    var mealTypes = ["Any", "Breakfast", "Dinner", "Lunch", "Snack", "Teatime"]
+
+    var dishTypes = ["Any", "Biscuits and cookies", "Bread", "Cereals", "Condiments and sauces", "Desserts",
+        "Drinks", "Main course", "Pancake", "Preps", "Preserve", "Salad", "Sandwiches", "Side dish", "Soup",
+        "Starter", "Sweets"]
+
+    // MARK: - Private Properties
 
     private let userDefaults = UserDefaults.standard
+
+    // MARK: - Public Methods
 
     func loadFilters() -> Filters {
         guard
@@ -122,5 +79,31 @@ final class StorageService {
             let ingredients = try? JSONDecoder().decode([Ingredient].self, from: data)
         else { return [] }
         return ingredients
+    }
+
+    #warning("migrate to coredata later")
+    #warning("remove duplicating logic of decoding/encoding")
+    func addFavorite(recipe: Recipe) {
+        var favorites = loadFavorites()
+        favorites.append(recipe)
+        guard let data = try? JSONEncoder().encode(favorites) else { return }
+        userDefaults.set(data, forKey: "favorites")
+    }
+
+    func removeFavorite(recipe: Recipe) {
+        var favorites = loadFavorites()
+        favorites.removeAll(where: { $0 == recipe })
+        guard let data = try? JSONEncoder().encode(favorites) else { return }
+        userDefaults.set(data, forKey: "favorites")
+    }
+    
+    func loadFavorites() -> [Recipe] {
+        guard
+            let data = userDefaults.data(forKey: "favorites"),
+            let recipes = try? JSONDecoder().decode([Recipe].self, from: data)
+        else {
+            return []
+        }
+        return recipes
     }
 }
