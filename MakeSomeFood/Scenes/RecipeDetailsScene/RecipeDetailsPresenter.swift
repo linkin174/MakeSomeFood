@@ -35,7 +35,7 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
         var cookingTime: String? {
             if recipe.totalTime != 0 {
                 let formatString = NSLocalizedString("TIME_LOCALIZATION", comment: "time")
-                let localized = String.localizedStringWithFormat(formatString, recipe.totalTime)
+                let localized = String.localizedStringWithFormat(formatString, recipe.totalTime ?? 0)
                 return localized
             } else {
                 return nil
@@ -47,10 +47,10 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
         let ingedientViewModels = makeIngredientsViewModels(from: recipe,
                                                             existingIngredients: response.existingIngredients)
 
-        let viewModel = ViewModel(imageURL: recipe.image,
-                                  recipeURL: recipe.url,
-                                  title: recipe.label,
-                                  totalWeight: String(format: "%.f", recipe.totalWeight),
+        let viewModel = ViewModel(imageURL: recipe.image ?? "",
+                                  recipeURL: recipe.url ?? "",
+                                  title: recipe.label ?? "",
+                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
                                   coockingTime: cookingTime,
                                   nutritionFactsViewModel: nutritionFactsViewModel,
                                   ingredientRowiewModels: ingedientViewModels,
@@ -82,11 +82,11 @@ extension RecipeDetailsPresenter {
 
     private func makeNutritionFactsViewModel(from recipe: Recipe) -> NutritionFactsViewRepresentable {
         var caloriesPerServing: String {
-            let calories = recipe.calories / recipe.yield
+            let calories = recipe.calories ?? 0 / (recipe.yield ?? 0)
             return String(format: "%.f", calories) + " kCal"
         }
 
-        return NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield),
+        return NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield ?? 0),
                                        caloriesPerServing: caloriesPerServing,
                                        nutrients: makeNutrientsViewModels(from: recipe),
                                        vitamins: makeVitaminsViewModels(from: recipe))
@@ -96,8 +96,8 @@ extension RecipeDetailsPresenter {
         var viewModels = recipe.digest
             .filter { $0.total > 0 && $0.unit == "g" && $0.label != "Water" }
             .map { digest in
-                let valuePerServing = digest.total / recipe.yield
-                let dailyPercentage = digest.daily / recipe.yield
+                let valuePerServing = digest.total / (recipe.yield ?? 0)
+                let dailyPercentage = digest.daily / (recipe.yield ?? 0)
 
                 return NutrientRowViewModel(name: digest.label,
                                             value: String(format: "%.f", valuePerServing),
@@ -107,19 +107,19 @@ extension RecipeDetailsPresenter {
 
         // DIGEST not including fibers and cholesterol so lets add them
 
-        if let fiber = recipe.totalNutrients.fibtg {
+        if let fiber = recipe.totalNutrients?.fibtg {
             let fiberRow = NutrientRowViewModel(name: fiber.label,
-                                                value: String(format: "%.f", fiber.quantity / recipe.yield),
+                                                value: String(format: "%.f", fiber.quantity / (recipe.yield ?? 0)),
                                                 unit: fiber.unit,
-                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily.fibtg?.quantity ?? 0) / recipe.yield))
+                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily?.fibtg?.quantity ?? 0) / (recipe.yield ?? 0)))
             viewModels.append(fiberRow)
         }
 
-        if let cholesterol = recipe.totalNutrients.chole {
+        if let cholesterol = recipe.totalNutrients?.chole {
             let fiberRow = NutrientRowViewModel(name: cholesterol.label,
-                                                value: String(format: "%.f", cholesterol.quantity / recipe.yield),
+                                                value: String(format: "%.f", cholesterol.quantity / (recipe.yield ?? 0)),
                                                 unit: cholesterol.unit,
-                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily.chole?.quantity ?? 0) / recipe.yield))
+                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily?.chole?.quantity ?? 0) / (recipe.yield ?? 0)))
             viewModels.append(fiberRow)
         }
 
@@ -132,8 +132,8 @@ extension RecipeDetailsPresenter {
             .sorted(by: { $0.daily > $1.daily })
             .prefix(10)
             .map { digest in
-                let valuePerServing = digest.total / recipe.yield
-                let dailyPercentage = digest.daily / recipe.yield
+                let valuePerServing = digest.total / (recipe.yield ?? 0)
+                let dailyPercentage = digest.daily / (recipe.yield ?? 0)
 
                 return NutrientRowViewModel(name: digest.label,
                                             value: String(format: "%.f", valuePerServing),

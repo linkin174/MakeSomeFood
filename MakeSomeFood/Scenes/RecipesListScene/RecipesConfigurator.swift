@@ -18,17 +18,17 @@ final class RecipesConfigurator {
     private var containter: Container = {
         let container = Container()
 
-        container.register(NetworkService.self) { _ in
+        container.register(NetworkingProtocol.self) { _ in
             NetworkService()
         }
 
-        container.register(StorageService.self) { _ in
+        container.register(StoringProtocol.self) { _ in
             StorageService()
         }
 
-        container.register(FetcherService.self) { resolver in
-            FetcherService(networkService: resolver.resolve(NetworkService.self),
-                           storageService: resolver.resolve(StorageService.self))
+        container.register(FetchingProtocol.self) { resolver in
+            FetcherService(networkService: resolver.resolve(NetworkingProtocol.self),
+                           storageService: resolver.resolve(StoringProtocol.self))
         }
 
         return container
@@ -41,7 +41,8 @@ final class RecipesConfigurator {
     // MARK: - Public methods
 
     func configure(with viewController: RecipesViewController) {
-        let interactor = RecipesInteractor(fetcherService: FetcherService(networkService: NetworkService(), storageService: StorageService()))
+        guard let fetchingService = containter.resolve(FetchingProtocol.self) else { return }
+        let interactor = RecipesInteractor(fetcherService: fetchingService)
         let presenter = RecipesPresenter()
         let router = RecipesRouter()
         viewController.interactor = interactor

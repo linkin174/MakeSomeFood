@@ -29,11 +29,11 @@ final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
 
     // MARK: - Private Properties
 
-    private let storageService: StorageService
+    private let storageService: StoringProtocol
 
     // MARK: - Initializers
 
-    init(storageService: StorageService) {
+    init(storageService: StoringProtocol) {
         self.storageService = storageService
     }
 

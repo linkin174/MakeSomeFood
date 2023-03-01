@@ -13,8 +13,8 @@
 import UIKit
 
 protocol RecipesPresentationLogic {
-    func presentRecipes(response: Recipes.LoadRecipes.Response)
-    func presentError(response: Recipes.HandleError.Response)
+    func presentRecipes(response: RecipesList.DisplayRecipes.Response)
+    func presentError(response: RecipesList.HandleError.Response)
 }
 
 class RecipesPresenter: RecipesPresentationLogic {
@@ -25,18 +25,16 @@ class RecipesPresenter: RecipesPresentationLogic {
     
     // MARK: Presenting Logic
 
-    func presentRecipes(response: Recipes.LoadRecipes.Response) {
-        let cells = response.recipes.map { recipe in
-            RecipeCellViewModel(dishName: recipe.label, imageURL: recipe.image)
-        }
+    func presentRecipes(response: RecipesList.DisplayRecipes.Response) {
+        let cells = response.recipes.map { RecipeCellViewModel(recipe: $0) }
 
-        let viewModel = Recipes.LoadRecipes.ViewModel(cells: cells)
+        let viewModel = RecipesList.DisplayRecipes.ViewModel(cells: cells)
         viewController?.displayRecipes(viewModel: viewModel)
     }
 
-    func presentError(response: Recipes.HandleError.Response) {
+    func presentError(response: RecipesList.HandleError.Response) {
         let errorMessage = response.error.localizedDescription
-        let viewModel = Recipes.HandleError.ViewModel(errorMessage: errorMessage)
+        let viewModel = RecipesList.HandleError.ViewModel(errorMessage: errorMessage)
         viewController?.displayError(viewModel: viewModel)
     }
 }

@@ -29,31 +29,31 @@ class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
 
     // MARK: - Public properties
 
-    var recipieResponse: RecipeResponse?
     var recipes: [Recipe] = []
 
     // MARK: - Private properties
 
-    private var fetcherService: FetcherService?
+    private var recipieResponse: RecipeResponse?
+    private var fetcherService: FetchingProtocol
 
     // MARK: - Initializers
 
-    init(fetcherService: FetcherService?) {
+    init(fetcherService: FetchingProtocol) {
         self.fetcherService = fetcherService
     }
 
     // MARK: Interaction Logic
 
     func viewDidLoad() {
-        fetcherService?.fetchRecipies { [unowned self] result in
+        fetcherService.fetchRecipies { [unowned self] result in
             switch result {
             case .success(let recipeResponse):
                 self.recipieResponse = recipeResponse
                 recipes = recipeResponse.hits.map { $0.recipe }
-                let response = Recipes.LoadRecipes.Response(recipes: recipes)
+                let response = RecipesList.DisplayRecipes.Response(recipes: recipes)
                 presenter?.presentRecipes(response: response)
             case .failure(let failure):
-                let response = Recipes.HandleError.Response(error: failure)
+                let response = RecipesList.HandleError.Response(error: failure)
                 presenter?.presentError(response: response)
             }
         }
@@ -61,18 +61,18 @@ class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
 
     func loadNextRecipes() {
         guard let endPoint = recipieResponse?.links.next?.href else { return }
-        fetcherService?.fetchNextRecipes(from: endPoint) { [unowned self] result in
+        fetcherService.fetchNextRecipes(from: endPoint) { [unowned self] result in
             switch result {
             case .success(let recipeResponse):
                 DispatchQueue.main.async {
                     let newRecipes = recipeResponse.hits.map { $0.recipe }
                     self.recipes.append(contentsOf: newRecipes)
                     self.recipieResponse = recipeResponse
-                    let response = Recipes.LoadRecipes.Response(recipes: self.recipes)
+                    let response = RecipesList.DisplayRecipes.Response(recipes: self.recipes)
                     self.presenter?.presentRecipes(response: response)
                 }
             case .failure(let error):
-                let response = Recipes.HandleError.Response(error: error)
+                let response = RecipesList.HandleError.Response(error: error)
                 presenter?.presentError(response: response)
             }
         }

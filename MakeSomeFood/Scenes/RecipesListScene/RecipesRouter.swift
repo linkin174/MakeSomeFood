@@ -21,7 +21,7 @@ protocol RecipesDataPassing {
     var dataStore: RecipesDataStore? { get }
 }
 
-final class RecipesRouter: NSObject, RecipesRoutingLogic, RecipesDataPassing {
+final class RecipesRouter: RecipesRoutingLogic, RecipesDataPassing {
 
     weak var viewController: RecipesViewController?
     var dataStore: RecipesDataStore?

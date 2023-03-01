@@ -23,7 +23,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     // MARK: - Public Properties
 
     var interactor: RecipeDetailsBusinessLogic?
-    var router: (NSObjectProtocol & RecipeDetailsRoutingLogic & RecipeDetailsDataPassing)?
+    var router: (RecipeDetailsRoutingLogic & RecipeDetailsDataPassing)?
 
     // MARK: - Private propertis
 

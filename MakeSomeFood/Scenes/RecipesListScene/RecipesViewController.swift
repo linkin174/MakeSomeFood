@@ -14,19 +14,19 @@ import SnapKit
 import UIKit
 
 protocol HomeDisplayLogic: AnyObject {
-    func displayRecipes(viewModel: Recipes.LoadRecipes.ViewModel)
-    func displayError(viewModel: Recipes.HandleError.ViewModel)
+    func displayRecipes(viewModel: RecipesList.DisplayRecipes.ViewModel)
+    func displayError(viewModel: RecipesList.HandleError.ViewModel)
 }
 
 class RecipesViewController: UIViewController, HomeDisplayLogic {
     var interactor: RecipesBuisnessLogic?
-    var router: (NSObjectProtocol & RecipesRoutingLogic & RecipesDataPassing)?
+    var router: (RecipesRoutingLogic & RecipesDataPassing)?
 
     // MARK: - Private properties
 
     private var isLoadingNext = false
 
-    private var viewModel: Recipes.LoadRecipes.ViewModel? {
+    private var viewModel: RecipesList.DisplayRecipes.ViewModel? {
         didSet {
             collectionView.reloadData()
         }
@@ -139,7 +139,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     // MARK: - Display Logic
 
-    func displayRecipes(viewModel: Recipes.LoadRecipes.ViewModel) {
+    func displayRecipes(viewModel: RecipesList.DisplayRecipes.ViewModel) {
         DispatchQueue.main.async { [unowned self] in
             self.viewModel = viewModel
             loadingIndicator.stopAnimating()
@@ -147,7 +147,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         }
     }
 
-    func displayError(viewModel: Recipes.HandleError.ViewModel) {
+    func displayError(viewModel: RecipesList.HandleError.ViewModel) {
         showAlert(title: "Something went wrong", message: viewModel.errorMessage)
     }
 }
@@ -177,11 +177,13 @@ extension RecipesViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCell else { return UICollectionViewCell() }
+        guard
+            var cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCellRepresentable
+        else { return UICollectionViewCell() }
         if let cellVM = viewModel?.cells[indexPath.item] {
-            cell.setup(with: cellVM)
+            cell.viewModel = cellVM
         }
-        return cell
+        return cell as! RecipeCell
     }
 }
 

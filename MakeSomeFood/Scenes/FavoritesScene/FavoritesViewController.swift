@@ -21,7 +21,7 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
     // MARK: - Public Properties
 
     var interactor: FavoritesBusinessLogic?
-    var router: (NSObjectProtocol & FavoritesRoutingLogic & FavoritesDataPassing)?
+    var router: (FavoritesRoutingLogic & FavoritesDataPassing)?
 
     // MARK: - Views
 

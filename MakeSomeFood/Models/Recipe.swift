@@ -46,26 +46,25 @@ struct Next: Codable {
 }
 
 // MARK: - Recipe
-
 struct Recipe: Codable, Equatable {
-    let label: String
-    let image: String
-    let images: Images
-    let source: String
-    let url: String
-    let shareAs: String
-    let yield: Double
+    let label: String?
+    let image: String?
+    let images: Images?
+    let source: String?
+    let url: String?
+    let shareAs: String?
+    let yield: Double?
     let dietLabels: [String]
     let healthLabels: [String]
     let cautions: [String]
     let ingredients: [Ingredient]
-    let calories: Double
-    let totalWeight: Double
-    let totalTime: Double
+    let calories: Double?
+    let totalWeight: Double?
+    let totalTime: Double?
     let cuisineType: [String]
     let dishType: [String]
-    let totalNutrients: TotalNutrients
-    let totalDaily: TotalNutrients
+    let totalNutrients: TotalNutrients?
+    let totalDaily: TotalNutrients?
     let digest: [Digest]
     let mealType: [String]
     var isFavorite: Bool?

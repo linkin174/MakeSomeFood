@@ -14,7 +14,7 @@ import Foundation
 
 enum RecipesList {
 
-    enum LoadRecipes {
+    enum DisplayRecipes {
 
         struct Response {
             let recipes: [Recipe]

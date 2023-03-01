@@ -92,7 +92,7 @@ final class FiltersViewController: UIViewController {
         return button
     }()
 
-    private lazy var dietMenu = DropDown.createMenu(dataSource: storageService.dietList,
+    private lazy var dietMenu = DropDown.createMenu(dataSource: storageService.dietTypes,
                                                     anchorView: selectedDietLabel) { [unowned self] _, label in
         validate(label: selectedDietLabel, with: label)
     }
@@ -237,7 +237,7 @@ final class FiltersViewController: UIViewController {
         selectedDishLabel.text = filters.dishType
         randomSwitch.isOn = filters.random
         // Select row of menus
-        dietMenu.selectRow(at: storageService.dietList.firstIndex(of: filters.dietType))
+        dietMenu.selectRow(at: storageService.dietTypes.firstIndex(of: filters.dietType))
         cuisineMenu.selectRow(at: storageService.cuisineTypes.firstIndex(of: filters.cuisineType))
         mealMenu.selectRow(at: storageService.mealTypes.firstIndex(of: filters.mealType))
         dishMenu.selectRow(at: storageService.dishTypes.firstIndex(of: filters.dishType))
@@ -268,7 +268,7 @@ final class FiltersViewController: UIViewController {
         queryTextField.endEditing(true)
         if filtersHasChanges {
             let filters = Filters(searchQuery: queryTextField.text,
-                                  dietType: selectedDietLabel.text ?? storageService.dietList[0],
+                                  dietType: selectedDietLabel.text ?? storageService.dietTypes[0],
                                   cuisineType: selectedCuisineLabel.text ?? storageService.cuisineTypes[0],
                                   mealType: selectedMealLabel.text ?? storageService.mealTypes[0],
                                   dishType: selectedDishLabel.text ?? storageService.dishTypes[0],

@@ -18,7 +18,7 @@ final class FavoritesConfigurator {
     private var containter: Container = {
         let container = Container()
 
-        container.register(StorageService.self) { _ in
+        container.register(StoringProtocol.self) { _ in
             StorageService()
         }
 
@@ -32,7 +32,7 @@ final class FavoritesConfigurator {
     // MARK: - Public methods
 
     func configure(with viewController: FavoritesViewController) {
-        guard let storageService = containter.resolve(StorageService.self) else { return }
+        guard let storageService = containter.resolve(StoringProtocol.self) else { return }
         let interactor = FavoritesInteractor(storageService: storageService)
         let presenter = FavoritesPresenter()
         let router = FavoritesRouter()

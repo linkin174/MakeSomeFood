@@ -20,7 +20,7 @@ protocol RecipeDetailsDataPassing {
     var dataStore: RecipeDetailsDataStore? { get }
 }
 
-class RecipeDetailsRouter: NSObject, RecipeDetailsRoutingLogic, RecipeDetailsDataPassing {
+class RecipeDetailsRouter: RecipeDetailsRoutingLogic, RecipeDetailsDataPassing {
     weak var viewController: RecipeDetailsViewController?
     var dataStore: RecipeDetailsDataStore?
 }

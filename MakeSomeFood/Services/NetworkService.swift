@@ -8,7 +8,12 @@
 import Alamofire
 import Foundation
 
-final class NetworkService {
+protocol NetworkingProtocol: AnyObject {
+    func makeRequest(parameters: [String: String]?, completion: @escaping (Result<Data, AFError>) -> Void)
+    func makeRequest(from url: URL, completion: @escaping (Result<Data, AFError>) -> Void)
+}
+
+final class NetworkService: NetworkingProtocol {
 
     // MARK: - Public methods
 

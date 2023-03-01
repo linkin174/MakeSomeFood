@@ -31,11 +31,11 @@ class RecipeDetailsInteractor: RecipeDetailsBusinessLogic, RecipeDetailsDataStor
 
     // MARK: - Private properties
 
-    private let storageService: StorageService
+    private let storageService: StoringProtocol
 
     // MARK: - Initializers
 
-    init(storageService: StorageService) {
+    init(storageService: StoringProtocol) {
         self.storageService = storageService
     }
 

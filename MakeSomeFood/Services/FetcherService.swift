@@ -7,16 +7,22 @@
 
 import Foundation
 
-final class FetcherService {
+protocol FetchingProtocol: AnyObject {
+    func fetchRecipies(completion: @escaping (Result<RecipeResponse, Error>) -> Void)
+    func fetchNextRecipes(from urlString: String, completion: @escaping (Result<RecipeResponse, Error>) -> Void)
+    init(networkService: NetworkingProtocol?, storageService: StoringProtocol?)
+}
+
+final class FetcherService: FetchingProtocol {
 
     // MARK: - Private properties
 
-    private let networkService: NetworkService?
-    private let storageService: StorageService?
+    private let networkService: NetworkingProtocol?
+    private let storageService: StoringProtocol?
 
     // MARK: - Initializers
 
-    init(networkService: NetworkService?, storageService: StorageService?) {
+    init(networkService: NetworkingProtocol?, storageService: StoringProtocol?) {
         self.networkService = networkService
         self.storageService = storageService
     }

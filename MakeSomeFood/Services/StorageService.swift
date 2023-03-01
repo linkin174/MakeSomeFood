@@ -16,11 +16,26 @@ struct Filters: Codable {
     let random: Bool
 }
 
-final class StorageService {
+protocol StoringProtocol {
+    var dietTypes: [String] { get }
+    var cuisineTypes: [String] { get }
+    var mealTypes: [String] { get }
+    var dishTypes: [String] { get }
+    func loadFilters() -> Filters
+    func save(filters: Filters)
+    func save(ingredient: Ingredient)
+    func remove(ingredient: Ingredient)
+    func loadIngredients() -> [Ingredient]
+    func addFavorite(recipe: Recipe)
+    func removeFavorite(recipe: Recipe)
+    func loadFavorites() -> [Recipe]
+}
+
+final class StorageService: StoringProtocol {
 
     // MARK: - Public Properties
 
-    var dietList = ["Any", "Balanced", "High-Fiber", "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium"]
+    var dietTypes = ["Any", "Balanced", "High-Fiber", "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium"]
 
     var cuisineTypes = ["Any" ,"American", "Asian", "British", "Caribbean", "Central Europe", "Chinese",
                         "Eastern Europe", "French", "Indian", "Italian", "Japanese", "Kosher", "Mediterranian",
@@ -44,7 +59,7 @@ final class StorageService {
             let filters = try? JSONDecoder().decode(Filters.self, from: data)
         else {
             return Filters(searchQuery: nil,
-                           dietType: dietList[0],
+                           dietType: dietTypes[0],
                            cuisineType: cuisineTypes[0],
                            mealType: mealTypes[0],
                            dishType: dishTypes[0],
@@ -83,6 +98,7 @@ final class StorageService {
 
     #warning("migrate to coredata later")
     #warning("remove duplicating logic of decoding/encoding")
+    #warning("save bools for keys as recipe name")
     func addFavorite(recipe: Recipe) {
         var favorites = loadFavorites()
         favorites.append(recipe)

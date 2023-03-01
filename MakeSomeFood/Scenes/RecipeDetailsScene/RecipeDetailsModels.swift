@@ -12,8 +12,8 @@
 
 import UIKit
 
-struct RecipeDetails {
-    struct ShowRecipeDetails {
+enum RecipeDetails {
+    enum ShowRecipeDetails {
         struct Response {
             let recipe: Recipe
             let existingIngredients: [Ingredient]
@@ -30,14 +30,14 @@ struct RecipeDetails {
         }
     }
 
-    struct HandleIngredient {
+    enum HandleIngredient {
         struct Request {
             let name: String
             let state: Bool
         }
     }
 
-    struct HandleFavorites {
+    enum HandleFavorites {
         struct Response {
             let state: Bool
         }
