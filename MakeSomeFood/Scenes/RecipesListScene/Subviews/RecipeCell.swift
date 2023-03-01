@@ -8,12 +8,18 @@
 import UIKit
 import SnapKit
 
-protocol RecipeCellViewModelRepresentable {
+protocol RecipeCellViewModelProtocol {
     var dishName: String { get }
-    var imageURL: String { get }
+    var imageURL: URL? { get }
+
+    init(recipe: Recipe)
 }
 
-final class RecipeCell: UICollectionViewCell {
+protocol RecipeCellRepresentable: UICollectionViewCell {
+    var viewModel: RecipeCellViewModelProtocol? { get set }
+}
+
+final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
 
     // MARK: - Public properties
 
@@ -21,10 +27,9 @@ final class RecipeCell: UICollectionViewCell {
 
     // MARK: - Private properties
 
-    private var imageURL: URL? {
+    var viewModel: RecipeCellViewModelProtocol? {
         didSet {
-            imageView.image = UIImage(named: "placeholder")
-            cacheAndRender()
+            updateView()
         }
     }
 
@@ -43,6 +48,7 @@ final class RecipeCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 16
+        imageView.image = UIImage(named: "placeholder")
         return imageView
     }()
 
@@ -55,7 +61,7 @@ final class RecipeCell: UICollectionViewCell {
         return label
     }()
 
-    private let labelView: UIView = {
+    private let labelBackgroundView: UIView = {
         let view = UIView()
         view.layer.cornerRadius = 8
         let blurEffect = UIBlurEffect(style: .extraLight)
@@ -77,32 +83,26 @@ final class RecipeCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
 
-   // MARK: - Overrides
-    override func prepareForReuse() {
-        indicatorView.startAnimating()
-    }
-
-
-    // MARK: - Public methods
-
-    func setup(with viewModel: RecipeCellViewModelRepresentable) {
-        dishNameLabel.text = viewModel.dishName
-        imageURL = URL(string: viewModel.imageURL)
-    }
-
     // MARK: - Private methods
 
+    private func updateView() {
+        dishNameLabel.text = viewModel?.dishName
+        cacheAndRender()
+    }
+
     private func cacheAndRender() {
-        guard let url = imageURL else { return }
+        guard let url = viewModel?.imageURL else { return }
         if let cachedImage = ImageCache[url.lastPathComponent] {
             imageView.image = cachedImage
             indicatorView.stopAnimating()
         } else {
+            imageView.image = UIImage(named: "placeholder")
+            indicatorView.startAnimating()
             DispatchQueue.global().async { [weak self] in
                 guard let data = try? Data(contentsOf: url) else { return }
                 guard let image = UIImage(data: data) else { return }
                 DispatchQueue.main.async { [weak self] in
-                    if url == self?.imageURL {
+                    if url == self?.viewModel?.imageURL {
                         self?.indicatorView.stopAnimating()
                         self?.imageView.image = image
                         ImageCache[url.lastPathComponent] = image
@@ -122,15 +122,15 @@ final class RecipeCell: UICollectionViewCell {
 
     private func setupConstraints() {
         contentView.addSubview(imageView)
-        imageView.addSubview(labelView)
+        imageView.addSubview(labelBackgroundView)
         imageView.addSubview(indicatorView)
-        labelView.addSubview(dishNameLabel)
+        labelBackgroundView.addSubview(dishNameLabel)
 
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
-        labelView.snp.makeConstraints { make in
+        labelBackgroundView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(dishNameLabel.snp.height).offset(16)
         }

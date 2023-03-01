@@ -10,32 +10,32 @@
 //  see http://clean-swift.com
 //
 
-import UIKit
+import Foundation
 
-struct Recipes {
+enum RecipesList {
 
-    struct LoadRecipes {
+    enum LoadRecipes {
 
         struct Response {
             let recipes: [Recipe]
         }
 
         struct ViewModel {
-            let cells: [RecipeCellViewModelRepresentable]
+            let cells: [RecipeCellViewModelProtocol]
         }
     }
 
-    struct LoadNextRecipes {
+    enum LoadNextRecipes {
         struct Response {
             let recipeRespone: RecipeResponse
         }
 
         struct ViewModel {
-            let cells: [RecipeCellViewModelRepresentable]
+            let cells: [RecipeCellViewModelProtocol]
         }
     }
 
-    struct HandleError {
+    enum HandleError {
         struct Response {
             let error: Error
         }
@@ -46,7 +46,18 @@ struct Recipes {
     }
 }
 
-struct RecipeCellViewModel: RecipeCellViewModelRepresentable {
-    let dishName: String
-    let imageURL: String
+struct RecipeCellViewModel: RecipeCellViewModelProtocol {
+    var dishName: String {
+        recipe.label ?? "noname"
+    }
+
+    var imageURL: URL? {
+        URL(string: recipe.image ?? "")
+    }
+
+    private let recipe: Recipe
+
+    init(recipe: Recipe) {
+        self.recipe = recipe
+    }
 }
