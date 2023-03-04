@@ -47,6 +47,9 @@
 		70216EDC29A118B1008FB54D /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EDB29A118B1008FB54D /* PaddingLabel.swift */; };
 		704AC75029ADFA2700F2D0C2 /* RecipeDetailsConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704AC74F29ADFA2700F2D0C2 /* RecipeDetailsConfigurator.swift */; };
 		704AC75229ADFC5700F2D0C2 /* FavoritesConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704AC75129ADFC5700F2D0C2 /* FavoritesConfigurator.swift */; };
+		704AC75429B1101800F2D0C2 /* FavoritesWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */; };
+		708DB42229B370F500484809 /* Handlee-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 708DB42129B370D700484809 /* Handlee-Regular.ttf */; };
+		708DB42429B3714700484809 /* UIFont + CustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DB42329B3714700484809 /* UIFont + CustomFont.swift */; };
 		709035E029A97EAC0082E930 /* IngredientRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709035DF29A97EAC0082E930 /* IngredientRowView.swift */; };
 		709035E329ACB1350082E930 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 709035E529ACB1350082E930 /* Localizable.stringsdict */; };
 		709035ED29ADEF150082E930 /* FavoritesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709035E729ADEF150082E930 /* FavoritesPresenter.swift */; };
@@ -114,6 +117,9 @@
 		70216EDB29A118B1008FB54D /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		704AC74F29ADFA2700F2D0C2 /* RecipeDetailsConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeDetailsConfigurator.swift; sourceTree = "<group>"; };
 		704AC75129ADFC5700F2D0C2 /* FavoritesConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesConfigurator.swift; sourceTree = "<group>"; };
+		704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesWorker.swift; sourceTree = "<group>"; };
+		708DB42129B370D700484809 /* Handlee-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Handlee-Regular.ttf"; path = "../../../../Downloads/Handlee/Handlee-Regular.ttf"; sourceTree = "<group>"; };
+		708DB42329B3714700484809 /* UIFont + CustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont + CustomFont.swift"; sourceTree = "<group>"; };
 		709035DF29A97EAC0082E930 /* IngredientRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientRowView.swift; sourceTree = "<group>"; };
 		709035E429ACB1350082E930 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		709035E729ADEF150082E930 /* FavoritesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPresenter.swift; sourceTree = "<group>"; };
@@ -162,6 +168,7 @@
 		70216E4F299B59B0008FB54D /* MakeSomeFood */ = {
 			isa = PBXGroup;
 			children = (
+				708DB42029B370CA00484809 /* Resources */,
 				70216ED629A0CA35008FB54D /* Helpers */,
 				70216EB4299BDC72008FB54D /* Extensions */,
 				70216E86299B974D008FB54D /* Scenes */,
@@ -169,7 +176,6 @@
 				70216E70299B5FAD008FB54D /* Services */,
 				70216E6D299B5CB8008FB54D /* App */,
 				70216E64299B5B07008FB54D /* LaunchScreen */,
-				70216E59299B59B2008FB54D /* Assets.xcassets */,
 			);
 			path = MakeSomeFood;
 			sourceTree = "<group>";
@@ -227,10 +233,10 @@
 			children = (
 				70216ECA299E9046008FB54D /* Subviews */,
 				70216E8B299B9757008FB54D /* RecipesViewController.swift */,
-				709035F329ADF2670082E930 /* RecipesConfigurator.swift */,
 				70216E8C299B9757008FB54D /* RecipesInteractor.swift */,
 				70216E87299B9757008FB54D /* RecipesPresenter.swift */,
 				70216E89299B9757008FB54D /* RecipesRouter.swift */,
+				709035F329ADF2670082E930 /* RecipesConfigurator.swift */,
 				70216E8A299B9757008FB54D /* RecipesModels.swift */,
 			);
 			path = RecipesListScene;
@@ -245,6 +251,7 @@
 				70216EA9299BC26C008FB54D /* RecipeDetailsModels.swift */,
 				70216EAA299BC26C008FB54D /* RecipeDetailsViewController.swift */,
 				70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */,
+				704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */,
 				704AC74F29ADFA2700F2D0C2 /* RecipeDetailsConfigurator.swift */,
 			);
 			path = RecipeDetailsScene;
@@ -261,6 +268,7 @@
 				70216EC8299E5298008FB54D /* UIView + DropShadow.swift */,
 				70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */,
 				7010B7FC29A959BA005358B5 /* UIView + MakeSeparator.swift */,
+				708DB42329B3714700484809 /* UIFont + CustomFont.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -290,6 +298,15 @@
 				70216EDB29A118B1008FB54D /* PaddingLabel.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		708DB42029B370CA00484809 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				708DB42129B370D700484809 /* Handlee-Regular.ttf */,
+				70216E59299B59B2008FB54D /* Assets.xcassets */,
+			);
+			path = Resources;
 			sourceTree = "<group>";
 		};
 		709035E629ADEF040082E930 /* FavoritesScene */ = {
@@ -395,6 +412,7 @@
 				70216E5D299B59B2008FB54D /* LaunchScreen.storyboard in Resources */,
 				70216E5A299B59B2008FB54D /* Assets.xcassets in Resources */,
 				709035E329ACB1350082E930 /* Localizable.stringsdict in Resources */,
+				708DB42229B370F500484809 /* Handlee-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -419,6 +437,7 @@
 				70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */,
 				70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */,
 				70216E92299B9757008FB54D /* RecipesInteractor.swift in Sources */,
+				704AC75429B1101800F2D0C2 /* FavoritesWorker.swift in Sources */,
 				70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */,
 				7092310C29A391A000B2B685 /* NutritionFactsView.swift in Sources */,
 				709035ED29ADEF150082E930 /* FavoritesPresenter.swift in Sources */,
@@ -426,6 +445,7 @@
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
 				709035F129ADEF150082E930 /* FavoritesViewController.swift in Sources */,
 				709035E029A97EAC0082E930 /* IngredientRowView.swift in Sources */,
+				708DB42429B3714700484809 /* UIFont + CustomFont.swift in Sources */,
 				70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */,
 				704AC75229ADFC5700F2D0C2 /* FavoritesConfigurator.swift in Sources */,
 				70216EC1299D185B008FB54D /* UILabel Static Factory.swift in Sources */,

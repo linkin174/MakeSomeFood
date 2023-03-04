@@ -16,7 +16,7 @@ import UIKit
 
 protocol RecipeDetailsDisplayLogic: AnyObject {
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel)
-    func displayFavoriteState(viewModel: RecipeDetails.HandleFavorites.ViewModel)
+    func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel)
 }
 
 final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
@@ -31,6 +31,8 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     // MARK: - Views
 
+    private let topMaskView = TopMaskView(fillColor: .mainAccentColor)
+
     private let blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .light)
         let view = UIVisualEffectView(effect: blurEffect)
@@ -40,7 +42,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .mainAccentColor.withAlphaComponent(0.4)
+        scrollView.backgroundColor = .backGroundColor
         scrollView.bounces = true
         scrollView.isUserInteractionEnabled = true
         return scrollView
@@ -65,9 +67,17 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         return imageView
     }()
 
-    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .bold), alignment: .left)
-    private let ingiridientsLabel = UILabel.makeUILabel(text: "List of ingridients:", font: .systemFont(ofSize: 18, weight: .semibold))
-    private let totalNutrientsLabel = UILabel.makeUILabel(text: "Total Nutrients:", font: .systemFont(ofSize: 18, weight: .semibold))
+    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .bold),
+                                                       textColor: .mainTextColor,
+                                                       alignment: .left)
+
+    private let ingiridientsLabel = UILabel.makeUILabel(text: "List of ingridients:",
+                                                        font: .systemFont(ofSize: 18, weight: .semibold),
+                                                        textColor: .mainTextColor)
+
+    private let totalNutrientsLabel = UILabel.makeUILabel(text: "Total Nutrients:",
+                                                          font: .systemFont(ofSize: 18, weight: .semibold),
+                                                          textColor: .mainTextColor)
 
     private let ingridientsStack: UIStackView = {
         let stack = UIStackView()
@@ -130,15 +140,31 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         super.viewDidLoad()
         view.backgroundColor = .white
         setupConstraints()
-        setupUI()
+        setupNavigationBar()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         start()
     }
 
     // MARK: - Private methods
 
-    private func setupUI() {
-        navigationController?.navigationBar.tintColor = .white
-        favoriteButton.imageView?.tintColor = viewModel?.isFavorite ?? false ? .red : .white
+    private func setupNavigationBar() {
+        let appearence = UINavigationBarAppearance()
+        appearence.backgroundColor = .mainAccentColor
+
+        navigationItem.compactAppearance = appearence
+        navigationItem.scrollEdgeAppearance = appearence
+        navigationItem.standardAppearance = appearence
+
+        let backButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
+                                             style: .plain,
+                                             target: self,
+                                             action: #selector(popToRoot))
+
+        backButtonItem.tintColor = .mainTintColor
+        navigationItem.leftBarButtonItem = backButtonItem
     }
 
     private func setupConstraints() {
@@ -207,6 +233,13 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-view.frame.height)
         }
+
+        view.addSubview(topMaskView)
+        topMaskView.snp.makeConstraints { make in
+            make.top.equalTo(view.snp.topMargin)
+            make.leading.trailing.equalToSuperview()
+            make.height.equalTo(16)
+        }
     }
 
     @objc private func showSafariView(_ sender: UIButton) {
@@ -260,8 +293,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     }
 
     @objc private func favoriteButtonTapped() {
-        guard let viewModel else { return }
-        interactor?.handleFavorite(state: !viewModel.isFavorite)
+        interactor?.changeFavoriteState()
+    }
+
+    @objc private func popToRoot() {
+        navigationController?.popViewController(animated: true)
     }
 
     private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
@@ -276,7 +312,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     // MARK: - request data from RecipeDetailsInteractor
 
     func start() {
-        interactor?.start()
+        interactor?.showRecipeDetails()
     }
 
     // MARK: - display view model from RecipeDetailsPresenter
@@ -286,10 +322,9 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
         guard let url = URL(string: viewModel.imageURL) else { return }
         recipeImageView.setImageFrom(url: url)
-
         recipeTitleLabel.text = viewModel.title
-
-        viewModel.ingredientRowiewModels.forEach { ingredient in
+        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
+        viewModel.ingredientRows.forEach { ingredient in
             let ingredientView = IngredientRowView(viewModel: ingredient)
             ingredientView.delegate = self
             ingridientsStack.addArrangedSubview(ingredientView)
@@ -300,14 +335,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             }
         }
         nutritionFactsView.setup(with: viewModel.nutritionFactsViewModel)
-
-        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
     }
 
-    func displayFavoriteState(viewModel: RecipeDetails.HandleFavorites.ViewModel) {
-        self.viewModel?.isFavorite = viewModel.state
+    func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel) {
         #warning("make animations")
-        favoriteButton.imageView?.tintColor = viewModel.state ? .red : .white
+        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
     }
 }
 

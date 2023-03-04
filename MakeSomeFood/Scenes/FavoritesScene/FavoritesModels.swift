@@ -12,43 +12,17 @@
 
 import UIKit
 
-enum Favorites
-{
+enum FavoritesList {
     // MARK: Use cases
 
-    enum Something
-    {
-        struct Request
-        {
+    enum ShowFavorites {
 
+        struct Response {
+            let recipes: [Recipe]
         }
 
-        struct Response
-        {
-
-        }
-
-        struct ViewModel
-        {
-
+        struct ViewModel {
+            let cells: [RecipeCellViewModelProtocol]
         }
     }
-    
-//    enum SomethingElse
-//    {
-//        struct Request
-//        {
-//
-//        }
-//
-//        struct Response
-//        {
-//
-//        }
-//
-//        struct ViewModel
-//        {
-//
-//        }
-//    }
 }

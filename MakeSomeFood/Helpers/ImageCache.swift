@@ -21,3 +21,17 @@ final class ImageCache {
         }
     }
 }
+
+//final class ImageDataCache {
+//    private static var cache = NSCache<NSString, Data>()
+//
+//    static subscript(urlString: String) -> Data? {
+//        get {
+//            ImageDataCache.cache.object(forKey: urlString as NSString)
+//        } set {
+//            if let newValue {
+//                ImageDataCache.cache.setObject(newValue, forKey: urlString as NSString)
+//            }
+//        }
+//    }
+//}

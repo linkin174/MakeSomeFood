@@ -6,6 +6,10 @@
 	<string>$(API_KEY)</string>
 	<key>APP_KEY</key>
 	<string>$(APP_KEY)</string>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Handlee-Regular.ttf</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

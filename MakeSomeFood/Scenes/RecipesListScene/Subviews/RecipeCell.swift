@@ -11,11 +11,10 @@ import SnapKit
 protocol RecipeCellViewModelProtocol {
     var dishName: String { get }
     var imageURL: URL? { get }
-
     init(recipe: Recipe)
 }
 
-protocol RecipeCellRepresentable: UICollectionViewCell {
+protocol RecipeCellRepresentable {
     var viewModel: RecipeCellViewModelProtocol? { get set }
 }
 

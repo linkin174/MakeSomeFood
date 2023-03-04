@@ -14,11 +14,10 @@ import UIKit
 
 protocol FavoritesBusinessLogic {
     func start()
-//    func doSomethingElse(request: Favorites.SomethingElse.Request)
 }
 
 protocol FavoritesDataStore {
-    //var name: String { get set }
+    var recipes: [Recipe] { get }
 }
 
 final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
@@ -26,6 +25,7 @@ final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
     // MARK: - Public properties
 
     var presenter: FavoritesPresentationLogic?
+    var recipes: [Recipe] = []
 
     // MARK: - Private Properties
 
@@ -40,9 +40,9 @@ final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
     // MARK: - Interaction Logic
     
     func start() {
-        let favorites = storageService.loadFavorites()
-        print(favorites.map { $0.label })
-        let response = Favorites.Something.Response()
+        #warning("USE WORKER ALREADY EXISTING IN DETAILS")
+        recipes = storageService.loadFavorites()
+        let response = FavoritesList.ShowFavorites.Response(recipes: recipes)
         presenter?.presentSomething(response: response)
     }
 }

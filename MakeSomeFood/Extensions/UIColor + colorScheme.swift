@@ -16,4 +16,20 @@ extension UIColor {
     class var selectedMenuItemColor: UIColor {
         UIColor(named: "selectedMenuItem") ?? .white
     }
+
+    class var mainTextColor: UIColor {
+        UIColor(named: "mainTextColor") ?? .black
+    }
+
+    class var disabledColor: UIColor {
+        UIColor(named: "disabledColor") ?? .gray
+    }
+
+    class var backGroundColor: UIColor {
+        UIColor(named: "mainBGColor") ?? .white
+    }
+
+    class var mainTintColor: UIColor {
+        UIColor(named: "mainTintColor") ?? .white
+    }
 }

@@ -13,7 +13,7 @@
 import UIKit
 
 @objc protocol FavoritesRoutingLogic {
-    //func routeToSomewhere(segue: UIStoryboardSegue?)
+    func routeToRecipeDetails()
 }
 
 protocol FavoritesDataPassing {
@@ -21,34 +21,33 @@ protocol FavoritesDataPassing {
 }
 
 class FavoritesRouter: FavoritesRoutingLogic, FavoritesDataPassing {
+
     weak var viewController: FavoritesViewController?
     var dataStore: FavoritesDataStore?
 
-// MARK: Routing (navigating to other screens)
+    func routeToRecipeDetails() {
 
-//func routeToSomewhere(segue: UIStoryboardSegue?) {
-//    if let segue = segue {
-//        let destinationVC = segue.destination as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//    } else {
-//        let storyboard = UIStoryboard(name: "Main", bundle: nil)
-//        let destinationVC = storyboard.instantiateViewController(withIdentifier: "SomewhereViewController") as! SomewhereViewController
-//        var destinationDS = destinationVC.router!.dataStore!
-//        passDataToSomewhere(source: dataStore!, destination: &destinationDS)
-//        navigateToSomewhere(source: viewController!, destination: destinationVC)
-//    }
-//}
+        let destination = RecipeDetailsViewController()
 
-// MARK: Navigation to other screen
+        guard
+            let source = viewController,
+            var destinationDS = destination.router?.dataStore,
+            let dataStore
+        else {
+            return
+        }
+        passDataToRecipeDetails(source: dataStore, destination: &destinationDS)
+        navigateToRecipeDetails(source: source, destination: destination)
+    }
 
-//func navigateToSomewhere(source: FavoritesViewController, destination: SomewhereViewController) {
-//    source.show(destination, sender: nil)
-//}
+    private func passDataToRecipeDetails(source: FavoritesDataStore, destination: inout RecipeDetailsDataStore) {
+        guard let viewController else { return }
+        guard let indexPath = viewController.collectionView.indexPathsForSelectedItems?.first else { return }
+        let recipe = source.recipes[indexPath.item]
+        destination.recipe = recipe
+    }
 
-// MARK: Passing data to other screen
-
-//    func passDataToSomewhere(source: FavoritesDataStore, destination: inout SomewhereDataStore) {
-//        destination.name = source.name
-//    }
+    private func navigateToRecipeDetails(source: UIViewController, destination: UIViewController) {
+        source.navigationController?.pushViewController(destination, animated: true)
+    }
 }

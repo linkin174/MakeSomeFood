@@ -6,11 +6,13 @@
 //
 import UIKit
 
-protocol NutrientRowViewRepresentable {
+protocol NutrientRowViewModelProtocol {
     var name: String { get }
     var value: String { get }
     var unit: String { get }
     var dailyPercentage: String { get }
+
+    init(digest: Digest, servings: Double)
 }
 
 final class NutrientRowView: UIView {
@@ -30,16 +32,17 @@ final class NutrientRowView: UIView {
 
     // MARK: - Public properties
 
-    func setup(with viewModel: NutrientRowViewRepresentable) {
+    func setup(with viewModel: NutrientRowViewModelProtocol) {
         nutrientNameLabel.text = viewModel.name
         nutrientValueLabel.text = viewModel.value + viewModel.unit
-        nutrientPercentageLabel.text = viewModel.dailyPercentage + "%"
+        nutrientPercentageLabel.text = viewModel.dailyPercentage
     }
 
     // MARK: - Private methods
 
     private func setupConstraints() {
         addSubview(separator)
+
         separator.snp.makeConstraints { make in
             make.height.equalTo(1)
             make.width.equalToSuperview()

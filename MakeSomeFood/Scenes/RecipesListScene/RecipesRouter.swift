@@ -50,14 +50,14 @@ final class RecipesRouter: RecipesRoutingLogic, RecipesDataPassing {
 
 // MARK: Passing data to other screen
 
-    func passDataToRecipeDetails(source: RecipesDataStore, destination: inout RecipeDetailsDataStore) {
+    private func passDataToRecipeDetails(source: RecipesDataStore, destination: inout RecipeDetailsDataStore) {
         guard let viewController else { return }
         guard let indexPath = viewController.collectionView.indexPathsForSelectedItems?.first else { return }
         let recipe = source.recipes[indexPath.item]
         destination.recipe = recipe
     }
 
-    func navigateToRecipeDetails(source: UIViewController, destination: UIViewController) {
+    private func navigateToRecipeDetails(source: UIViewController, destination: UIViewController) {
         source.navigationController?.pushViewController(destination, animated: true)
     }
 }

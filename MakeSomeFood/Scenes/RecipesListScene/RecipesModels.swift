@@ -47,6 +47,7 @@ enum RecipesList {
 }
 
 struct RecipeCellViewModel: RecipeCellViewModelProtocol {
+
     var dishName: String {
         recipe.label ?? "noname"
     }

@@ -8,11 +8,12 @@
 import SnapKit
 import UIKit
 
-protocol NutritionFactsViewRepresentable {
+protocol NutritionFactsViewModelProtocol {
     var servings: String { get }
     var caloriesPerServing: String { get }
-    var nutrients: [NutrientRowViewRepresentable] { get }
-    var vitamins: [NutrientRowViewRepresentable] { get }
+    var nutrientsRowViewModels: [NutrientRowViewModelProtocol] { get }
+    var vitaminsRowViewModels: [NutrientRowViewModelProtocol] { get }
+    init(recipe: Recipe)
 }
 
 final class NutritionFactsView: UIView {
@@ -21,11 +22,10 @@ final class NutritionFactsView: UIView {
     private let headerLabel = UILabel.makeUILabel(text: "Nutrition Facts",
                                                   font: .systemFont(ofSize: 34, weight: .black))
 
-    private let servingsLabel = UILabel.makeUILabel(text: "Servings",
-                                                    font: .systemFont(ofSize: 18),
+    private let servingsLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 18),
                                                     alignment: .left)
 
-    private let ammountPerServingsLabel = UILabel.makeUILabel(text: "Ammount per serving",
+    private let ammountPerServingsLabel = UILabel.makeUILabel(text: "Ammount per servings:",
                                                               font: .systemFont(ofSize: 14, weight: .black),
                                                               alignment: .left)
 
@@ -74,18 +74,21 @@ final class NutritionFactsView: UIView {
 
     // MARK: - Public methods
 
-    func setup(with viewModel: NutritionFactsViewRepresentable) {
-        servingsLabel.text = "Servings: \(viewModel.servings)"
+    func setup(with viewModel: NutritionFactsViewModelProtocol) {
+        servingsLabel.text = viewModel.servings
+        #warning("duplicating makes here, a solution but...")
         caloriesValueLabel.text = viewModel.caloriesPerServing
-        viewModel.nutrients.forEach { nutrient in
-            let view = NutrientRowView()
-            view.setup(with: nutrient)
-            nutrientsStackView.addArrangedSubview(view)
-            view.snp.makeConstraints { make in
-                make.width.equalToSuperview()
-                make.height.equalTo(30)
+        if nutrientsStackView.arrangedSubviews.isEmpty {
+            viewModel.nutrientsRowViewModels.forEach { nutrient in
+                let view = NutrientRowView()
+                view.setup(with: nutrient)
+                nutrientsStackView.addArrangedSubview(view)
+                view.snp.makeConstraints { make in
+                    make.width.equalToSuperview()
+                    make.height.equalTo(30)
+                }
             }
-        }
+
 
         let separator = UIView.makeSeparator()
         nutrientsStackView.addArrangedSubview(separator)
@@ -93,14 +96,14 @@ final class NutritionFactsView: UIView {
             make.width.equalToSuperview()
             make.height.equalTo(10)
         }
-
-        viewModel.vitamins.forEach { vitamin in
-            let view = NutrientRowView()
-            view.setup(with: vitamin)
-            nutrientsStackView.addArrangedSubview(view)
-            view.snp.makeConstraints { make in
-                make.width.equalToSuperview()
-                make.height.equalTo(30)
+            viewModel.vitaminsRowViewModels.forEach { vitamin in
+                let view = NutrientRowView()
+                view.setup(with: vitamin)
+                nutrientsStackView.addArrangedSubview(view)
+                view.snp.makeConstraints { make in
+                    make.width.equalToSuperview()
+                    make.height.equalTo(30)
+                }
             }
         }
     }

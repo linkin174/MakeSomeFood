@@ -16,18 +16,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(frame: windowScene.coordinateSpace.bounds)
         window?.windowScene = windowScene
-
         let tabBarController = UITabBarController()
-        tabBarController.tabBar.barTintColor = .mainAccentColor
-        tabBarController.tabBar.tintColor = .white.withAlphaComponent(0.8)
-        tabBarController.tabBar.backgroundColor = .mainAccentColor
-
         let homeVC = RecipesViewController()
-        let favorites = FavoritesViewController()
-        homeVC.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
-        favorites.tabBarItem = UITabBarItem(title: "Favorites", image: UIImage(systemName: "heart.fill"), tag: 1)
+        let favoritesVC = FavoritesViewController()
         tabBarController.viewControllers = [UINavigationController(rootViewController: homeVC),
-                                            UINavigationController(rootViewController: favorites)]
+                                            UINavigationController(rootViewController: favoritesVC)]
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }

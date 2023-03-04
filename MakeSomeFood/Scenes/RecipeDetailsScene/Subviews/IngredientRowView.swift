@@ -11,6 +11,7 @@ import SnapKit
 protocol IngredientViewModelProtocol {
     var imageURL: String { get }
     var name: String { get }
+    var food: String { get }
     var weight: String { get }
     var isExisting: Bool { get set }
 }
@@ -91,7 +92,7 @@ final class IngredientRowView: UIView {
             }
         }
         viewModel.isExisting.toggle()
-        delegate.handleIngredientExistance(name: viewModel.name, state: viewModel.isExisting)
+        delegate.handleIngredientExistance(name: viewModel.food, state: viewModel.isExisting)
     }
 
     private func setup() {

@@ -13,20 +13,34 @@
 import UIKit
 
 enum RecipeDetails {
+
     enum ShowRecipeDetails {
+
         struct Response {
             let recipe: Recipe
-            let existingIngredients: [Ingredient]
+            let isFavorite: Bool
+            let existingIngredientLabels: [String]
         }
+        
         struct ViewModel {
             let imageURL: String
             let recipeURL: String
             let title: String
             let totalWeight: String
             let coockingTime: String?
-            let nutritionFactsViewModel: NutritionFactsViewRepresentable
-            let ingredientRowiewModels: [IngredientViewModelProtocol]
-            var isFavorite: Bool
+            let isFavorite: Bool
+            let nutritionFactsViewModel: NutritionFactsViewModelProtocol
+            let ingredientRows: [IngredientViewModelProtocol]
+        }
+    }
+
+    enum SetFavoriteState {
+        struct Response {
+            let isFavorite: Bool
+        }
+
+        struct ViewModel {
+            let isFavorite: Bool
         }
     }
 
@@ -36,34 +50,79 @@ enum RecipeDetails {
             let state: Bool
         }
     }
+}
 
-    enum HandleFavorites {
-        struct Response {
-            let state: Bool
-        }
-        struct ViewModel {
-            let state: Bool
-        }
+struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
+
+    var servings: String {
+        "Servings: \(Int(recipe.yield ?? 0))"
+    }
+
+    var caloriesPerServing: String {
+        let caloriesPerServing = (recipe.calories ?? 0) / (recipe.yield ?? 0)
+        return String(format: "%.f", caloriesPerServing)
+    }
+
+    var nutrientsRowViewModels: [NutrientRowViewModelProtocol] {
+
+        return makeNutrientViewModels()
+    }
+    var vitaminsRowViewModels: [NutrientRowViewModelProtocol] {
+        makeVitaminsViewModels()
+    }
+
+    private var recipe: Recipe
+
+    init(recipe: Recipe) {
+        self.recipe = recipe
+    }
+
+    private func makeNutrientViewModels() -> [NutrientRowViewModelProtocol] {
+        recipe.digest
+            .filter { $0.unit == "g" && $0.total > 0 }
+            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
+    }
+
+    private func makeVitaminsViewModels() -> [NutrientRowViewModelProtocol] {
+        recipe.digest
+            .filter { $0.unit != "g" && $0.total > 0 }
+            .sorted(by: { $0.total > $1.total })
+            .prefix(10)
+            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
     }
 }
 
-struct NutritionFactsViewModel: NutritionFactsViewRepresentable {
-    var servings: String
-    var caloriesPerServing: String
-    var nutrients: [NutrientRowViewRepresentable]
-    var vitamins: [NutrientRowViewRepresentable]
-}
+struct NutrientRowViewModel: NutrientRowViewModelProtocol {
 
-struct NutrientRowViewModel: NutrientRowViewRepresentable {
-    var name: String
-    var value: String
-    var unit: String
-    var dailyPercentage: String
+    var name: String {
+        digest.label
+    }
+
+    var value: String {
+        String(format: "%.f", digest.total )
+    }
+
+    var unit: String {
+        digest.unit
+    }
+
+    var dailyPercentage: String {
+        "\(String(format: "%.f", digest.daily / servings)) %"
+    }
+
+    private let digest: Digest
+    private let servings: Double
+
+    init(digest: Digest, servings: Double) {
+        self.digest = digest
+        self.servings = servings
+    }
 }
 
 struct IngredientRowViewModel: IngredientViewModelProtocol {
-    var imageURL: String
-    var name: String
-    var weight: String
+    let imageURL: String
+    let name: String
+    let food: String
+    let weight: String
     var isExisting: Bool
 }

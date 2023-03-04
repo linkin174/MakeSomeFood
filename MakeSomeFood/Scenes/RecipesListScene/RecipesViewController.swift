@@ -43,8 +43,6 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         return indicator
     }()
 
-    #warning("extract collectionview")
-
     lazy var collectionView: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
@@ -59,6 +57,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.showsVerticalScrollIndicator = false
+        collectionView.backgroundColor = .backGroundColor
         collectionView.register(RecipeCell.self, forCellWithReuseIdentifier: RecipeCell.reuseID)
         return collectionView
     }()
@@ -81,8 +80,13 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         super.viewDidLoad()
         view.addSubview(collectionView)
         setupConstraints()
-        setupNavigationBar()
         start()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupTabBar()
+        setupNavigationBar()
     }
 
     // MARK: - Private methods
@@ -94,15 +98,32 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.backgroundColor = .mainAccentColor
         appearence.shadowColor = nil
-        navigationController?.navigationBar.compactAppearance = appearence
-        navigationController?.navigationBar.scrollEdgeAppearance = appearence
-        navigationController?.navigationBar.standardAppearance = appearence
+
+        navigationItem.compactAppearance = appearence
+        navigationItem.scrollEdgeAppearance = appearence
+        navigationItem.standardAppearance = appearence
+
+        let titleView = UILabel()
+        titleView.text = "Recipes"
+        titleView.font = .handlee(of: 40)
+        titleView.textColor = .mainTintColor
+        navigationItem.titleView = titleView
+
         let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"),
                                            style: .plain,
                                            target: self,
                                            action: #selector(showFilters))
         searchButton.tintColor = .white
         navigationItem.rightBarButtonItem = searchButton
+    }
+
+    private func setupTabBar() {
+        tabBarController?.tabBar.isTranslucent = false
+        tabBarController?.tabBar.barTintColor = .mainAccentColor
+        tabBarController?.tabBar.tintColor = .mainTintColor
+        tabBarController?.tabBar.backgroundColor = .mainAccentColor
+        tabBarController?.tabBar.unselectedItemTintColor = .disabledColor
+        tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
     }
 
     private func setupConstraints() {
@@ -178,12 +199,15 @@ extension RecipesViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard
-            var cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCellRepresentable
-        else { return UICollectionViewCell() }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID,
+                                                          for: indexPath) as? RecipeCell
+        else {
+            return UICollectionViewCell()
+        }
         if let cellVM = viewModel?.cells[indexPath.item] {
             cell.viewModel = cellVM
         }
-        return cell as! RecipeCell
+        return cell
     }
 }
 

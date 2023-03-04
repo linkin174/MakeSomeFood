@@ -14,11 +14,10 @@ import UIKit
 
 protocol RecipeDetailsPresentationLogic {
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response)
-    func presentFavoriteState(response: RecipeDetails.HandleFavorites.Response)
+    func presentFavoriteState(response: RecipeDetails.SetFavoriteState.Response)
 }
 
 final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
-    
     // MARK: - Public properties
 
     weak var viewController: RecipeDetailsDisplayLogic?
@@ -26,10 +25,8 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
     // MARK: - Presentation Logic
 
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response) {
-
-        typealias ViewModel = RecipeDetails.ShowRecipeDetails.ViewModel
-
         let recipe = response.recipe
+        let existingIngredients = response.existingIngredientLabels
 
         #warning("not used")
         var cookingTime: String? {
@@ -42,104 +39,32 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
             }
         }
 
-        let nutritionFactsViewModel = makeNutritionFactsViewModel(from: recipe)
+        let nutritionFactsViewModel = NutritionFactsViewModel(recipe: recipe)
 
-        let ingedientViewModels = makeIngredientsViewModels(from: recipe,
-                                                            existingIngredients: response.existingIngredients)
+        let ingredientRowViewModels = recipe.ingredients.map { ingredient in
+            let isExisting = existingIngredients.contains(ingredient.food)
 
-        let viewModel = ViewModel(imageURL: recipe.image ?? "",
-                                  recipeURL: recipe.url ?? "",
-                                  title: recipe.label ?? "",
-                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
-                                  coockingTime: cookingTime,
-                                  nutritionFactsViewModel: nutritionFactsViewModel,
-                                  ingredientRowiewModels: ingedientViewModels,
-                                  isFavorite: recipe.isFavorite ?? false)
+            return IngredientRowViewModel(imageURL: ingredient.image ?? "",
+                                          name: ingredient.text,
+                                          food: ingredient.food,
+                                          weight: String(format: "%.f", ingredient.weight),
+                                          isExisting: isExisting)
+        }
+
+        let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: recipe.image ?? "",
+                                                                  recipeURL: recipe.url ?? "",
+                                                                  title: recipe.label ?? "",
+                                                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
+                                                                  coockingTime: cookingTime,
+                                                                  isFavorite: response.isFavorite,
+                                                                  nutritionFactsViewModel: nutritionFactsViewModel,
+                                                                  ingredientRows: ingredientRowViewModels)
 
         viewController?.displayRecipeDetails(viewModel: viewModel)
     }
 
-    func presentFavoriteState(response: RecipeDetails.HandleFavorites.Response) {
-        let viewModel = RecipeDetails.HandleFavorites.ViewModel(state: response.state)
+    func presentFavoriteState(response: RecipeDetails.SetFavoriteState.Response) {
+        let viewModel = RecipeDetails.SetFavoriteState.ViewModel(isFavorite: response.isFavorite)
         viewController?.displayFavoriteState(viewModel: viewModel)
-    }
-}
-
-// MARK: - Extensions
-
-extension RecipeDetailsPresenter {
-
-    private func makeIngredientsViewModels(from recipe: Recipe,
-                                           existingIngredients: [Ingredient]) -> [IngredientViewModelProtocol] {
-
-        recipe.ingredients.map { ingredient in
-            IngredientRowViewModel(imageURL: ingredient.image ?? "",
-                                    name: ingredient.text,
-                                    weight: String(format: "%.f", ingredient.weight),
-                                    isExisting: existingIngredients.contains(where: { $0.foodId == ingredient.foodId }))
-        }
-    }
-
-    private func makeNutritionFactsViewModel(from recipe: Recipe) -> NutritionFactsViewRepresentable {
-        var caloriesPerServing: String {
-            let calories = recipe.calories ?? 0 / (recipe.yield ?? 0)
-            return String(format: "%.f", calories) + " kCal"
-        }
-
-        return NutritionFactsViewModel(servings: String(format: "%.f", recipe.yield ?? 0),
-                                       caloriesPerServing: caloriesPerServing,
-                                       nutrients: makeNutrientsViewModels(from: recipe),
-                                       vitamins: makeVitaminsViewModels(from: recipe))
-    }
-
-    private func makeNutrientsViewModels(from recipe: Recipe) -> [NutrientRowViewRepresentable] {
-        var viewModels = recipe.digest
-            .filter { $0.total > 0 && $0.unit == "g" && $0.label != "Water" }
-            .map { digest in
-                let valuePerServing = digest.total / (recipe.yield ?? 0)
-                let dailyPercentage = digest.daily / (recipe.yield ?? 0)
-
-                return NutrientRowViewModel(name: digest.label,
-                                            value: String(format: "%.f", valuePerServing),
-                                            unit: digest.unit,
-                                            dailyPercentage: String(format: "%.f", dailyPercentage))
-            }
-
-        // DIGEST not including fibers and cholesterol so lets add them
-
-        if let fiber = recipe.totalNutrients?.fibtg {
-            let fiberRow = NutrientRowViewModel(name: fiber.label,
-                                                value: String(format: "%.f", fiber.quantity / (recipe.yield ?? 0)),
-                                                unit: fiber.unit,
-                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily?.fibtg?.quantity ?? 0) / (recipe.yield ?? 0)))
-            viewModels.append(fiberRow)
-        }
-
-        if let cholesterol = recipe.totalNutrients?.chole {
-            let fiberRow = NutrientRowViewModel(name: cholesterol.label,
-                                                value: String(format: "%.f", cholesterol.quantity / (recipe.yield ?? 0)),
-                                                unit: cholesterol.unit,
-                                                dailyPercentage: String(format: "%.f", (recipe.totalDaily?.chole?.quantity ?? 0) / (recipe.yield ?? 0)))
-            viewModels.append(fiberRow)
-        }
-
-        return viewModels
-    }
-
-    private func makeVitaminsViewModels(from recipe: Recipe) -> [NutrientRowViewRepresentable] {
-        let viewModels = recipe.digest
-            .filter { $0.unit != "g" && $0.total > 0 }
-            .sorted(by: { $0.daily > $1.daily })
-            .prefix(10)
-            .map { digest in
-                let valuePerServing = digest.total / (recipe.yield ?? 0)
-                let dailyPercentage = digest.daily / (recipe.yield ?? 0)
-
-                return NutrientRowViewModel(name: digest.label,
-                                            value: String(format: "%.f", valuePerServing),
-                                            unit: digest.unit,
-                                            dailyPercentage: String(format: "%.f", dailyPercentage))
-            }
-        return viewModels
     }
 }

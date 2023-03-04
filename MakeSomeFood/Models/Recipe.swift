@@ -52,6 +52,7 @@ struct Recipe: Codable, Equatable {
     let images: Images?
     let source: String?
     let url: String?
+    let uri: String
     let shareAs: String?
     let yield: Double?
     let dietLabels: [String]
@@ -67,7 +68,6 @@ struct Recipe: Codable, Equatable {
     let totalDaily: TotalNutrients?
     let digest: [Digest]
     let mealType: [String]
-    var isFavorite: Bool?
     
     static func == (lhs: Recipe, rhs: Recipe) -> Bool {
         lhs.shareAs == rhs.shareAs

@@ -13,21 +13,25 @@
 import UIKit
 
 protocol RecipeDetailsBusinessLogic {
-    func start()
+    func showRecipeDetails()
+    func changeFavoriteState()
     func handleIngredient(request: RecipeDetails.HandleIngredient.Request)
-    func handleFavorite(state: Bool)
 }
 
 protocol RecipeDetailsDataStore {
     var recipe: Recipe? { get set }
+    var isFavorite: Bool { get set }
 }
 
 class RecipeDetailsInteractor: RecipeDetailsBusinessLogic, RecipeDetailsDataStore {
 
     // MARK: - Public Properties
 
-    var recipe: Recipe?
     var presenter: RecipeDetailsPresentationLogic?
+    var worker: FavoritesWorkerProtocol?
+    var recipe: Recipe?
+    var isFavorite: Bool = false
+
 
     // MARK: - Private properties
 
@@ -37,39 +41,36 @@ class RecipeDetailsInteractor: RecipeDetailsBusinessLogic, RecipeDetailsDataStor
 
     init(storageService: StoringProtocol) {
         self.storageService = storageService
+        #warning("something wrong here, maybe init?")
+        worker = FavoritesWorker(storageService: storageService)
     }
 
     // MARK: - Intercation Logic
 
-    func start() {
-        guard var recipe else { return }
-        let favoriteState = storageService.loadFavorites().contains(recipe)
-        recipe.isFavorite = favoriteState
+    func showRecipeDetails() {
+        guard let recipe else { return }
+        isFavorite = worker?.getFavoriteStatus(for: recipe) ?? false
         let existingIngredients = storageService.loadIngredients()
         let response = RecipeDetails.ShowRecipeDetails.Response(recipe: recipe,
-                                                                existingIngredients: existingIngredients)
+                                                                isFavorite: isFavorite,
+                                                                existingIngredientLabels: existingIngredients)
         presenter?.presentRecipeDetails(response: response)
     }
 
-    func handleIngredient(request: RecipeDetails.HandleIngredient.Request) {
-        guard let ingredient = recipe?.ingredients.first(where: { $0.text == request.name }) else { return }
-        if request.state {
-            storageService.save(ingredient: ingredient)
-        } else {
-            storageService.remove(ingredient: ingredient)
-        }
+    func changeFavoriteState() {
+        guard let recipe else { return }
+        isFavorite.toggle()
+        worker?.setFavoriteStatus(for: recipe, state: isFavorite)
+        let response = RecipeDetails.SetFavoriteState.Response(isFavorite: isFavorite)
+        presenter?.presentFavoriteState(response: response)
     }
 
-    func handleFavorite(state: Bool) {
-        guard var recipe else { return }
-        if state {
-            recipe.isFavorite = true
-            storageService.addFavorite(recipe: recipe)
+    #warning("think about saving ingredients. Maybe model")
+    func handleIngredient(request: RecipeDetails.HandleIngredient.Request) {
+        if request.state {
+            storageService.save(ingredient: request.name)
         } else {
-            recipe.isFavorite = false
-            storageService.removeFavorite(recipe: recipe)
+            storageService.remove(ingredient: request.name)
         }
-        let response = RecipeDetails.HandleFavorites.Response(state: state)
-        presenter?.presentFavoriteState(response: response)
     }
 }
