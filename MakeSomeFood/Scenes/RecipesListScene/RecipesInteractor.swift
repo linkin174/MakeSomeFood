@@ -60,7 +60,7 @@ class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
     }
 
     func loadNextRecipes() {
-        guard let endPoint = recipieResponse?.links.next?.href else { return }
+        guard let endPoint = recipieResponse?.links?.next?.href else { return }
         fetcherService.fetchNextRecipes(from: endPoint) { [unowned self] result in
             switch result {
             case .success(let recipeResponse):

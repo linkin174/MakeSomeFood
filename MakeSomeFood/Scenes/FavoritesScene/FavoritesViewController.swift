@@ -40,7 +40,7 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
         let itemSide = view.bounds.width / 2 - layout.minimumInteritemSpacing * 1.5
         layout.itemSize = CGSize(width: itemSide, height: itemSide)
 
-        let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .backGroundColor
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -111,6 +111,10 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
 
     private func setupConstraints() {
         view.addSubview(collectionView)
+
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
         view.addSubview(topMaskView)
         topMaskView.snp.makeConstraints { make in
             make.top.equalTo(view.snp.topMargin)

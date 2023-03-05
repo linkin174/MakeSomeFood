@@ -74,6 +74,7 @@ final class StorageService: StoringProtocol {
     }
 
     func save(ingredient: String) {
+        print("saved ingredient \(ingredient)")
         var ingredients = loadIngredients()
         ingredients.append(ingredient)
         guard let data = try? JSONEncoder().encode(ingredients) else { return }

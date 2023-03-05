@@ -53,17 +53,16 @@ final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
 
     private let dishNameLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .black
-        label.numberOfLines = 3
-        label.textAlignment = .left
+        label.textColor = .mainTextColor
+        label.numberOfLines = 2
+        label.textAlignment = .center
         label.font = .systemFont(ofSize: 16, weight: .bold)
         return label
     }()
 
     private let labelBackgroundView: UIView = {
         let view = UIView()
-        view.layer.cornerRadius = 8
-        let blurEffect = UIBlurEffect(style: .extraLight)
+        let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
         let blurEffectView = UIVisualEffectView(effect: blurEffect)
         blurEffectView.frame = view.bounds
         blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -131,17 +130,18 @@ final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
 
         labelBackgroundView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
-            make.height.equalTo(dishNameLabel.snp.height).offset(16)
+            make.height.equalTo(dishNameLabel.snp.height).offset(8)
         }
 
         indicatorView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-
+        
         dishNameLabel.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview().inset(8)
+            make.bottom.equalToSuperview().inset(4)
+            make.height.equalTo(40)
         }
     }
 }

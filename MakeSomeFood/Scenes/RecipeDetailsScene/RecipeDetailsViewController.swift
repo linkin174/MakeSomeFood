@@ -34,7 +34,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     private let topMaskView = TopMaskView(fillColor: .mainAccentColor)
 
     private let blurView: UIVisualEffectView = {
-        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
         let view = UIVisualEffectView(effect: blurEffect)
         view.alpha = 0
         return view
@@ -44,6 +44,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         let scrollView = UIScrollView()
         scrollView.backgroundColor = .backGroundColor
         scrollView.bounces = true
+        scrollView.delegate = self
         scrollView.isUserInteractionEnabled = true
         return scrollView
     }()
@@ -141,10 +142,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         view.backgroundColor = .white
         setupConstraints()
         setupNavigationBar()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
         start()
     }
 
@@ -153,18 +150,15 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     private func setupNavigationBar() {
         let appearence = UINavigationBarAppearance()
         appearence.backgroundColor = .mainAccentColor
+        appearence.shadowColor = nil
+        appearence.shadowImage = nil
+
+        navigationController?.navigationBar.tintColor = .mainTintColor
 
         navigationItem.compactAppearance = appearence
         navigationItem.scrollEdgeAppearance = appearence
         navigationItem.standardAppearance = appearence
-
-        let backButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.left"),
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(popToRoot))
-
-        backButtonItem.tintColor = .mainTintColor
-        navigationItem.leftBarButtonItem = backButtonItem
+        navigationItem.backBarButtonItem?.tintColor = .mainTintColor
     }
 
     private func setupConstraints() {
@@ -224,10 +218,12 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
         view.addSubview(blurView)
         blurView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.top.equalTo(view.snp.topMargin)
+            make.bottom.equalTo(view.snp.bottomMargin)
+            make.leading.trailing.equalToSuperview()
         }
 
-        view.addSubview(nutritionFactsView)
+        blurView.contentView.addSubview(nutritionFactsView)
         nutritionFactsView.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(32)
             make.centerX.equalToSuperview()
@@ -279,6 +275,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
                 if translation.y > -100 {
                     self.nutritionFactsView.snp.updateConstraints { make in
                         make.centerY.equalToSuperview()
+                        self.blurView.alpha = 1
                     }
                 } else {
                     self.nutritionFactsView.snp.updateConstraints { make in
@@ -294,10 +291,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     @objc private func favoriteButtonTapped() {
         interactor?.changeFavoriteState()
-    }
-
-    @objc private func popToRoot() {
-        navigationController?.popViewController(animated: true)
     }
 
     private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
@@ -340,6 +333,20 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel) {
         #warning("make animations")
         favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
+    }
+}
+
+// MARK: - Extensions
+
+extension RecipeDetailsViewController: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        #warning("track navigation bar height obviosly its 91")
+        if scrollView.contentOffset.y + 91 < 0 {
+            topMaskView.snp.updateConstraints { make in
+                make.height.equalTo(100)
+                view.layoutIfNeeded()
+            }
+        }
     }
 }
 

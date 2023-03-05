@@ -168,13 +168,13 @@
 		70216E4F299B59B0008FB54D /* MakeSomeFood */ = {
 			isa = PBXGroup;
 			children = (
-				708DB42029B370CA00484809 /* Resources */,
 				70216ED629A0CA35008FB54D /* Helpers */,
 				70216EB4299BDC72008FB54D /* Extensions */,
 				70216E86299B974D008FB54D /* Scenes */,
 				70216E75299B614B008FB54D /* Models */,
 				70216E70299B5FAD008FB54D /* Services */,
 				70216E6D299B5CB8008FB54D /* App */,
+				708DB42029B370CA00484809 /* Resources */,
 				70216E64299B5B07008FB54D /* LaunchScreen */,
 			);
 			path = MakeSomeFood;

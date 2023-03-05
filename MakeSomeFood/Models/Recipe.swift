@@ -9,10 +9,10 @@ import Foundation
 // MARK: - RecipeResponse
 
 struct RecipeResponse: Codable {
-    let from: Int
-    let to: Int
-    let count: Int
-    let links: Links
+    let from: Int?
+    let to: Int?
+    let count: Int?
+    let links: Links?
     let hits: [Hit]
 
     enum CodingKeys: String, CodingKey {

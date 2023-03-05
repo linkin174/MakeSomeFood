@@ -38,7 +38,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
-        indicator.color = .mainAccentColor
+        indicator.color = .mainTintColor
         indicator.hidesWhenStopped = true
         return indicator
     }()
@@ -52,7 +52,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         let itemSide = view.bounds.width / 2 - layout.minimumInteritemSpacing * 1.5
         layout.itemSize = CGSize(width: itemSide, height: itemSide)
 
-        let collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: layout)
+        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.backgroundColor = .white
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -78,21 +78,15 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(collectionView)
+        setupNavigationBar()
+        setupTabBar()
         setupConstraints()
         start()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        setupTabBar()
-        setupNavigationBar()
     }
 
     // MARK: - Private methods
 
     private func setupNavigationBar() {
-        title = "Recipes"
         let appearence = UINavigationBarAppearance()
         appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
         appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
@@ -113,7 +107,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
                                            style: .plain,
                                            target: self,
                                            action: #selector(showFilters))
-        searchButton.tintColor = .white
+        searchButton.tintColor = .mainTintColor
         navigationItem.rightBarButtonItem = searchButton
     }
 
@@ -123,22 +117,26 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         tabBarController?.tabBar.tintColor = .mainTintColor
         tabBarController?.tabBar.backgroundColor = .mainAccentColor
         tabBarController?.tabBar.unselectedItemTintColor = .disabledColor
-        tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+        tabBarItem = UITabBarItem(title: "List", image: UIImage(systemName: "list.bullet"), tag: 0)
     }
 
     private func setupConstraints() {
-        view.addSubview(topMaskView)
-        view.addSubview(loadingIndicator)
+        view.addSubview(collectionView)
+        collectionView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
 
+        view.addSubview(loadingIndicator)
+        loadingIndicator.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+        }
+
+        view.addSubview(topMaskView)
         topMaskView.snp.makeConstraints { make in
             make.width.equalToSuperview()
             make.centerX.equalToSuperview()
             make.height.equalTo(16)
             make.top.equalTo(view.snp.topMargin)
-        }
-
-        loadingIndicator.snp.makeConstraints { make in
-            make.center.equalToSuperview()
         }
     }
 

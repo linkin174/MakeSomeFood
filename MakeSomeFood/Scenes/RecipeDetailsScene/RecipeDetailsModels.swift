@@ -79,7 +79,7 @@ struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
 
     private func makeNutrientViewModels() -> [NutrientRowViewModelProtocol] {
         recipe.digest
-            .filter { $0.unit == "g" && $0.total > 0 }
+            .filter { $0.unit == "g" && $0.label != "Water" && $0.total > 0 }
             .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
     }
 
