@@ -29,6 +29,8 @@ final class FetcherService: FetchingProtocol {
 
     // MARK: - Public Methods
 
+    /// Fetches 20 recipes for given filters
+    /// - Parameter completion: ``Result`` type completion containing ``RecipeResponse`` object or ``Error``
     func fetchRecipies(completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         let parameters = makeParameters()
         networkService?.makeRequest(parameters: parameters) { result in
@@ -42,6 +44,10 @@ final class FetcherService: FetchingProtocol {
         }
     }
 
+    /// Fetches next page of 20 recipes
+    /// - Parameters:
+    ///   - urlString: URL adress of next page as ``String``
+    ///   - completion: ``Result`` type completion containing ``RecipeResponse`` object or ``Error``
     func fetchNextRecipes(from urlString: String, completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         guard let url = URL(string: urlString) else { return }
         networkService?.makeRequest(from: url) { result in
@@ -58,6 +64,9 @@ final class FetcherService: FetchingProtocol {
 
     // MARK: - Private methods
 
+    /// Makes dictionary of parameters for request.
+    /// Loads current filters from ``StorageService``
+    /// - Returns: Dictionary containing all the paraneters for request such as API key and filters
     private func makeParameters() -> [String: String] {
         var parameters = [String: String]()
         guard
