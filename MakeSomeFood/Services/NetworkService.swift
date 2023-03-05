@@ -17,6 +17,10 @@ final class NetworkService: NetworkingProtocol {
 
     // MARK: - Public methods
 
+    /// Alamofire network request with given parameters.
+    /// - Parameters:
+    ///   - parameters: Dictionary containing parameters for request
+    ///   - completion: ``Result`` type containing ``Data`` or Alamofire ``AFError``
     func makeRequest(parameters: [String: String]?, completion: @escaping (Result<Data, AFError>) -> Void) {
         guard let url = createURL(method: API.getRandomRecipies) else { return }
         AF.request(url, parameters: parameters)
@@ -31,6 +35,10 @@ final class NetworkService: NetworkingProtocol {
             }
     }
 
+    /// Alamofire network request with given URL and no parameters
+    /// - Parameters:
+    ///   - url: ``URL`` address
+    ///   - completion: ``Result`` type containing ``Data`` or Alamofire ``AFError``
     func makeRequest(from url: URL, completion: @escaping (Result<Data, AFError>) -> Void) {
         AF.request(url)
             .validate()
@@ -46,6 +54,9 @@ final class NetworkService: NetworkingProtocol {
 
     // MARK: - Private methods
 
+    /// Creates URL for given API method
+    /// - Parameter method: Method described in ``API`` (``String``)
+    /// - Returns: optional ``URL``
     private func createURL(method: String) -> URL? {
         var components = URLComponents()
         components.scheme = API.scheme
