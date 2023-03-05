@@ -35,6 +35,7 @@ final class StorageService: StoringProtocol {
 
     // MARK: - Public Properties
 
+    /// Diet types labels handled by API
     var dietTypes = ["Any", "Balanced", "High-Fiber", "High-Protein", "Low-Carb", "Low-Fat", "Low-Sodium"]
 
     var cuisineTypes = ["Any", "American", "Asian", "British", "Caribbean", "Central Europe", "Chinese",
@@ -53,6 +54,8 @@ final class StorageService: StoringProtocol {
 
     // MARK: - Public Methods
 
+    /// Load saved filters by user
+    /// - Returns: object of type ``Filters``
     func loadFilters() -> Filters {
         guard
             let data = userDefaults.data(forKey: "filters"),
@@ -68,13 +71,14 @@ final class StorageService: StoringProtocol {
         return filters
     }
 
+    /// Save filters to UserDefaults
+    /// - Parameter filters: Object storing filtering data
     func save(filters: Filters) {
         guard let data = try? JSONEncoder().encode(filters) else { return }
         userDefaults.set(data, forKey: "filters")
     }
 
     func save(ingredient: String) {
-        print("saved ingredient \(ingredient)")
         var ingredients = loadIngredients()
         ingredients.append(ingredient)
         guard let data = try? JSONEncoder().encode(ingredients) else { return }
@@ -96,6 +100,10 @@ final class StorageService: StoringProtocol {
         return ingredients
     }
 
+    /// Return favorite state for given recipe and adds this recipe to database
+    /// - Parameters:
+    ///   - recipe: Object of type ``Recipe``
+    ///   - state: state to save ``true`` or ``false``
     func saveFavoriteState(for recipe: Recipe, state: Bool) {
         userDefaults.set(state, forKey: recipe.uri)
         if state {
@@ -105,10 +113,15 @@ final class StorageService: StoringProtocol {
         }
     }
 
+    /// Returns favorite state for given recipe
+    /// - Parameter recipe: object of type ``Recipe``
+    /// - Returns: boolean ``true`` for favorite state, ``false`` for opposite
     func getFavoriteState(for recipe: Recipe) -> Bool {
         userDefaults.bool(forKey: recipe.uri)
     }
 
+    /// Return an array of saved favorite recipes
+    /// - Returns: Array of ``Recipe`` or empty array
     func loadFavorites() -> [Recipe] {
         guard
             let data = userDefaults.data(forKey: "favorites"),
