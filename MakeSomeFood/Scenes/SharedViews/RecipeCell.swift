@@ -11,7 +11,6 @@ import SnapKit
 protocol RecipeCellViewModelProtocol {
     var dishName: String { get }
     var imageURL: URL? { get }
-    init(recipe: Recipe)
 }
 
 protocol RecipeCellRepresentable {
@@ -56,7 +55,7 @@ final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
         label.textColor = .mainTextColor
         label.numberOfLines = 2
         label.textAlignment = .center
-        label.font = .systemFont(ofSize: 16, weight: .bold)
+        label.font = .systemFont(ofSize: 16)
         return label
     }()
 
@@ -74,7 +73,7 @@ final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupConstraints()
-        setupUI()
+        contentView.dropShadow(color: .black, offset: CGSize(width: 0, height: 2), radius: 5, opacity: 0.65)
     }
 
     required init?(coder: NSCoder) {
@@ -110,33 +109,26 @@ final class RecipeCell: UICollectionViewCell, RecipeCellRepresentable {
         }
     }
 
-    private func setupUI() {
-        contentView.layer.cornerRadius = 16
-        contentView.layer.shadowColor = UIColor.black.cgColor
-        contentView.layer.shadowRadius = 5
-        contentView.layer.shadowOffset = CGSize(width: 2, height: 2)
-        contentView.layer.shadowOpacity = 0.5
-    }
-
     private func setupConstraints() {
+        
         contentView.addSubview(imageView)
-        imageView.addSubview(labelBackgroundView)
-        imageView.addSubview(indicatorView)
-        labelBackgroundView.addSubview(dishNameLabel)
-
         imageView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
+        imageView.addSubview(labelBackgroundView)
+        labelBackgroundView.addSubview(dishNameLabel)
+        
         labelBackgroundView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             make.height.equalTo(dishNameLabel.snp.height).offset(8)
         }
 
+        imageView.addSubview(indicatorView)
         indicatorView.snp.makeConstraints { make in
             make.center.equalToSuperview()
         }
-        
+
         dishNameLabel.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
