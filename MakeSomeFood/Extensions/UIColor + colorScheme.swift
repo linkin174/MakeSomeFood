@@ -25,8 +25,8 @@ extension UIColor {
         UIColor(named: "disabledColor") ?? .gray
     }
 
-    class var backGroundColor: UIColor {
-        UIColor(named: "mainBGColor") ?? .white
+    class var mainBackgroundColor: UIColor {
+        UIColor(named: "mainBackgroundColor") ?? .white
     }
 
     class var mainTintColor: UIColor {
