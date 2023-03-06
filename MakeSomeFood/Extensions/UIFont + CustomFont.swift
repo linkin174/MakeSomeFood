@@ -8,8 +8,8 @@
 import UIKit
 
 extension UIFont {
-    class func handlee(of size: CGFloat = 16) -> UIFont {
-        UIFont(name: "Handlee", size: size) ?? .systemFont(ofSize: 16)
+    class func handlee(ofSize: CGFloat = 16) -> UIFont {
+        UIFont(name: "Handlee", size: ofSize) ?? .systemFont(ofSize: 16)
     }
 }
 
