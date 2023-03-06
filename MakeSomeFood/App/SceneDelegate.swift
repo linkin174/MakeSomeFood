@@ -19,8 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = UITabBarController()
         let homeVC = RecipesViewController()
         let favoritesVC = FavoritesViewController()
-        tabBarController.viewControllers = [UINavigationController(rootViewController: homeVC),
-                                            UINavigationController(rootViewController: favoritesVC)]
+        tabBarController.viewControllers = [CustomNavigationController(rootViewController: homeVC),
+                                            CustomNavigationController(rootViewController: favoritesVC)]
         window?.rootViewController = tabBarController
         window?.makeKeyAndVisible()
     }
