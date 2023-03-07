@@ -20,24 +20,30 @@ final class NutritionFactsView: UIView {
 
     // MARK: - Views
     private let headerLabel = UILabel.makeUILabel(text: "Nutrition Facts",
-                                                  font: .systemFont(ofSize: 34, weight: .black))
+                                                  font: .systemFont(ofSize: 34, weight: .black),
+                                                  textColor: .black)
 
     private let servingsLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 18),
+                                                    textColor: .black,
                                                     alignment: .left)
 
     private let ammountPerServingsLabel = UILabel.makeUILabel(text: "Ammount per servings:",
                                                               font: .systemFont(ofSize: 14, weight: .black),
+                                                              textColor: .black,
                                                               alignment: .left)
 
     private let caloriesTextLabel = UILabel.makeUILabel(text: "Calories",
                                                         font: .systemFont(ofSize: 32, weight: .black),
+                                                        textColor: .black,
                                                         alignment: .left)
 
     private let caloriesValueLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 32, weight: .black),
+                                                         textColor: .black,
                                                          alignment: .right)
 
     private let dailyValueText = UILabel.makeUILabel(text: "% Daily value*",
                                                      font: .systemFont(ofSize: 16, weight: .bold),
+                                                     textColor: .black,
                                                      alignment: .right)
 
     private let separator1 = makeSeparator()

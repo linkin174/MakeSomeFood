@@ -47,6 +47,7 @@ final class RecipesConfigurator {
         let router = RecipesRouter()
         viewController.interactor = interactor
         viewController.router = router
+        viewController.title = "Recipes"
         interactor.presenter = presenter
         presenter.viewController = viewController
         router.viewController = viewController

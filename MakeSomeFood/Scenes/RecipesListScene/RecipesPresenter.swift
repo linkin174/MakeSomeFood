@@ -26,7 +26,10 @@ class RecipesPresenter: RecipesPresentationLogic {
     // MARK: Presenting Logic
 
     func presentRecipes(response: RecipesList.DisplayRecipes.Response) {
-        let cells = response.recipes.map { RecipeCellViewModel(recipe: $0) }
+        let cells = response.recipes.map { recipe in
+            let thumbnailImageURL = URL(string: recipe.images?.small?.url ?? "")
+            return RecipeCellViewModel(dishName: recipe.label ?? "", imageURL: thumbnailImageURL)
+        }
 
         let viewModel = RecipesList.DisplayRecipes.ViewModel(cells: cells)
         viewController?.displayRecipes(viewModel: viewModel)

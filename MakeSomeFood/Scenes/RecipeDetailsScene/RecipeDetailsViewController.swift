@@ -16,6 +16,7 @@ import UIKit
 
 protocol RecipeDetailsDisplayLogic: AnyObject {
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel)
+    func displayUpdatedImage(viewModel: RecipeDetails.UpdateImage.ViewModel)
     func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel)
 }
 
@@ -31,8 +32,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     // MARK: - Views
 
-    private let topMaskView = TopMaskView(fillColor: .mainAccentColor)
-
     private let blurView: UIVisualEffectView = {
         let blurEffect = UIBlurEffect(style: .systemThinMaterialDark)
         let view = UIVisualEffectView(effect: blurEffect)
@@ -42,9 +41,8 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-        scrollView.backgroundColor = .backGroundColor
+        scrollView.backgroundColor = .mainBackgroundColor
         scrollView.bounces = true
-        scrollView.delegate = self
         scrollView.isUserInteractionEnabled = true
         return scrollView
     }()
@@ -68,24 +66,16 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         return imageView
     }()
 
-    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .bold),
-                                                       textColor: .mainTextColor,
-                                                       alignment: .left)
-
-    private let ingiridientsLabel = UILabel.makeUILabel(text: "List of ingridients:",
-                                                        font: .systemFont(ofSize: 18, weight: .semibold),
-                                                        textColor: .mainTextColor)
-
-    private let totalNutrientsLabel = UILabel.makeUILabel(text: "Total Nutrients:",
-                                                          font: .systemFont(ofSize: 18, weight: .semibold),
-                                                          textColor: .mainTextColor)
+    private let recipeTitleLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 18, weight: .semibold),
+                                                       textColor: .mainTintColor,
+                                                       alignment: .center)
 
     private let ingridientsStack: UIStackView = {
         let stack = UIStackView()
         stack.alignment = .leading
         stack.axis = .vertical
         stack.distribution = .fill
-        stack.spacing = 4
+        stack.spacing = 8
         return stack
     }()
 
@@ -141,24 +131,14 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         super.viewDidLoad()
         view.backgroundColor = .white
         setupConstraints()
-        setupNavigationBar()
-        start()
+        setupNavigationView()
+        interactor?.showRecipeDetails()
     }
 
     // MARK: - Private methods
 
-    private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.backgroundColor = .mainAccentColor
-        appearence.shadowColor = nil
-        appearence.shadowImage = nil
+    private func setupNavigationView() {
 
-        navigationController?.navigationBar.tintColor = .mainTintColor
-
-        navigationItem.compactAppearance = appearence
-        navigationItem.scrollEdgeAppearance = appearence
-        navigationItem.standardAppearance = appearence
-        navigationItem.backBarButtonItem?.tintColor = .mainTintColor
     }
 
     private func setupConstraints() {
@@ -195,22 +175,9 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             make.width.height.equalTo(40)
         }
 
-        scrollView.addSubview(recipeTitleLabel)
-        recipeTitleLabel.snp.makeConstraints { make in
-            make.top.equalTo(recipeImageView.snp.bottom).offset(8)
-            make.width.equalToSuperview().inset(8)
-            make.centerX.equalToSuperview()
-        }
-
-        scrollView.addSubview(ingiridientsLabel)
-        ingiridientsLabel.snp.makeConstraints { make in
-            make.top.equalTo(recipeTitleLabel.snp.bottom).offset(8)
-            make.leading.equalToSuperview().offset(8)
-        }
-
         scrollView.addSubview(ingridientsStack)
         ingridientsStack.snp.makeConstraints { make in
-            make.top.equalTo(ingiridientsLabel.snp.bottom).offset(8)
+            make.top.equalTo(recipeImageView.snp.bottom).offset(8)
             make.bottom.equalToSuperview().inset(16)
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
@@ -229,13 +196,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-view.frame.height)
         }
-
-        view.addSubview(topMaskView)
-        topMaskView.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.topMargin)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(16)
-        }
     }
 
     @objc private func showSafariView(_ sender: UIButton) {
@@ -247,9 +207,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         config.entersReaderIfAvailable = true
         let safariVC = SFSafariViewController(url: url, configuration: config)
         present(safariVC, animated: true)
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
     }
 
     @objc private func showNutritionFacts() {
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
         UIView.animate(withDuration: 0.5, delay: 0) {
             self.blurView.alpha = 1
             self.nutritionFactsView.snp.updateConstraints { make in
@@ -290,32 +252,17 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     }
 
     @objc private func favoriteButtonTapped() {
+        FeedbackService.shared.makeFeedback(event: .notificationSuccess)
         interactor?.changeFavoriteState()
-    }
-
-    private func makeSeparator(color: UIColor = .black, thickness: CGFloat = 1) -> UIView {
-        let view = UIView()
-        view.backgroundColor = color
-        view.snp.makeConstraints { make in
-            make.height.equalTo(thickness)
-        }
-        return view
-    }
-
-    // MARK: - request data from RecipeDetailsInteractor
-
-    func start() {
-        interactor?.showRecipeDetails()
     }
 
     // MARK: - display view model from RecipeDetailsPresenter
 
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel) {
         self.viewModel = viewModel
-
-        guard let url = URL(string: viewModel.imageURL) else { return }
-        recipeImageView.setImageFrom(url: url)
+        recipeImageView.setImageFrom(url: viewModel.imageURL)
         recipeTitleLabel.text = viewModel.title
+        navigationItem.titleView = recipeTitleLabel
         favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
         viewModel.ingredientRows.forEach { ingredient in
             let ingredientView = IngredientRowView(viewModel: ingredient)
@@ -328,6 +275,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             }
         }
         nutritionFactsView.setup(with: viewModel.nutritionFactsViewModel)
+        interactor?.updateImage()
+    }
+
+    func displayUpdatedImage(viewModel: RecipeDetails.UpdateImage.ViewModel) {
+        recipeImageView.updateImageFrom(url: viewModel.imageURL)
     }
 
     func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel) {
@@ -337,18 +289,6 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 }
 
 // MARK: - Extensions
-
-extension RecipeDetailsViewController: UIScrollViewDelegate {
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        #warning("track navigation bar height obviosly its 91")
-        if scrollView.contentOffset.y + 91 < 0 {
-            topMaskView.snp.updateConstraints { make in
-                make.height.equalTo(100)
-                view.layoutIfNeeded()
-            }
-        }
-    }
-}
 
 extension RecipeDetailsViewController: IngredientRowDelegate {
     func handleIngredientExistance(name: String, state: Bool) {

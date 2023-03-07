@@ -36,8 +36,12 @@ final class FetcherService: FetchingProtocol {
         networkService?.makeRequest(parameters: parameters) { result in
             switch result {
             case .success(let success):
-                guard let recipieResponse = try? JSONDecoder().decode(RecipeResponse.self, from: success) else { return }
-                completion(.success(recipieResponse))
+                do {
+                    let recipeResponse = try JSONDecoder().decode(RecipeResponse.self, from: success)
+                    completion(.success(recipeResponse))
+                } catch  {
+                    completion(.failure(error))
+                }
             case .failure(let failure):
                 completion(.failure(failure))
             }
@@ -53,9 +57,12 @@ final class FetcherService: FetchingProtocol {
         networkService?.makeRequest(from: url) { result in
             switch result {
             case .success(let data):
-                guard let recipeResponse = try? JSONDecoder().decode(RecipeResponse.self, from: data) else { print("CANT DECODE")
-                                                                                                                   return }
-                completion(.success(recipeResponse))
+                do {
+                    let recipeResponse = try JSONDecoder().decode(RecipeResponse.self, from: data)
+                    completion(.success(recipeResponse))
+                } catch {
+                    completion(.failure(error))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }

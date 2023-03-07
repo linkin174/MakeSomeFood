@@ -7,7 +7,6 @@
 
 import DropDown
 import SnapKit
-import SwiftUI
 
 protocol FiltersViewControllerDelegate {
     func reloadRecipies()
@@ -74,7 +73,7 @@ final class FiltersViewController: UIViewController {
 
     private lazy var randomSwitch: UISwitch = {
         let randomSwitch = UISwitch()
-        randomSwitch.onTintColor = .mainAccentColor
+        randomSwitch.onTintColor = .mainTintColor
         randomSwitch.addTarget(self, action: #selector(switchValueChanged), for: .valueChanged)
         return randomSwitch
     }()
@@ -94,19 +93,25 @@ final class FiltersViewController: UIViewController {
 
     private lazy var dietMenu = DropDown.createMenu(dataSource: storageService.dietTypes,
                                                     anchorView: selectedDietLabel) { [unowned self] _, label in
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
         validate(label: selectedDietLabel, with: label)
     }
 
     private lazy var cuisineMenu = DropDown.createMenu(dataSource: storageService.cuisineTypes,
                                                        anchorView: selectedCuisineLabel) { [unowned self] _, label in
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
         validate(label: selectedCuisineLabel, with: label)
     }
 
-    private lazy var mealMenu = DropDown.createMenu(dataSource: storageService.mealTypes, anchorView: selectedMealLabel) { [unowned self] _, label in
+    private lazy var mealMenu = DropDown.createMenu(dataSource: storageService.mealTypes,
+                                                    anchorView: selectedMealLabel) { [unowned self] _, label in
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
         validate(label: selectedMealLabel, with: label)
     }
 
-    private lazy var dishMenu = DropDown.createMenu(dataSource: storageService.dishTypes, anchorView: selectedDishLabel) { [unowned self] _, label in
+    private lazy var dishMenu = DropDown.createMenu(dataSource: storageService.dishTypes,
+                                                    anchorView: selectedDishLabel) { [unowned self] _, label in
+        FeedbackService.shared.makeFeedback(event: .selectionChanged)
         validate(label: selectedDishLabel, with: label)
     }
 
@@ -127,7 +132,7 @@ final class FiltersViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        view.backgroundColor = .mainBackgroundColor
         setupConstraints()
         setupTapGestures()
         setupSelections()
@@ -265,6 +270,7 @@ final class FiltersViewController: UIViewController {
     }
 
     @objc private func saveButtonTapped() {
+        FeedbackService.shared.makeFeedback(event: .notificationSuccess)
         queryTextField.endEditing(true)
         if filtersHasChanges {
             let filters = Filters(searchQuery: queryTextField.text,
@@ -298,14 +304,5 @@ extension FiltersViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.endEditing(true)
         return true
-    }
-}
-
-// MARK: - Preview
-
-struct SearchViewController_Prviews: PreviewProvider {
-    static var previews: some View {
-        FiltersViewController(storageService: StorageService())
-            .makePreview()
     }
 }

@@ -138,7 +138,6 @@ struct Images: Codable, PropertyIterable {
 }
 
 // MARK: - Large
-
 struct ImageSize: Codable {
     let url: String?
     let width: Double?

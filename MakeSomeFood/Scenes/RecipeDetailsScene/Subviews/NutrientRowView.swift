@@ -18,9 +18,12 @@ protocol NutrientRowViewModelProtocol {
 final class NutrientRowView: UIView {
     // MARK: - Views
 
-    private let nutrientNameLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black))
-    private let nutrientValueLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20))
-    private let nutrientPercentageLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black))
+    private let nutrientNameLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black),
+                                                        textColor: .black)
+    private let nutrientValueLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20),
+                                                         textColor: .black)
+    private let nutrientPercentageLabel = UILabel.makeUILabel(font: .systemFont(ofSize: 20, weight: .black),
+                                                              textColor: .black)
     private let separator = makeSeparator()
 
     // MARK: - Overrides

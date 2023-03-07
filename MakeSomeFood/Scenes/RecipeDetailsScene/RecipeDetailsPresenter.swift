@@ -14,6 +14,7 @@ import UIKit
 
 protocol RecipeDetailsPresentationLogic {
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response)
+    func presentUpdatedImage(response: RecipeDetails.UpdateImage.Response)
     func presentFavoriteState(response: RecipeDetails.SetFavoriteState.Response)
 }
 
@@ -26,8 +27,8 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
 
     func presentRecipeDetails(response: RecipeDetails.ShowRecipeDetails.Response) {
         let recipe = response.recipe
-        let existingIngredients = response.existingIngredientLabels
 
+        let existingIngredients = response.existingIngredientLabels
         #warning("not used")
         var cookingTime: String? {
             if recipe.totalTime != 0 {
@@ -41,26 +42,39 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
 
         let nutritionFactsViewModel = NutritionFactsViewModel(recipe: recipe)
 
-        let ingredientRowViewModels = recipe.ingredients.map { ingredient in
-            let isExisting = existingIngredients.contains(ingredient.food)
+        let ingredientRowViewModels = recipe.ingredients?.compactMap { ingredient in
+            let isExisting = existingIngredients.contains(ingredient.food ?? "")
 
             return IngredientRowViewModel(imageURL: ingredient.image ?? "",
-                                          name: ingredient.text,
-                                          food: ingredient.food,
-                                          weight: String(format: "%.f", ingredient.weight),
+                                          name: ingredient.text ?? "",
+                                          food: ingredient.food ?? "",
+                                          weight: String(format: "%.f", ingredient.weight ?? 0),
                                           isExisting: isExisting)
         }
 
-        let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: recipe.image ?? "",
+        let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: URL(string: recipe.images?.small?.url ?? ""),
                                                                   recipeURL: recipe.url ?? "",
                                                                   title: recipe.label ?? "",
                                                                   totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
                                                                   coockingTime: cookingTime,
                                                                   isFavorite: response.isFavorite,
                                                                   nutritionFactsViewModel: nutritionFactsViewModel,
-                                                                  ingredientRows: ingredientRowViewModels)
+                                                                  ingredientRows: ingredientRowViewModels ?? [])
 
         viewController?.displayRecipeDetails(viewModel: viewModel)
+    }
+
+    func presentUpdatedImage(response: RecipeDetails.UpdateImage.Response) {
+        guard
+            let highResImage = response.recipe.images?.allProperties()
+                .compactMap({ $0.value as? ImageSize })
+                .max(by: { $0.width ?? 0 < $1.width ?? 0 }),
+            let url = URL(string: highResImage.url ?? "")
+        else {
+            return
+        }
+        let viewModel = RecipeDetails.UpdateImage.ViewModel(imageURL: url)
+        viewController?.displayUpdatedImage(viewModel: viewModel)
     }
 
     func presentFavoriteState(response: RecipeDetails.SetFavoriteState.Response) {

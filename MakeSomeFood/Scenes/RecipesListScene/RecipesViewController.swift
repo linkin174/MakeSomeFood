@@ -19,6 +19,7 @@ protocol HomeDisplayLogic: AnyObject {
 }
 
 class RecipesViewController: UIViewController, HomeDisplayLogic {
+
     var interactor: RecipesBuisnessLogic?
     var router: (RecipesRoutingLogic & RecipesDataPassing)?
 
@@ -28,13 +29,11 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     private var viewModel: RecipesList.DisplayRecipes.ViewModel? {
         didSet {
-            collectionView.reloadData()
+            recipeCollectionView.reloadData()
         }
     }
 
     // MARK: - Views
-
-    private let topMaskView = TopMaskView(fillColor: .mainAccentColor)
 
     private let loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .large)
@@ -43,24 +42,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
         return indicator
     }()
 
-    lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        let itemSide = view.bounds.width / 2 - layout.minimumInteritemSpacing * 1.5
-        layout.itemSize = CGSize(width: itemSide, height: itemSide)
-
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .white
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .backGroundColor
-        collectionView.register(RecipeCell.self, forCellWithReuseIdentifier: RecipeCell.reuseID)
-        return collectionView
-    }()
+    let recipeCollectionView = RecipeCollectionView()
 
     // MARK: Object lifecycle
 
@@ -78,6 +60,8 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        recipeCollectionView.delegate = self
+        recipeCollectionView.dataSource = self
         setupNavigationBar()
         setupTabBar()
         setupConstraints()
@@ -87,26 +71,12 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
     // MARK: - Private methods
 
     private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
-        appearence.backgroundColor = .mainAccentColor
-        appearence.shadowColor = nil
-
-        navigationItem.compactAppearance = appearence
-        navigationItem.scrollEdgeAppearance = appearence
-        navigationItem.standardAppearance = appearence
-
-        let titleView = UILabel()
-        titleView.text = "Recipes"
-        titleView.font = .handlee(of: 40)
-        titleView.textColor = .mainTintColor
-        navigationItem.titleView = titleView
 
         let searchButton = UIBarButtonItem(image: UIImage(systemName: "magnifyingglass"),
                                            style: .plain,
                                            target: self,
                                            action: #selector(showFilters))
+        navigationItem.backBarButtonItem?.setTitleTextAttributes([.font: UIFont.handlee()], for: .normal)
         searchButton.tintColor = .mainTintColor
         navigationItem.rightBarButtonItem = searchButton
     }
@@ -121,22 +91,14 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
     }
 
     private func setupConstraints() {
-        view.addSubview(collectionView)
-        collectionView.snp.makeConstraints { make in
+        view.addSubview(recipeCollectionView)
+        recipeCollectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
 
         view.addSubview(loadingIndicator)
         loadingIndicator.snp.makeConstraints { make in
             make.center.equalToSuperview()
-        }
-
-        view.addSubview(topMaskView)
-        topMaskView.snp.makeConstraints { make in
-            make.width.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.height.equalTo(16)
-            make.top.equalTo(view.snp.topMargin)
         }
     }
 
@@ -153,6 +115,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
     }
 
     @objc private func showFilters() {
+        FeedbackService.shared.makeFeedback(event: .impactOccured)
         router?.presentFilters()
     }
 
@@ -168,6 +131,7 @@ class RecipesViewController: UIViewController, HomeDisplayLogic {
 
     func displayError(viewModel: RecipesList.HandleError.ViewModel) {
         showAlert(title: "Something went wrong", message: viewModel.errorMessage)
+        FeedbackService.shared.makeFeedback(event: .notificationError)
     }
 }
 
@@ -181,8 +145,6 @@ extension RecipesViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        #warning("think about this check due to next link in interactor is nil so it may not be needed")
-        guard !(viewModel?.cells.isEmpty ?? false) else { return }
         if scrollView.contentSize.height - scrollView.frame.height - 300 <= scrollView.contentOffset.y {
             loadNextRecipes()
         }

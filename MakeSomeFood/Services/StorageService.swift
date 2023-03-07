@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct Filters: Codable {
     let searchQuery: String?
@@ -51,6 +52,20 @@ final class StorageService: StoringProtocol {
     // MARK: - Private Properties
 
     private let userDefaults = UserDefaults.standard
+
+    private let persistentContainer: NSPersistentContainer = {
+        let containter = NSPersistentContainer(name: "MakeSomeFood")
+        containter.loadPersistentStores { description, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+        return containter
+    }()
+
+    private var context: NSManagedObjectContext {
+        persistentContainer.viewContext
+    }
 
     // MARK: - Public Methods
 
@@ -105,7 +120,8 @@ final class StorageService: StoringProtocol {
     ///   - recipe: Object of type ``Recipe``
     ///   - state: state to save ``true`` or ``false``
     func saveFavoriteState(for recipe: Recipe, state: Bool) {
-        userDefaults.set(state, forKey: recipe.uri)
+        guard let uri = recipe.uri else { return }
+        userDefaults.set(state, forKey: uri)
         if state {
             addFavorite(recipe: recipe)
         } else {
@@ -117,12 +133,14 @@ final class StorageService: StoringProtocol {
     /// - Parameter recipe: object of type ``Recipe``
     /// - Returns: boolean ``true`` for favorite state, ``false`` for opposite
     func getFavoriteState(for recipe: Recipe) -> Bool {
-        userDefaults.bool(forKey: recipe.uri)
+        guard let uri = recipe.uri else { return false }
+        return userDefaults.bool(forKey: uri)
     }
 
     /// Return an array of saved favorite recipes
     /// - Returns: Array of ``Recipe`` or empty array
     func loadFavorites() -> [Recipe] {
+        #warning("for test")
         guard
             let data = userDefaults.data(forKey: "favorites"),
             let recipes = try? JSONDecoder().decode([Recipe].self, from: data)
@@ -132,7 +150,20 @@ final class StorageService: StoringProtocol {
         return recipes
     }
 
-    #warning("migrate to coredata later")
+    // MARK: - Private methods
+
+    private func saveContext() {
+        let context = persistentContainer.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                let nserror = error as NSError
+                fatalError("Unresolved \(nserror), \(nserror.userInfo)")
+            }
+        }
+    }
+
     #warning("remove duplicating logic of decoding/encoding")
     #warning("save bools for keys as recipe name")
     private func addFavorite(recipe: Recipe) {

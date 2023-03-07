@@ -13,7 +13,7 @@
 import UIKit
 
 protocol FavoritesPresentationLogic {
-    func presentSomething(response: FavoritesList.ShowFavorites.Response)
+    func presentFavorites(response: FavoritesList.ShowFavorites.Response)
 }
 
 class FavoritesPresenter: FavoritesPresentationLogic {
@@ -21,9 +21,12 @@ class FavoritesPresenter: FavoritesPresentationLogic {
 
     // MARK: Parse and calc respnse from FavoritesInteractor and send simple view model to FavoritesViewController to be displayed
 
-    func presentSomething(response: FavoritesList.ShowFavorites.Response) {
-        let cells = response.recipes.map { RecipeCellViewModel(recipe: $0) }
+    func presentFavorites(response: FavoritesList.ShowFavorites.Response) {
+        let cells = response.recipes.map { recipe in
+            let thumbnailImageUrl = URL(string: recipe.images?.small?.url ?? "")
+            return RecipeCellViewModel(dishName: recipe.label ?? "", imageURL: thumbnailImageUrl)
+        }
         let viewModel = FavoritesList.ShowFavorites.ViewModel(cells: cells)
-        viewController?.displaySomething(viewModel: viewModel)
+        viewController?.displayFavoriteRecipes(viewModel: viewModel)
     }
 }

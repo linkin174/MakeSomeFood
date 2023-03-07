@@ -49,7 +49,7 @@ class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
             switch result {
             case .success(let recipeResponse):
                 self.recipieResponse = recipeResponse
-                recipes = recipeResponse.hits.map { $0.recipe }
+                recipes = recipeResponse.hits.compactMap { $0.recipe }
                 let response = RecipesList.DisplayRecipes.Response(recipes: recipes)
                 presenter?.presentRecipes(response: response)
             case .failure(let failure):
@@ -65,7 +65,7 @@ class RecipesInteractor: RecipesBuisnessLogic, RecipesDataStore {
             switch result {
             case .success(let recipeResponse):
                 DispatchQueue.main.async {
-                    let newRecipes = recipeResponse.hits.map { $0.recipe }
+                    let newRecipes = recipeResponse.hits.compactMap { $0.recipe }
                     self.recipes.append(contentsOf: newRecipes)
                     self.recipieResponse = recipeResponse
                     let response = RecipesList.DisplayRecipes.Response(recipes: self.recipes)

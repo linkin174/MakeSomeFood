@@ -13,17 +13,15 @@
 import UIKit
 
 enum RecipeDetails {
-
     enum ShowRecipeDetails {
-
         struct Response {
             let recipe: Recipe
             let isFavorite: Bool
             let existingIngredientLabels: [String]
         }
-        
+
         struct ViewModel {
-            let imageURL: String
+            let imageURL: URL?
             let recipeURL: String
             let title: String
             let totalWeight: String
@@ -31,6 +29,16 @@ enum RecipeDetails {
             let isFavorite: Bool
             let nutritionFactsViewModel: NutritionFactsViewModelProtocol
             let ingredientRows: [IngredientViewModelProtocol]
+        }
+    }
+
+    enum UpdateImage {
+        struct Response {
+            let recipe: Recipe
+        }
+
+        struct ViewModel {
+            let imageURL: URL
         }
     }
 
@@ -53,7 +61,6 @@ enum RecipeDetails {
 }
 
 struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
-
     var servings: String {
         "Servings: \(Int(recipe.yield ?? 0))"
     }
@@ -64,9 +71,9 @@ struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
     }
 
     var nutrientsRowViewModels: [NutrientRowViewModelProtocol] {
-
         return makeNutrientViewModels()
     }
+
     var vitaminsRowViewModels: [NutrientRowViewModelProtocol] {
         makeVitaminsViewModels()
     }
@@ -78,36 +85,37 @@ struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
     }
 
     private func makeNutrientViewModels() -> [NutrientRowViewModelProtocol] {
-        recipe.digest
-            .filter { $0.unit == "g" && $0.label != "Water" && $0.total > 0 }
+        guard let digest = recipe.digest else { return [] }
+        return digest
+            .filter { $0.unit == "g" && $0.label != "Water" && $0.total ?? 0 > 0 }
             .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
     }
 
     private func makeVitaminsViewModels() -> [NutrientRowViewModelProtocol] {
-        recipe.digest
-            .filter { $0.unit != "g" && $0.total > 0 }
-            .sorted(by: { $0.total > $1.total })
+        guard let digest = recipe.digest else { return [] }
+        return digest
+            .filter { $0.unit != "g" && $0.total ?? 0 > 0 }
+            .sorted(by: { $0.daily ?? 0 > $1.daily ?? 0 })
             .prefix(10)
             .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
     }
 }
 
 struct NutrientRowViewModel: NutrientRowViewModelProtocol {
-
     var name: String {
-        digest.label
+        digest.label ?? ""
     }
 
     var value: String {
-        String(format: "%.f", digest.total )
+        String(format: "%.f", digest.total ?? 0)
     }
 
     var unit: String {
-        digest.unit
+        digest.unit ?? "g"
     }
 
     var dailyPercentage: String {
-        "\(String(format: "%.f", digest.daily / servings)) %"
+        "\(String(format: "%.f", (digest.daily ?? 0) / servings)) %"
     }
 
     private let digest: Digest

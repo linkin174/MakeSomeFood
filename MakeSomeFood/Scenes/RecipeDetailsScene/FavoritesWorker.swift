@@ -25,6 +25,10 @@ final class FavoritesWorker: FavoritesWorkerProtocol {
         storageService.saveFavoriteState(for: recipe, state: state)
     }
 
+    func getFavoriteRecipes() -> [Recipe] {
+        storageService.loadFavorites()
+    }
+
     init(storageService: StoringProtocol) {
         self.storageService = storageService
     }

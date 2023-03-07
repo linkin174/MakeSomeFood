@@ -36,8 +36,6 @@ final class IngredientRowView: UIView {
         imageView.image = UIImage(named: "placeholder")
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 16
-        imageView.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
         return imageView
     }()
     
@@ -60,10 +58,10 @@ final class IngredientRowView: UIView {
         super.init(frame: .zero)
         setup()
         setupConstraints()
-        nameLabel.numberOfLines = 2
         dropShadow()
-        backgroundColor = .white
-        layer.cornerRadius = 16
+
+        nameLabel.numberOfLines = 2
+        backgroundColor = .mainAccentColor
     }
 
     required init?(coder: NSCoder) {
@@ -73,6 +71,7 @@ final class IngredientRowView: UIView {
     // MARK: - Private methods
 
     @objc private func checkButtonTapped() {
+        FeedbackService.shared.makeFeedback(event: .impactOccured)
 
         UIView.animate(withDuration: 0.15, delay: 0) { [weak self] in
             self?.checkImageView.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
@@ -85,10 +84,10 @@ final class IngredientRowView: UIView {
         UIView.transition(with: self.checkImageView, duration: 0.3, options: .transitionCrossDissolve) { [weak self] in
             if !(self?.viewModel.isExisting ?? false) {
                 self?.checkImageView.image = UIImage(systemName: "checkmark.circle.fill")
-                self?.checkImageView.tintColor = .mainAccentColor
+                self?.checkImageView.tintColor = .mainTintColor
             } else {
                 self?.checkImageView.image = UIImage(systemName: "checkmark.circle")
-                self?.checkImageView.tintColor = .gray
+                self?.checkImageView.tintColor = .disabledColor
             }
         }
         viewModel.isExisting.toggle()
@@ -101,22 +100,26 @@ final class IngredientRowView: UIView {
         nameLabel.text = viewModel.name
         weightValueLabel.text = viewModel.weight + " g."
         if viewModel.isExisting {
-            checkImageView.tintColor = .mainAccentColor
+            checkImageView.tintColor = .mainTintColor
             checkImageView.image = UIImage(systemName: "checkmark.circle.fill")
         }
     }
 
     private func setupConstraints() {
+        ingredientImageView.layer.cornerRadius = 22
+
+        layer.cornerRadius = 30
         addSubview(ingredientImageView)
         ingredientImageView.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.top.bottom.equalToSuperview()
-            make.width.equalTo(snp.height)
+            make.leading.equalToSuperview().offset(8)
+            make.width.height.equalTo(snp.height).inset(8)
+            make.centerY.equalToSuperview()
         }
 
         addSubview(checkImageView)
         checkImageView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().inset(8)
+            let inset = (60 - 32) / 2
+            make.trailing.equalToSuperview().inset(inset)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(32)
         }

@@ -52,7 +52,7 @@ final class RecipesRouter: RecipesRoutingLogic, RecipesDataPassing {
 
     private func passDataToRecipeDetails(source: RecipesDataStore, destination: inout RecipeDetailsDataStore) {
         guard let viewController else { return }
-        guard let indexPath = viewController.collectionView.indexPathsForSelectedItems?.first else { return }
+        guard let indexPath = viewController.recipeCollectionView.indexPathsForSelectedItems?.first else { return }
         let recipe = source.recipes[indexPath.item]
         destination.recipe = recipe
     }

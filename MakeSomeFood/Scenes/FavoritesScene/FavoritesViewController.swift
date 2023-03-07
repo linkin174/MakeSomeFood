@@ -13,7 +13,7 @@
 import UIKit
 
 protocol FavoritesDisplayLogic: AnyObject {
-    func displaySomething(viewModel: FavoritesList.ShowFavorites.ViewModel)
+    func displayFavoriteRecipes(viewModel: FavoritesList.ShowFavorites.ViewModel)
 }
 
 final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
@@ -29,25 +29,7 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
 
     // MARK: - Views
 
-    let topMaskView = TopMaskView(fillColor: .mainAccentColor)
-
-    lazy var collectionView: UICollectionView = {
-        let layout = UICollectionViewFlowLayout()
-        layout.scrollDirection = .vertical
-        layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
-        layout.minimumInteritemSpacing = 8
-        layout.minimumLineSpacing = 8
-        let itemSide = view.bounds.width / 2 - layout.minimumInteritemSpacing * 1.5
-        layout.itemSize = CGSize(width: itemSide, height: itemSide)
-
-        let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .backGroundColor
-        collectionView.delegate = self
-        collectionView.dataSource = self
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.register(RecipeCell.self, forCellWithReuseIdentifier: RecipeCell.reuseID)
-        return collectionView
-    }()
+    let recipeCollectionView = RecipeCollectionView()
 
     // MARK: Object lifecycle
 
@@ -67,42 +49,21 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = .red
-        setupNavigationBar()
+        recipeCollectionView.delegate = self
+        recipeCollectionView.dataSource = self
         setupTabBar()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        onLoad()
+        interactor?.start()
     }
 
     // MARK: - Private Methods
 
-
-    func onLoad() {
-        interactor?.start()
-    }
-
-    func displaySomething(viewModel: FavoritesList.ShowFavorites.ViewModel) {
+    func displayFavoriteRecipes(viewModel: FavoritesList.ShowFavorites.ViewModel) {
         self.viewModel = viewModel
-        collectionView.reloadData()
-    }
-
-    private func setupNavigationBar() {
-        let appearence = UINavigationBarAppearance()
-        appearence.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
-        appearence.titleTextAttributes = [.foregroundColor: UIColor.white]
-        appearence.backgroundColor = .mainAccentColor
-        appearence.shadowColor = nil
-        let titleView = UILabel()
-        titleView.text = "Favorites"
-        titleView.font = .handlee(of: 40)
-        titleView.textColor = .mainTintColor
-        navigationItem.titleView = titleView
-        navigationItem.compactAppearance = appearence
-        navigationItem.standardAppearance = appearence
-        navigationItem.scrollEdgeAppearance = appearence
+        recipeCollectionView.reloadData()
     }
 
     private func setupTabBar() {
@@ -110,16 +71,10 @@ final class FavoritesViewController: UIViewController, FavoritesDisplayLogic {
     }
 
     private func setupConstraints() {
-        view.addSubview(collectionView)
+        view.addSubview(recipeCollectionView)
 
-        collectionView.snp.makeConstraints { make in
+        recipeCollectionView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
-        }
-        view.addSubview(topMaskView)
-        topMaskView.snp.makeConstraints { make in
-            make.top.equalTo(view.snp.topMargin)
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(16)
         }
     }
 }
@@ -140,6 +95,7 @@ extension FavoritesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCell else { return UICollectionViewCell() }
         if let cellVM = viewModel?.cells[indexPath.item] {
+            print("CELL VM IN FAV \(cellVM)")
             cell.viewModel = cellVM
         }
         return cell

@@ -14,6 +14,7 @@ import UIKit
 
 protocol RecipeDetailsBusinessLogic {
     func showRecipeDetails()
+    func updateImage()
     func changeFavoriteState()
     func handleIngredient(request: RecipeDetails.HandleIngredient.Request)
 }
@@ -55,6 +56,12 @@ class RecipeDetailsInteractor: RecipeDetailsBusinessLogic, RecipeDetailsDataStor
                                                                 isFavorite: isFavorite,
                                                                 existingIngredientLabels: existingIngredients)
         presenter?.presentRecipeDetails(response: response)
+    }
+
+    func updateImage() {
+        guard let recipe else { return }
+        let response = RecipeDetails.UpdateImage.Response(recipe: recipe)
+        presenter?.presentUpdatedImage(response: response)
     }
 
     func changeFavoriteState() {

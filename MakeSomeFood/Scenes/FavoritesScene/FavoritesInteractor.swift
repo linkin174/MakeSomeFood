@@ -40,9 +40,9 @@ final class FavoritesInteractor: FavoritesBusinessLogic, FavoritesDataStore {
     // MARK: - Interaction Logic
     
     func start() {
-        #warning("USE WORKER ALREADY EXISTING IN DETAILS")
-        recipes = storageService.loadFavorites()
+        let worker = FavoritesWorker(storageService: storageService)
+        recipes = worker.getFavoriteRecipes()
         let response = FavoritesList.ShowFavorites.Response(recipes: recipes)
-        presenter?.presentSomething(response: response)
+        presenter?.presentFavorites(response: response)
     }
 }

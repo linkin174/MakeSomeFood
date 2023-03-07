@@ -40,7 +40,6 @@
 		70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC4299D5D28008FB54D /* UIView + onTapGesture.swift */; };
 		70216EC7299E45A9008FB54D /* DropDown static factory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC6299E45A9008FB54D /* DropDown static factory.swift */; };
 		70216EC9299E5298008FB54D /* UIView + DropShadow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216EC8299E5298008FB54D /* UIView + DropShadow.swift */; };
-		70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECB299E9054008FB54D /* TopMaskView.swift */; };
 		70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */; };
 		70216ED2299F9FC7008FB54D /* FetcherService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED1299F9FC7008FB54D /* FetcherService.swift */; };
 		70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 70216ED729A0CA42008FB54D /* CachedUIImage.swift */; };
@@ -50,6 +49,9 @@
 		704AC75429B1101800F2D0C2 /* FavoritesWorker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */; };
 		708DB42229B370F500484809 /* Handlee-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 708DB42129B370D700484809 /* Handlee-Regular.ttf */; };
 		708DB42429B3714700484809 /* UIFont + CustomFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DB42329B3714700484809 /* UIFont + CustomFont.swift */; };
+		708DB42629B4F44500484809 /* CustomNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DB42529B4F44500484809 /* CustomNavigationController.swift */; };
+		708DB42A29B51AF400484809 /* FeedbackService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DB42929B51AF400484809 /* FeedbackService.swift */; };
+		708DB43129B5229600484809 /* RecipeCollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 708DB43029B5229600484809 /* RecipeCollectionView.swift */; };
 		709035E029A97EAC0082E930 /* IngredientRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709035DF29A97EAC0082E930 /* IngredientRowView.swift */; };
 		709035E329ACB1350082E930 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = 709035E529ACB1350082E930 /* Localizable.stringsdict */; };
 		709035ED29ADEF150082E930 /* FavoritesPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 709035E729ADEF150082E930 /* FavoritesPresenter.swift */; };
@@ -110,7 +112,6 @@
 		70216EC4299D5D28008FB54D /* UIView + onTapGesture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + onTapGesture.swift"; sourceTree = "<group>"; };
 		70216EC6299E45A9008FB54D /* DropDown static factory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DropDown static factory.swift"; sourceTree = "<group>"; };
 		70216EC8299E5298008FB54D /* UIView + DropShadow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView + DropShadow.swift"; sourceTree = "<group>"; };
-		70216ECB299E9054008FB54D /* TopMaskView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopMaskView.swift; sourceTree = "<group>"; };
 		70216ECF299E9B7A008FB54D /* UIColor + colorScheme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor + colorScheme.swift"; sourceTree = "<group>"; };
 		70216ED1299F9FC7008FB54D /* FetcherService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetcherService.swift; sourceTree = "<group>"; };
 		70216ED729A0CA42008FB54D /* CachedUIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedUIImage.swift; sourceTree = "<group>"; };
@@ -120,6 +121,9 @@
 		704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesWorker.swift; sourceTree = "<group>"; };
 		708DB42129B370D700484809 /* Handlee-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Handlee-Regular.ttf"; path = "../../../../Downloads/Handlee/Handlee-Regular.ttf"; sourceTree = "<group>"; };
 		708DB42329B3714700484809 /* UIFont + CustomFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont + CustomFont.swift"; sourceTree = "<group>"; };
+		708DB42529B4F44500484809 /* CustomNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNavigationController.swift; sourceTree = "<group>"; };
+		708DB42929B51AF400484809 /* FeedbackService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackService.swift; sourceTree = "<group>"; };
+		708DB43029B5229600484809 /* RecipeCollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeCollectionView.swift; sourceTree = "<group>"; };
 		709035DF29A97EAC0082E930 /* IngredientRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IngredientRowView.swift; sourceTree = "<group>"; };
 		709035E429ACB1350082E930 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.stringsdict; name = en; path = en.lproj/Localizable.stringsdict; sourceTree = "<group>"; };
 		709035E729ADEF150082E930 /* FavoritesPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesPresenter.swift; sourceTree = "<group>"; };
@@ -205,6 +209,7 @@
 				70216E73299B60C6008FB54D /* NetworkService.swift */,
 				70216ED1299F9FC7008FB54D /* FetcherService.swift */,
 				70216EC2299D1C74008FB54D /* StorageService.swift */,
+				708DB42929B51AF400484809 /* FeedbackService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -220,6 +225,7 @@
 		70216E86299B974D008FB54D /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				708DB42F29B5228600484809 /* SharedViews */,
 				709035E629ADEF040082E930 /* FavoritesScene */,
 				70216E99299BC224008FB54D /* RecipeDetailsScene */,
 				70216E98299BC21C008FB54D /* RecipesListScene */,
@@ -231,7 +237,6 @@
 		70216E98299BC21C008FB54D /* RecipesListScene */ = {
 			isa = PBXGroup;
 			children = (
-				70216ECA299E9046008FB54D /* Subviews */,
 				70216E8B299B9757008FB54D /* RecipesViewController.swift */,
 				70216E8C299B9757008FB54D /* RecipesInteractor.swift */,
 				70216E87299B9757008FB54D /* RecipesPresenter.swift */,
@@ -246,11 +251,11 @@
 			isa = PBXGroup;
 			children = (
 				7092310629A370A400B2B685 /* Subviews */,
+				70216EAA299BC26C008FB54D /* RecipeDetailsViewController.swift */,
+				70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */,
 				70216EA6299BC26C008FB54D /* RecipeDetailsPresenter.swift */,
 				70216EA8299BC26C008FB54D /* RecipeDetailsRouter.swift */,
 				70216EA9299BC26C008FB54D /* RecipeDetailsModels.swift */,
-				70216EAA299BC26C008FB54D /* RecipeDetailsViewController.swift */,
-				70216EAB299BC26C008FB54D /* RecipeDetailsInteractor.swift */,
 				704AC75329B1101800F2D0C2 /* FavoritesWorker.swift */,
 				704AC74F29ADFA2700F2D0C2 /* RecipeDetailsConfigurator.swift */,
 			);
@@ -281,21 +286,13 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		70216ECA299E9046008FB54D /* Subviews */ = {
-			isa = PBXGroup;
-			children = (
-				70216E93299B9A66008FB54D /* RecipeCell.swift */,
-				70216ECB299E9054008FB54D /* TopMaskView.swift */,
-			);
-			path = Subviews;
-			sourceTree = "<group>";
-		};
 		70216ED629A0CA35008FB54D /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
 				70216ED729A0CA42008FB54D /* CachedUIImage.swift */,
 				70216EB2299BCF21008FB54D /* ImageCache.swift */,
 				70216EDB29A118B1008FB54D /* PaddingLabel.swift */,
+				708DB42529B4F44500484809 /* CustomNavigationController.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -309,15 +306,24 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		708DB42F29B5228600484809 /* SharedViews */ = {
+			isa = PBXGroup;
+			children = (
+				708DB43029B5229600484809 /* RecipeCollectionView.swift */,
+				70216E93299B9A66008FB54D /* RecipeCell.swift */,
+			);
+			path = SharedViews;
+			sourceTree = "<group>";
+		};
 		709035E629ADEF040082E930 /* FavoritesScene */ = {
 			isa = PBXGroup;
 			children = (
+				709035EB29ADEF150082E930 /* FavoritesViewController.swift */,
+				709035EC29ADEF150082E930 /* FavoritesInteractor.swift */,
 				709035E729ADEF150082E930 /* FavoritesPresenter.swift */,
+				704AC75129ADFC5700F2D0C2 /* FavoritesConfigurator.swift */,
 				709035E929ADEF150082E930 /* FavoritesRouter.swift */,
 				709035EA29ADEF150082E930 /* FavoritesModels.swift */,
-				709035EB29ADEF150082E930 /* FavoritesViewController.swift */,
-				704AC75129ADFC5700F2D0C2 /* FavoritesConfigurator.swift */,
-				709035EC29ADEF150082E930 /* FavoritesInteractor.swift */,
 			);
 			path = FavoritesScene;
 			sourceTree = "<group>";
@@ -431,10 +437,10 @@
 				709035F429ADF2670082E930 /* RecipesConfigurator.swift in Sources */,
 				7010B7FB29A95970005358B5 /* NutrientRowView.swift in Sources */,
 				709035F229ADEF150082E930 /* FavoritesInteractor.swift in Sources */,
+				708DB42A29B51AF400484809 /* FeedbackService.swift in Sources */,
 				70216E51299B59B0008FB54D /* AppDelegate.swift in Sources */,
 				70216EAE299BC26C008FB54D /* RecipeDetailsRouter.swift in Sources */,
 				70216ED0299E9B7A008FB54D /* UIColor + colorScheme.swift in Sources */,
-				70216ECC299E9054008FB54D /* TopMaskView.swift in Sources */,
 				70216EC5299D5D28008FB54D /* UIView + onTapGesture.swift in Sources */,
 				70216E92299B9757008FB54D /* RecipesInteractor.swift in Sources */,
 				704AC75429B1101800F2D0C2 /* FavoritesWorker.swift in Sources */,
@@ -444,6 +450,8 @@
 				70216E72299B5FBC008FB54D /* API.swift in Sources */,
 				70216E53299B59B0008FB54D /* SceneDelegate.swift in Sources */,
 				709035F129ADEF150082E930 /* FavoritesViewController.swift in Sources */,
+				708DB43129B5229600484809 /* RecipeCollectionView.swift in Sources */,
+				708DB42629B4F44500484809 /* CustomNavigationController.swift in Sources */,
 				709035E029A97EAC0082E930 /* IngredientRowView.swift in Sources */,
 				708DB42429B3714700484809 /* UIFont + CustomFont.swift in Sources */,
 				70216ED829A0CA42008FB54D /* CachedUIImage.swift in Sources */,

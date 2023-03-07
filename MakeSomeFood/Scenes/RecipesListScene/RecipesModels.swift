@@ -47,18 +47,6 @@ enum RecipesList {
 }
 
 struct RecipeCellViewModel: RecipeCellViewModelProtocol {
-
-    var dishName: String {
-        recipe.label ?? "noname"
-    }
-
-    var imageURL: URL? {
-        URL(string: recipe.image ?? "")
-    }
-
-    private let recipe: Recipe
-
-    init(recipe: Recipe) {
-        self.recipe = recipe
-    }
+    var dishName: String
+    var imageURL: URL?
 }
