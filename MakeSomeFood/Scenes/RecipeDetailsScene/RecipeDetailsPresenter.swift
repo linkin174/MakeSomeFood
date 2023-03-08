@@ -29,12 +29,10 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
         let recipe = response.recipe
 
         let existingIngredients = response.existingIngredientLabels
-        #warning("not used")
+
         var cookingTime: String? {
-            if recipe.totalTime != 0 {
-                let formatString = NSLocalizedString("TIME_LOCALIZATION", comment: "time")
-                let localized = String.localizedStringWithFormat(formatString, recipe.totalTime ?? 0)
-                return localized
+            if let totalTime = recipe.totalTime, totalTime != 0 {
+                return String(format: "%.f", totalTime) + " min"
             } else {
                 return nil
             }

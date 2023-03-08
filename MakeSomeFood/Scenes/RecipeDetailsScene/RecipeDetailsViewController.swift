@@ -14,10 +14,52 @@ import SafariServices
 import SnapKit
 import UIKit
 
+fileprivate struct Constants {
+    static let coockingTimeViewSize = CGSize(width: 50, height: 50)
+    static let defaultEdgeInset: CGFloat = 16
+    static let largeEdgeInset: CGFloat = 32
+    static let buttonHeight: CGFloat = 40
+}
+
 protocol RecipeDetailsDisplayLogic: AnyObject {
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel)
     func displayUpdatedImage(viewModel: RecipeDetails.UpdateImage.ViewModel)
     func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel)
+}
+
+private class CookingTimeView: UIView {
+
+    var text: String? = nil {
+        didSet {
+            label.text = text
+            isHidden = text == nil ? true : false
+        }
+    }
+
+    private let label: UILabel = {
+        let label = UILabel()
+        label.font = .systemFont(ofSize: 14, weight: .semibold)
+        label.numberOfLines = 2
+        label.textAlignment = .center
+        label.textColor = .mainAccentColor
+        return label
+    }()
+
+    init() {
+        super.init(frame: .zero)
+        backgroundColor = .white
+        dropShadow()
+        layer.cornerRadius = Constants.coockingTimeViewSize.height / 2
+        addSubview(label)
+        label.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.width.height.equalToSuperview().inset(8)
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayLogic {
@@ -38,6 +80,8 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         view.alpha = 0
         return view
     }()
+
+    private let cookingTimeView = CookingTimeView()
 
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -84,7 +128,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         button.setTitleColor(.white, for: .normal)
         button.setTitleColor(.white.withAlphaComponent(0.5), for: .highlighted)
         button.setTitle("Cooking Details", for: .normal)
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = Constants.buttonHeight / 2
         button.contentEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 10)
         button.backgroundColor = .mainAccentColor
         button.addTarget(self, action: #selector(showSafariView), for: .touchUpInside)
@@ -95,7 +139,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     private lazy var showNutritionFactsButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "tablecells.badge.ellipsis"), for: .normal)
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = Constants.buttonHeight / 2
         button.backgroundColor = .mainAccentColor
         button.addTarget(self, action: #selector(showNutritionFacts), for: .touchUpInside)
         button.imageView?.tintColor = .white
@@ -106,7 +150,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     private lazy var favoriteButton: UIButton = {
         let button = UIButton()
         button.setImage(UIImage(systemName: "heart.fill"), for: .normal)
-        button.layer.cornerRadius = 20
+        button.layer.cornerRadius = Constants.buttonHeight / 2
         button.backgroundColor = .mainAccentColor
         button.dropShadow()
         button.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
@@ -130,16 +174,12 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        navigationItem.titleView = recipeTitleLabel
         setupConstraints()
-        setupNavigationView()
         interactor?.showRecipeDetails()
     }
 
     // MARK: - Private methods
-
-    private func setupNavigationView() {
-
-    }
 
     private func setupConstraints() {
         view.addSubview(scrollView)
@@ -157,28 +197,36 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
         recipeImageView.addSubview(showSafariViewButton)
         showSafariViewButton.snp.makeConstraints { make in
-            make.trailing.bottom.equalToSuperview().inset(16)
-            make.height.equalTo(40)
+            make.trailing.bottom.equalToSuperview().inset(Constants.defaultEdgeInset)
+            make.height.equalTo(Constants.buttonHeight)
         }
 
         recipeImageView.addSubview(showNutritionFactsButton)
         showNutritionFactsButton.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(16)
-            make.bottom.equalToSuperview().inset(16)
-            make.width.height.equalTo(40)
+            make.leading.equalToSuperview().offset(Constants.defaultEdgeInset)
+            make.bottom.equalToSuperview().inset(Constants.defaultEdgeInset)
+            make.width.height.equalTo(Constants.buttonHeight)
         }
 
         recipeImageView.addSubview(favoriteButton)
         favoriteButton.snp.makeConstraints { make in
             make.leading.equalTo(showNutritionFactsButton.snp.trailing).offset(8)
             make.bottom.equalTo(showNutritionFactsButton.snp.bottom)
-            make.width.height.equalTo(40)
+            make.width.height.equalTo(Constants.buttonHeight)
+        }
+
+        recipeImageView.addSubview(cookingTimeView)
+        cookingTimeView.snp.makeConstraints { make in
+            make.width.equalTo(Constants.coockingTimeViewSize.width)
+            make.height.equalTo(Constants.coockingTimeViewSize.height)
+            make.trailing.equalToSuperview().inset(Constants.defaultEdgeInset)
+            make.top.equalToSuperview().offset(Constants.defaultEdgeInset)
         }
 
         scrollView.addSubview(ingridientsStack)
         ingridientsStack.snp.makeConstraints { make in
             make.top.equalTo(recipeImageView.snp.bottom).offset(8)
-            make.bottom.equalToSuperview().inset(16)
+            make.bottom.equalToSuperview().inset(Constants.defaultEdgeInset)
             make.width.equalToSuperview().inset(8)
             make.centerX.equalToSuperview()
         }
@@ -192,7 +240,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
 
         blurView.contentView.addSubview(nutritionFactsView)
         nutritionFactsView.snp.makeConstraints { make in
-            make.width.equalToSuperview().inset(32)
+            make.width.equalToSuperview().inset(Constants.largeEdgeInset)
             make.centerX.equalToSuperview()
             make.centerY.equalToSuperview().offset(-view.frame.height)
         }
@@ -256,14 +304,19 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         interactor?.changeFavoriteState()
     }
 
-    // MARK: - display view model from RecipeDetailsPresenter
+    // MARK: - Display Logic
 
     func displayRecipeDetails(viewModel: RecipeDetails.ShowRecipeDetails.ViewModel) {
         self.viewModel = viewModel
+
+        cookingTimeView.text = viewModel.coockingTime
+
         recipeImageView.setImageFrom(url: viewModel.imageURL)
+
         recipeTitleLabel.text = viewModel.title
-        navigationItem.titleView = recipeTitleLabel
-        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
+
+        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .disabledColor
+
         viewModel.ingredientRows.forEach { ingredient in
             let ingredientView = IngredientRowView(viewModel: ingredient)
             ingredientView.delegate = self
@@ -274,7 +327,9 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
                 make.centerX.equalToSuperview()
             }
         }
+
         nutritionFactsView.setup(with: viewModel.nutritionFactsViewModel)
+
         interactor?.updateImage()
     }
 
@@ -283,8 +338,17 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
     }
 
     func displayFavoriteState(viewModel: RecipeDetails.SetFavoriteState.ViewModel) {
-        #warning("make animations")
-        favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .white
+        UIView.animate(withDuration: 0.2, delay: 0) { [weak self] in
+            self?.favoriteButton.imageView?.transform = CGAffineTransform(scaleX: 1.3, y: 1.3)
+        }
+
+        UIView.animate(withDuration: 0.2, delay: 0.2) { [weak self] in
+            self?.favoriteButton.imageView?.transform = .identity
+        }
+
+        UIView.transition(with: favoriteButton, duration: 0.4) { [weak self] in
+            self?.favoriteButton.imageView?.tintColor = viewModel.isFavorite ? .red : .disabledColor
+        }
     }
 }
 

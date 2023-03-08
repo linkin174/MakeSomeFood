@@ -27,21 +27,14 @@ final class FiltersViewController: UIViewController {
 
     // MARK: - Views
 
-    private lazy var queryTextField: UITextField = {
-        let textField = UITextField()
-        textField.placeholder = "Ingridient or meal... Optional"
-        textField.tintColor = .gray
-        textField.font = .systemFont(ofSize: 18)
-        textField.backgroundColor = .white
-        textField.textColor = .black
-        textField.borderStyle = .roundedRect
-        textField.dropShadow(offset: CGSize(width: 0, height: 5), opacity: 0.25)
-        textField.clearButtonMode = .always
+    private lazy var queryTextField: CustomTextField = {
+        let textField = CustomTextField(insets: UIEdgeInsets(top: 4, left: 12, bottom: 4, right: 12))
+        textField.placeholder = "Ingredient or meal. Optional..."
         textField.delegate = self
         return textField
     }()
 
-    private let headerLabel = UILabel.makeUILabel(text: "Setup Filters",
+    private let headerLabel = UILabel.makeUILabel(text: "Filters",
                                                   font: .systemFont(ofSize: 24, weight: .semibold))
 
     private let dietLabel = UILabel.makeUILabel(text: "Diet:",
