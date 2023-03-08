@@ -9,7 +9,12 @@ import UIKit
 
 final class CustomTextField: UITextField {
 
-    var insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+    // MARK: - Private Properties
+    
+    private var insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+
+
+    // MARK: - Initializers
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,10 +31,32 @@ final class CustomTextField: UITextField {
         fatalError("init(coder:) has not been implemented")
     }
 
+    // MARK: - Overrides
+
     override func layoutSubviews() {
         super.layoutSubviews()
         setupButtonTint()
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        attributedPlaceholder = NSAttributedString(
+            string: placeholder ?? "",
+            attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
+    }
+
+    override func textRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+
+    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+
+    override func editingRect(forBounds bounds: CGRect) -> CGRect {
+        bounds.inset(by: insets)
+    }
+
+    // MARK: - Private Methods
 
     private func setupUI() {
         borderStyle = .roundedRect
@@ -44,13 +71,6 @@ final class CustomTextField: UITextField {
         tintColor = .disabledColor
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        print(#function)
-        attributedPlaceholder = NSAttributedString(
-            string: placeholder ?? "",
-            attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
-    }
-
     private func setupButtonTint() {
         subviews.forEach { subview in
             if let button = subview as? UIButton {
@@ -60,16 +80,6 @@ final class CustomTextField: UITextField {
             }
         }
     }
-
-    override func textRect(forBounds bounds: CGRect) -> CGRect {
-        bounds.inset(by: insets)
-    }
-
-    override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        bounds.inset(by: insets)
-    }
-
-    override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        bounds.inset(by: insets)
-    }
 }
+
+
