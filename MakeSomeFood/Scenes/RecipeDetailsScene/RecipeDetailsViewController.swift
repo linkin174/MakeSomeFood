@@ -238,7 +238,7 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             make.leading.trailing.equalToSuperview()
         }
 
-        blurView.contentView.addSubview(nutritionFactsView)
+        view.addSubview(nutritionFactsView)
         nutritionFactsView.snp.makeConstraints { make in
             make.width.equalToSuperview().inset(Constants.largeEdgeInset)
             make.centerX.equalToSuperview()
@@ -263,7 +263,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
         UIView.animate(withDuration: 0.5, delay: 0) {
             self.blurView.alpha = 1
             self.nutritionFactsView.snp.updateConstraints { make in
-                make.centerY.equalToSuperview()
+                if let navigationBarOffset = self.navigationController?.navigationBar.frame.height {
+                    make.centerY.equalToSuperview().offset(navigationBarOffset)
+                } else {
+                    make.centerY.equalToSuperview()
+                }
             }
             self.view.layoutIfNeeded()
         }

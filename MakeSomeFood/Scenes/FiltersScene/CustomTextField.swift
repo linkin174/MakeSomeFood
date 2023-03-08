@@ -9,12 +9,12 @@ import UIKit
 
 final class CustomTextField: UITextField {
 
-    var insets: UIEdgeInsets?
+    var insets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
 
     override init(frame: CGRect) {
-        self.insets = nil
         super.init(frame: frame)
         setupUI()
+        setupButtonTint()
     }
 
     convenience init(insets: UIEdgeInsets) {
@@ -41,41 +41,31 @@ final class CustomTextField: UITextField {
             string: placeholder ?? "",
             attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
         font = .systemFont(ofSize: 18)
-        backgroundColor = .clear
+        backgroundColor = .mainAccentColor
         textColor = .mainTextColor
         clearButtonMode = .always
+        tintColor = .disabledColor
     }
 
     private func setupButtonTint() {
         subviews.forEach { subview in
             if let button = subview as? UIButton {
-                let tintedImage = button.imageView?.image?.withTintColor(.mainTextColor)
-                button.imageView?.image = tintedImage
+                let image = button.imageView?.image?.withTintColor(.mainTextColor)
+                button.setImage(image, for: .normal)
+                button.setImage(image, for: .highlighted)
             }
         }
     }
 
     override func textRect(forBounds bounds: CGRect) -> CGRect {
-        if let insets {
-            return bounds.inset(by: insets)
-        } else {
-            return bounds
-        }
+        bounds.inset(by: insets)
     }
 
     override func placeholderRect(forBounds bounds: CGRect) -> CGRect {
-        if let insets {
-            return bounds.inset(by: insets)
-        } else {
-            return bounds
-        }
+        bounds.inset(by: insets)
     }
 
     override func editingRect(forBounds bounds: CGRect) -> CGRect {
-        if let insets {
-            return bounds.inset(by: insets)
-        } else {
-            return bounds
-        }
+        bounds.inset(by: insets)
     }
 }
