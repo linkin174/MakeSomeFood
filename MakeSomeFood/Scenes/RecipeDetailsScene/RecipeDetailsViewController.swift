@@ -288,7 +288,11 @@ final class RecipeDetailsViewController: UIViewController, RecipeDetailsDisplayL
             UIView.animate(withDuration: 0.5) {
                 if translation.y > -100 {
                     self.nutritionFactsView.snp.updateConstraints { make in
-                        make.centerY.equalToSuperview()
+                        if let navigationBarOffset = self.navigationController?.navigationBar.frame.height {
+                            make.centerY.equalToSuperview().offset(navigationBarOffset)
+                        } else {
+                            make.centerY.equalToSuperview()
+                        }
                         self.blurView.alpha = 1
                     }
                 } else {

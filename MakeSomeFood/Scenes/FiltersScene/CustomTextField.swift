@@ -47,6 +47,12 @@ final class CustomTextField: UITextField {
         tintColor = .disabledColor
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        attributedPlaceholder = NSAttributedString(
+            string: placeholder ?? "",
+            attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
+    }
+
     private func setupButtonTint() {
         subviews.forEach { subview in
             if let button = subview as? UIButton {
