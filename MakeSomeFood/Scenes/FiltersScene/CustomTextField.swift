@@ -37,9 +37,6 @@ final class CustomTextField: UITextField {
         layer.cornerRadius = intrinsicContentSize.height / 2
         layer.borderColor = UIColor.mainTextColor.cgColor
         layer.masksToBounds = true
-        attributedPlaceholder = NSAttributedString(
-            string: placeholder ?? "",
-            attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
         font = .systemFont(ofSize: 18)
         backgroundColor = .mainAccentColor
         textColor = .mainTextColor
@@ -48,6 +45,7 @@ final class CustomTextField: UITextField {
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        print(#function)
         attributedPlaceholder = NSAttributedString(
             string: placeholder ?? "",
             attributes: [.foregroundColor: UIColor.mainTextColor.withAlphaComponent(0.5)])
