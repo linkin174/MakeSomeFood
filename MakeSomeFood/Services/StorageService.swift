@@ -52,19 +52,6 @@ final class StorageService: StoringProtocol {
 
     private let userDefaults = UserDefaults.standard
 
-//    private let persistentContainer: NSPersistentContainer = {
-//        let containter = NSPersistentContainer(name: "MakeSomeFood")
-//        containter.loadPersistentStores { description, error in
-//            if let error = error as NSError? {
-//                fatalError("Unresolved error \(error), \(error.userInfo)")
-//            }
-//        }
-//        return containter
-//    }()
-//
-//    private var context: NSManagedObjectContext {
-//        persistentContainer.viewContext
-//    }
 
     // MARK: - Public Methods
 
@@ -139,7 +126,12 @@ final class StorageService: StoringProtocol {
     /// Return an array of saved favorite recipes
     /// - Returns: Array of ``Recipe`` or empty array
     func loadFavorites() -> [Recipe] {
-        #warning("for test")
+          // TODO: - Migrate to Core Data
+//        let request = Entity.fetchRequest()
+//        guard let label = try? context.fetch(request) else { print("Fetch error")
+//            return []
+//        }
+//        print("loaded from DB \(label.map { $0.recipe })")
         guard
             let data = userDefaults.data(forKey: "favorites"),
             let recipes = try? JSONDecoder().decode([Recipe].self, from: data)
@@ -151,18 +143,6 @@ final class StorageService: StoringProtocol {
 
     // MARK: - Private methods
 
-//    private func saveContext() {
-//        let context = persistentContainer.viewContext
-//        if context.hasChanges {
-//            do {
-//                try context.save()
-//            } catch {
-//                let nserror = error as NSError
-//                fatalError("Unresolved \(nserror), \(nserror.userInfo)")
-//            }
-//        }
-//    }
-
     #warning("remove duplicating logic of decoding/encoding")
     #warning("save bools for keys as recipe name")
     private func addFavorite(recipe: Recipe) {
@@ -173,6 +153,7 @@ final class StorageService: StoringProtocol {
     }
 
     private func removeFavorite(recipe: Recipe) {
+
         var favorites = loadFavorites()
         favorites.removeAll(where: { $0 == recipe })
         guard let data = try? JSONEncoder().encode(favorites) else { return }
