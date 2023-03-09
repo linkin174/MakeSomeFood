@@ -95,7 +95,6 @@ extension FavoritesViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecipeCell.reuseID, for: indexPath) as? RecipeCell else { return UICollectionViewCell() }
         if let cellVM = viewModel?.cells[indexPath.item] {
-            print("CELL VM IN FAV \(cellVM)")
             cell.viewModel = cellVM
         }
         return cell
