@@ -107,7 +107,7 @@ struct NutrientRowViewModel: NutrientRowViewModelProtocol {
     }
 
     var value: String {
-        String(format: "%.f", digest.total ?? 0)
+        String(format: "%.f", (digest.total ?? 0) / servings)
     }
 
     var unit: String {
