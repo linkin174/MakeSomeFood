@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreData
 
 struct Filters: Codable {
     let searchQuery: String?
@@ -17,6 +18,7 @@ struct Filters: Codable {
 }
 
 protocol StoringProtocol {
+    var viewContext: NSManagedObjectContext { get }
     var dietTypes: [String] { get }
     var cuisineTypes: [String] { get }
     var mealTypes: [String] { get }
@@ -51,6 +53,19 @@ final class StorageService: StoringProtocol {
     // MARK: - Private Properties
 
     private let userDefaults = UserDefaults.standard
+    private static var persistentContainer: NSPersistentContainer = {
+        let container = NSPersistentContainer(name: "RecipeDataModel")
+        container.loadPersistentStores { _, error in
+            if let error = error as NSError? {
+                fatalError("Unresolved error \(error), \(error.userInfo)")
+            }
+        }
+        return container
+    }()
+
+    var viewContext: NSManagedObjectContext {
+        Self.persistentContainer.viewContext
+    }
 
 
     // MARK: - Public Methods

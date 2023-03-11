@@ -19,12 +19,17 @@ final class FetcherService: FetchingProtocol {
 
     private let networkService: NetworkingProtocol?
     private let storageService: StoringProtocol?
+    private let decoder: JSONDecoder
 
     // MARK: - Initializers
 
     init(networkService: NetworkingProtocol?, storageService: StoringProtocol?) {
         self.networkService = networkService
         self.storageService = storageService
+        decoder = JSONDecoder()
+        if let key = CodingUserInfoKey.managedObjectContext {
+            decoder.userInfo[key] = storageService?.viewContext
+        }
     }
 
     // MARK: - Public Methods
@@ -33,16 +38,18 @@ final class FetcherService: FetchingProtocol {
     /// - Parameter completion: ``Result`` type completion containing ``RecipeResponse`` object or ``Error``
     func fetchRecipies(completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         let parameters = makeParameters()
-        networkService?.makeRequest(parameters: parameters) { result in
+        networkService?.makeRequest(parameters: parameters) { [unowned self] result in
             switch result {
             case .success(let success):
                 do {
-                    let recipeResponse = try JSONDecoder().decode(RecipeResponse.self, from: success)
+                    let recipeResponse = try self.decoder.decode(RecipeResponse.self, from: success)
                     completion(.success(recipeResponse))
                 } catch  {
+                    print("FAILURE")
                     completion(.failure(error))
                 }
             case .failure(let failure):
+                print("FAILURE")
                 completion(.failure(failure))
             }
         }
@@ -54,11 +61,11 @@ final class FetcherService: FetchingProtocol {
     ///   - completion: ``Result`` type completion containing ``RecipeResponse`` object or ``Error``
     func fetchNextRecipes(from urlString: String, completion: @escaping (Result<RecipeResponse, Error>) -> Void) {
         guard let url = URL(string: urlString) else { return }
-        networkService?.makeRequest(from: url) { result in
+        networkService?.makeRequest(from: url) { [unowned self] result in
             switch result {
             case .success(let data):
                 do {
-                    let recipeResponse = try JSONDecoder().decode(RecipeResponse.self, from: data)
+                    let recipeResponse = try decoder.decode(RecipeResponse.self, from: data)
                     completion(.success(recipeResponse))
                 } catch {
                     completion(.failure(error))

@@ -62,11 +62,11 @@ enum RecipeDetails {
 
 struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
     var servings: String {
-        "Servings: \(Int(recipe.yield ?? 0))"
+        "Servings: \(Int(recipe.yield ))"
     }
 
     var caloriesPerServing: String {
-        let caloriesPerServing = (recipe.calories ?? 0) / (recipe.yield ?? 0)
+        let caloriesPerServing = (recipe.calories ) / (recipe.yield )
         return String(format: "%.f", caloriesPerServing)
     }
 
@@ -87,17 +87,17 @@ struct NutritionFactsViewModel: NutritionFactsViewModelProtocol {
     private func makeNutrientViewModels() -> [NutrientRowViewModelProtocol] {
         guard let digest = recipe.digest else { return [] }
         return digest
-            .filter { $0.unit == "g" && $0.label != "Water" && $0.total ?? 0 > 0 }
-            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
+            .filter { $0.unit == "g" && $0.label != "Water" && $0.total > 0 }
+            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ) }
     }
 
     private func makeVitaminsViewModels() -> [NutrientRowViewModelProtocol] {
         guard let digest = recipe.digest else { return [] }
         return digest
-            .filter { $0.unit != "g" && $0.total ?? 0 > 0 }
-            .sorted(by: { $0.daily ?? 0 > $1.daily ?? 0 })
+            .filter { $0.unit != "g" && $0.total > 0 }
+            .sorted(by: { $0.daily > $1.daily })
             .prefix(10)
-            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ?? 0) }
+            .map { NutrientRowViewModel(digest: $0, servings: recipe.yield ) }
     }
 }
 
@@ -107,7 +107,7 @@ struct NutrientRowViewModel: NutrientRowViewModelProtocol {
     }
 
     var value: String {
-        String(format: "%.f", (digest.total ?? 0) / servings)
+        String(format: "%.f", (digest.total ) / servings)
     }
 
     var unit: String {
@@ -115,7 +115,7 @@ struct NutrientRowViewModel: NutrientRowViewModelProtocol {
     }
 
     var dailyPercentage: String {
-        "\(String(format: "%.f", (digest.daily ?? 0) / servings)) %"
+        "\(String(format: "%.f", (digest.daily ) / servings)) %"
     }
 
     private let digest: Digest

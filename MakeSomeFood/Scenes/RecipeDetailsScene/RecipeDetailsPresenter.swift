@@ -31,29 +31,31 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
         let existingIngredients = response.existingIngredientLabels
 
         var cookingTime: String? {
-            if let totalTime = recipe.totalTime, totalTime != 0 {
-                return String(format: "%.f", totalTime) + " min"
+            if recipe.totalTime != 0 {
+                return String(format: "%.f", recipe.totalTime) + " min"
             } else {
                 return nil
             }
         }
 
         let nutritionFactsViewModel = NutritionFactsViewModel(recipe: recipe)
-
+        
         let ingredientRowViewModels = recipe.ingredients?.compactMap { ingredient in
-            let isExisting = existingIngredients.contains(ingredient.food ?? "")
+            let isExisting = existingIngredients.contains { string in
+                string == ingredient.food
+            }
 
             return IngredientRowViewModel(imageURL: ingredient.image ?? "",
                                           name: ingredient.text ?? "",
                                           food: ingredient.food ?? "",
-                                          weight: String(format: "%.f", ingredient.weight ?? 0),
+                                          weight: String(format: "%.f", ingredient.weight),
                                           isExisting: isExisting)
         }
 
         let viewModel = RecipeDetails.ShowRecipeDetails.ViewModel(imageURL: URL(string: recipe.images?.small?.url ?? ""),
                                                                   recipeURL: recipe.url ?? "",
                                                                   title: recipe.label ?? "",
-                                                                  totalWeight: String(format: "%.f", recipe.totalWeight ?? 0),
+                                                                  totalWeight: String(format: "%.f", recipe.totalWeight),
                                                                   coockingTime: cookingTime,
                                                                   isFavorite: response.isFavorite,
                                                                   nutritionFactsViewModel: nutritionFactsViewModel,
@@ -63,14 +65,17 @@ final class RecipeDetailsPresenter: RecipeDetailsPresentationLogic {
     }
 
     func presentUpdatedImage(response: RecipeDetails.UpdateImage.Response) {
+        #warning("fix this")
         guard
             let highResImage = response.recipe.images?.allProperties()
-                .compactMap({ $0.value as? ImageSize })
-                .max(by: { $0.width ?? 0 < $1.width ?? 0 }),
+            .compactMap({ $0.value as? ImageSize })
+            .max(by: { $0.width > $1.width }),
             let url = URL(string: highResImage.url ?? "")
         else {
             return
         }
+
+        print(highResImage)
         let viewModel = RecipeDetails.UpdateImage.ViewModel(imageURL: url)
         viewController?.displayUpdatedImage(viewModel: viewModel)
     }
